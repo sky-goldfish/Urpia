@@ -7,5 +7,9 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
+    headers: {
+      // 允许 Mapbox GL 的 eval 和 worker 正常工作
+      'Content-Security-Policy': "default-src * 'unsafe-eval' 'unsafe-inline' data: blob:; script-src * 'unsafe-eval' 'unsafe-inline' data: blob:; worker-src * 'unsafe-eval' 'unsafe-inline' data: blob: blob:; child-src * 'unsafe-eval' 'unsafe-inline' data: blob:; connect-src * data: blob:; img-src * data: blob:; style-src * 'unsafe-inline' data: blob:;",
+    },
   },
 })

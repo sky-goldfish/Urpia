@@ -216,33 +216,6 @@ button {
   background: var(--zoopia-divider);
 }
 
-/* v4 地图模拟 — 浅色干净 */
-.map-grid {
-  background:
-    linear-gradient(135deg, #F2F2F7 0%, #E5E5EA 50%, #F2F2F7 100%);
-}
-
-.map-road::before,
-.map-road::after {
-  position: absolute;
-  content: "";
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-.map-road::before {
-  inset: 22% 8% auto;
-  height: 18px;
-  transform: rotate(-11deg);
-}
-
-.map-road::after {
-  inset: auto 12% 26%;
-  height: 20px;
-  transform: rotate(19deg);
-}
-
 /* v4 进度条 */
 .progress-bar {
   height: 4px;

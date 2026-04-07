@@ -1,16 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import mapboxgl from 'mapbox-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
 import TabBar from '../../components/ui/TabBar.vue'
 import SocialMatchChat from '../social/SocialMatchChat.vue'
 import { poiList } from '../../lib/mockData'
 
+// 禁用 Web Worker，在主线程运行，彻底绕开 CSP eval 限制
+;(mapboxgl as any).workerUrl = ''
+
 const router = useRouter()
+const mapContainer = ref<HTMLDivElement | null>(null)
+const map = ref<mapboxgl.Map | null>(null)
 const showSearch = ref(false)
 const searchQuery = ref('')
 const activeMood = ref<string | null>(null)
 const showFilter = ref(false)
 const showMatchChat = ref(false)
+
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string
+
+// 上海市中心坐标
+const MAP_CENTER: [number, number] = [121.4737, 31.2304]
+const MAP_ZOOM = 14
+
+// POI 真实坐标（上海）
+const poiCoords: Record<string, [number, number]> = {
+  'harbor-light': [121.4489, 31.2295],
+  'glasshouse': [121.4375, 31.1889],
+  'midnight-pool': [121.4910, 31.2345],
+}
 
 const moodFilters = [
   { key: 'healing', label: '治愈', color: '#6BBFA3' },
@@ -46,48 +66,83 @@ const toggleMood = (key: string) => {
   activeMood.value = activeMood.value === key ? null : key
 }
 
-// 打开 A2A 对话浮层
 const openMatchChat = () => {
   showSearch.value = false
   showFilter.value = false
   showMatchChat.value = true
 }
 
-// 关闭 A2A 对话浮层
 const closeMatchChat = () => {
   showMatchChat.value = false
 }
+
+const locateUser = () => {
+  map.value?.flyTo({ center: MAP_CENTER, zoom: 15, duration: 800 })
+}
+
+// 创建 POI Marker
+const createPoiMarker = (poi: typeof poiList[number]) => {
+  if (!map.value) return
+  const coords = poiCoords[poi.id] ?? MAP_CENTER
+  const color = getPoiColor(poi.id)
+
+  const el = document.createElement('div')
+  el.className = 'poi-marker'
+  el.style.cssText = `
+    width: 32px; height: 32px; border-radius: 50%;
+    background: ${color}; border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    cursor: pointer; transition: transform 0.2s;
+  `
+  el.addEventListener('mouseenter', () => { el.style.transform = 'scale(1.3)' })
+  el.addEventListener('mouseleave', () => { el.style.transform = 'scale(1)' })
+  el.addEventListener('click', () => openPoi(poi.id))
+
+  new mapboxgl.Marker({ element: el })
+    .setLngLat(coords)
+    .addTo(map.value)
+}
+
+// 情绪筛选时过滤 POI
+watch(activeMood, (mood) => {
+  if (!map.value) return
+  // 清除所有自定义 marker 再重建
+  const el = map.value.getContainer()
+  el.querySelectorAll('.poi-marker').forEach(m => m.closest('.mapboxgl-marker')?.remove())
+
+  const filtered = mood
+    ? poiList.filter(p => poiMoodMap[p.id] === mood)
+    : poiList
+  filtered.forEach(createPoiMarker)
+})
+
+onMounted(() => {
+  if (!mapContainer.value) return
+
+  mapboxgl.accessToken = MAPBOX_TOKEN
+  const m = new mapboxgl.Map({
+    container: mapContainer.value,
+    style: 'mapbox://styles/mapbox/light-v11',
+    center: MAP_CENTER,
+    zoom: MAP_ZOOM,
+    attributionControl: false,
+  })
+
+  m.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
+
+  m.on('load', () => {
+    map.value = m
+    poiList.forEach(createPoiMarker)
+  })
+})
 </script>
 
 <template>
-  <main class="device-shell">
+  <main class="device-shell" style="overflow: visible;">
     <!-- v4 主地图页：全屏地图 + 悬浮控件 -->
-    <div class="relative h-[100dvh] w-full">
-      <!-- 地图区域（浅色干净模拟） -->
-      <div class="map-grid map-road absolute inset-0" />
-
-      <!-- 用户头像（地图中央） -->
-      <div class="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-        <div class="flex h-7 w-7 items-center justify-center rounded-full border-[3px] border-white bg-[#F2F2F7] shadow-[0_1px_2px_rgba(0,0,0,0.15)]">
-          <span class="material-symbols-outlined text-[14px] text-[#6C6C6C]">person</span>
-        </div>
-      </div>
-
-      <!-- POI 情绪标记点 -->
-      <button
-        v-for="poi in poiList"
-        :key="poi.id"
-        type="button"
-        class="absolute z-10 -translate-x-1/2 -translate-y-1/2"
-        :style="{ top: poi.top, left: poi.left }"
-        :aria-label="`查看 ${poi.name}`"
-        @click="openPoi(poi.id)"
-      >
-        <div
-          class="h-3 w-3 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
-          :style="{ backgroundColor: getPoiColor(poi.id) }"
-        />
-      </button>
+    <div class="relative h-[100dvh] w-full overflow-hidden">
+      <!-- Mapbox GL 地图容器 -->
+      <div ref="mapContainer" class="absolute inset-0 z-0" />
 
       <!-- v4 顶部悬浮区域 -->
       <div class="absolute right-4 top-[calc(env(safe-area-inset-top)+16px)] z-20 flex flex-col gap-3">
@@ -155,6 +210,7 @@ const closeMatchChat = () => {
       <button
         type="button"
         class="absolute left-4 top-[calc(env(safe-area-inset-top)+16px)] z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
+        @click="locateUser"
       >
         <span class="material-symbols-outlined text-[18px] text-[#6C6C6C]">my_location</span>
       </button>
@@ -177,3 +233,14 @@ const closeMatchChat = () => {
     </div>
   </main>
 </template>
+
+<style scoped>
+/* 地图页需要溢出可见，让 Mapbox canvas 正常渲染 */
+:deep(.device-shell) {
+  overflow: visible;
+}
+
+:deep(.mapboxgl-canvas) {
+  outline: none;
+}
+</style>
