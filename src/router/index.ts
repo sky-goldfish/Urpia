@@ -5,9 +5,9 @@ const router = createRouter({
   routes: [
     { path: '/', redirect: '/onboarding/camera' },
     { path: '/onboarding/camera', component: () => import('../views/onboarding/CameraGuide.vue') },
+    { path: '/onboarding/chat', component: () => import('../views/onboarding/AiGuideChat.vue') },
     { path: '/onboarding/generating', component: () => import('../views/onboarding/Generating.vue') },
     { path: '/onboarding/confirm', component: () => import('../views/onboarding/ConfirmPersona.vue') },
-    { path: '/onboarding/chat', component: () => import('../views/onboarding/AiGuideChat.vue') },
     { path: '/map', component: () => import('../views/explore/ExploreMap.vue') },
     { path: '/poi/:id', component: () => import('../views/explore/PoiInfo.vue') },
     { path: '/discovery', component: () => import('../views/explore/DiscoveryPoint.vue') },
