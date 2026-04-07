@@ -146,7 +146,7 @@ const openHistory = () => {
 
       <!-- v4 底部操作按钮 -->
       <div
-        class="flex gap-3 bg-white px-5 py-4"
+        class="flex gap-3 bg-white px-5 pb-[calc(env(safe-area-inset-bottom)+96px)] pt-4"
         style="border-top: 1px solid #E5E5EA"
       >
         <button type="button" class="secondary-button flex-1 py-3 text-[15px]" style="letter-spacing: -0.224px">
