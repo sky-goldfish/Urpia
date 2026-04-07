@@ -1,85 +1,131 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import TabBar from '../../components/ui/TabBar.vue'
 import { reportTopics } from '../../lib/mockData'
 
 const router = useRouter()
 const compatibility = 87
 
-const goToChat = () => {
-  void router.push('/match')
+const goToMap = () => {
+  void router.push('/map')
 }
 
-const goToProfile = () => {
-  void router.push('/profile')
+const compatibilityLabel = () => {
+  if (compatibility >= 80) return { text: '命中注定的相遇', color: '#34C759' }
+  if (compatibility >= 60) return { text: '有趣的灵魂', color: '#E8A44A' }
+  return { text: '也许下次会更好', color: '#8E8E93' }
 }
+
+const vibeResult = { text: '很合拍', color: '#34C759' }
 </script>
 
 <template>
   <main class="device-shell">
-    <div class="page-padding tabbar-padding flex min-h-[100dvh] flex-col gap-5">
-      <header class="space-y-2">
-        <p class="text-[12px] text-[#86868b]" style="letter-spacing: -0.12px">匹配报告</p>
-        <h1 class="text-[30px] font-normal text-[#1d1d1f]" style="letter-spacing: -0.6px">这次相遇可以继续</h1>
+    <div class="flex min-h-[100dvh] flex-col bg-[#F7F7F8]">
+      <!-- v4 顶部导航栏 -->
+      <header
+        class="flex items-center bg-white px-5 py-4"
+        style="border-bottom: 1px solid #E5E5EA"
+      >
+        <button type="button" class="mr-3 text-[#6C6C6C]" @click="goToMap">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+        <h1 class="text-[16px] font-semibold text-[#1D1D1F]" style="letter-spacing: -0.224px">相遇报告</h1>
       </header>
 
-      <section class="apple-card p-6">
-        <div class="flex items-center gap-5">
-          <div
-            class="flex h-28 w-28 items-center justify-center rounded-full bg-[conic-gradient(#0071e3_0_87%,rgba(0,113,227,0.12)_87%_100%)]"
-          >
-            <div class="flex h-[84px] w-[84px] flex-col items-center justify-center rounded-full bg-white">
-              <span class="text-[30px] font-normal text-[#1d1d1f]" style="letter-spacing: -0.6px">{{ compatibility }}</span>
-              <span class="text-[11px] text-[#86868b]" style="letter-spacing: -0.08px">兼容度</span>
+      <section class="flex-1 overflow-y-auto px-5 py-5">
+        <!-- 双角色展示 -->
+        <div class="apple-card mx-auto w-[90%] p-6">
+          <div class="flex items-center justify-center gap-8">
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-white bg-[#F2F2F7]">
+                <span class="material-symbols-outlined text-[28px] text-[#6C6C6C]">person</span>
+              </div>
+              <span class="text-[14px] font-medium text-[#1D1D1F]">月汐观测者</span>
+            </div>
+            <span class="text-[16px] text-[#8E8E93]">✦</span>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-white bg-[#F2F2F7]">
+                <span class="material-symbols-outlined text-[28px] text-[#9B8EC4]">person</span>
+              </div>
+              <span class="text-[14px] font-medium text-[#1D1D1F]">云野</span>
             </div>
           </div>
-          <div class="flex-1">
-            <p class="text-[17px] text-[#1d1d1f]" style="letter-spacing: -0.374px">你们都偏好慢启动、真诚表达和留白感。</p>
-            <p class="mt-3 text-[14px] leading-6 text-[#1d1d1f]/72" style="letter-spacing: -0.224px">
-              关系推进建议：先交换一件最近反复想到的小事，而不是直接询问“你是做什么的”。
-            </p>
+        </div>
+
+        <!-- 匹配度展示 -->
+        <div class="mt-6 text-center">
+          <p
+            class="text-[48px] font-light text-[#1D1D1F]"
+            style="letter-spacing: -2px"
+          >
+            {{ compatibility }}%
+          </p>
+          <p
+            class="mt-2 text-[14px] font-medium"
+            :style="{ color: compatibilityLabel().color }"
+          >
+            {{ compatibilityLabel().text }}
+          </p>
+          <div class="mx-auto mt-3 h-1 w-[60%] overflow-hidden rounded-full bg-[#F2F2F7]">
+            <div
+              class="h-full rounded-full transition-all duration-500"
+              :style="{ width: `${compatibility}%`, backgroundColor: compatibilityLabel().color }"
+            />
           </div>
         </div>
-      </section>
 
-      <section class="apple-card p-5">
-        <h2 class="text-[17px] font-normal text-[#1d1d1f]" style="letter-spacing: -0.374px">共同话题</h2>
-        <div class="mt-4 flex flex-wrap gap-2">
-          <span v-for="topic in reportTopics" :key="topic" class="pill-tag text-[12px]" style="letter-spacing: -0.12px">
-            {{ topic }}
-          </span>
+        <!-- 匹配详情卡片 -->
+        <div class="apple-card mt-6 p-5">
+          <!-- Vibe -->
+          <div class="flex items-center justify-between">
+            <span class="text-[13px] text-[#8E8E93]">Vibe</span>
+            <span class="text-[13px] font-medium" :style="{ color: vibeResult.color }">{{ vibeResult.text }}</span>
+          </div>
+
+          <div class="subtle-divider my-4" />
+
+          <!-- 共同话题 -->
+          <p class="text-[13px] text-[#8E8E93]">共同话题</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span v-for="topic in reportTopics" :key="topic" class="pill-tag">{{ topic }}</span>
+          </div>
+
+          <div class="subtle-divider my-4" />
+
+          <!-- 推荐理由 -->
+          <p class="text-[13px] text-[#8E8E93]">推荐理由</p>
+          <p class="mt-2 text-[14px] leading-6 text-[#6C6C6C]" style="letter-spacing: -0.224px">
+            你们都喜欢在安静的咖啡馆里享受独处时光，音乐品味也很合。
+          </p>
         </div>
+
+        <!-- 对话回顾入口 -->
+        <p class="mt-5 cursor-pointer text-center text-[14px] font-medium text-[#1D1D1F]" style="letter-spacing: -0.224px">
+          查看对话记录 →
+        </p>
       </section>
 
-      <section class="apple-card p-5">
-        <h2 class="text-[17px] font-normal text-[#1d1d1f]" style="letter-spacing: -0.374px">互动建议</h2>
-        <ul class="mt-4 space-y-3 text-[14px] text-[#1d1d1f]/76" style="letter-spacing: -0.224px">
-          <li>适合使用情绪天气卡作为第一次深聊入口。</li>
-          <li>建议在 20 分钟内保持双向轮转，不要一方持续输出。</li>
-          <li>如果现场噪音升高，优先切换到步行型交流场景。</li>
-        </ul>
-      </section>
-
-      <div class="mt-auto grid grid-cols-2 gap-3">
+      <!-- v4 底部操作按钮 -->
+      <div
+        class="flex gap-3 bg-white px-5 py-4"
+        style="border-top: 1px solid #E5E5EA"
+      >
         <button
           type="button"
-          class="secondary-button px-4 py-3 text-[17px]"
-          style="letter-spacing: -0.374px; line-height: 2.41"
-          @click="goToProfile"
+          class="secondary-button flex-1 py-3 text-[15px]"
+          style="letter-spacing: -0.224px"
+          @click="goToMap"
         >
-          查看状态
+          继续冒险
         </button>
         <button
           type="button"
-          class="primary-button px-4 py-3 text-[17px]"
-          style="letter-spacing: -0.374px; line-height: 2.41"
-          @click="goToChat"
+          class="primary-button flex-1 py-3 text-[15px]"
+          style="letter-spacing: -0.224px"
         >
-          返回对话
+          打招呼
         </button>
       </div>
     </div>
-
-    <TabBar />
   </main>
 </template>

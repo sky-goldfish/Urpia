@@ -1,78 +1,134 @@
 <script setup lang="ts">
+import { nextTick, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import TabBar from '../../components/ui/TabBar.vue'
 import { matchChat } from '../../lib/mockData'
 
 const router = useRouter()
+const chatEndRef = ref<HTMLDivElement | null>(null)
+
+const messages = ref(matchChat)
+const isTyping = ref(false)
+const progress = ref(1)
+
+const scrollToBottom = async () => {
+  await nextTick()
+  chatEndRef.value?.scrollIntoView({ behavior: 'smooth' })
+}
 
 const goToReport = () => {
   void router.push('/report')
 }
+
+// 模拟对话进度
+const totalRounds = 3
+
+onMounted(() => {
+  scrollToBottom()
+})
 </script>
 
 <template>
   <main class="device-shell">
-    <div class="page-padding tabbar-padding flex min-h-[100dvh] flex-col gap-5">
-      <header class="apple-card flex items-center gap-3 p-4">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#dbeafe_0%,#ffffff_100%)]">
-          <span class="material-symbols-outlined text-[24px] text-[#0071e3]">face_6</span>
+    <div class="flex h-[100dvh] flex-col">
+      <!-- v4 顶部导航栏 -->
+      <header
+        class="flex items-center gap-3 bg-white px-5 py-4"
+        style="border-bottom: 1px solid #E5E5EA"
+      >
+        <div class="flex items-center gap-3">
+          <!-- 双头像 -->
+          <div class="flex items-center -space-x-2">
+            <div class="flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-white bg-[#F2F2F7]">
+              <span class="material-symbols-outlined text-[16px] text-[#6C6C6C]">person</span>
+            </div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-white bg-[#F2F2F7]">
+              <span class="material-symbols-outlined text-[16px] text-[#9B8EC4]">person</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-[13px] font-medium text-[#1D1D1F]" style="letter-spacing: -0.224px">你 · 月汐观测者</p>
+            <p class="text-[12px] text-[#8E8E93]" style="letter-spacing: -0.08px">对方 · 云野</p>
+          </div>
         </div>
-        <div class="flex-1">
-          <p class="text-[12px] text-[#86868b]" style="letter-spacing: -0.12px">已完成匿名连接</p>
-          <h1 class="mt-1 text-[17px] font-normal text-[#1d1d1f]" style="letter-spacing: -0.374px">你 · 月汐观测者 / 对方 · 云野</h1>
+        <div class="flex-1" />
+        <div class="text-right">
+          <p class="text-[12px] text-[#8E8E93]" style="letter-spacing: -0.08px">{{ progress }}/{{ totalRounds }}</p>
         </div>
-        <button
-          type="button"
-          class="glass-light rounded-full px-4 py-2 text-[14px] text-[#1d1d1f]"
-          style="letter-spacing: -0.224px"
-          @click="goToReport"
-        >
-          报告
-        </button>
       </header>
 
-      <section class="flex flex-1 flex-col gap-4">
+      <!-- 对话区域（用户只能旁观） -->
+      <section class="flex flex-1 flex-col gap-3 overflow-y-auto bg-[#F7F7F8] px-5 py-4">
         <article
-          v-for="message in matchChat"
-          :key="message.id"
+          v-for="msg in messages"
+          :key="msg.id"
           class="flex"
-          :class="message.role === 'user' ? 'justify-end' : 'justify-start'"
+          :class="msg.role === 'user' ? 'justify-end' : 'justify-start'"
         >
-          <div class="max-w-[84%]">
-            <p class="mb-1 px-1 text-[11px] text-[#86868b]" style="letter-spacing: -0.08px">
-              {{ message.author }} · {{ message.time }}
-            </p>
+          <!-- 对方头像 -->
+          <div v-if="msg.role === 'match'" class="mr-2 mt-5 flex-shrink-0">
+            <div class="flex h-6 w-6 items-center justify-center rounded-full bg-[#F2F2F7]">
+              <span class="material-symbols-outlined text-[12px] text-[#9B8EC4]">person</span>
+            </div>
+          </div>
+
+          <div class="max-w-[78%]">
             <div
-              class="rounded-[18px] px-4 py-3 text-[14px] leading-6"
+              class="rounded-[16px] px-4 py-3 text-[15px] leading-relaxed"
               :class="
-                message.role === 'user'
-                  ? 'bg-[#0071e3] text-white shadow-[0_10px_26px_rgba(0,113,227,0.18)]'
-                  : 'apple-card text-[#1d1d1f]'
+                msg.role === 'user'
+                  ? 'bg-[#1D1D1F] text-white rounded-br-sm'
+                  : 'bg-[#F2F2F7] text-[#1D1D1F] rounded-bl-sm'
               "
               style="letter-spacing: -0.224px"
             >
-              {{ message.text }}
+              {{ msg.text }}
             </div>
           </div>
         </article>
+
+        <!-- AI 正在输入 -->
+        <div v-if="isTyping" class="flex items-start gap-2">
+          <div class="flex-shrink-0 mt-0.5">
+            <div class="flex h-6 w-6 items-center justify-center rounded-full bg-[#F2F2F7]">
+              <span class="material-symbols-outlined text-[12px] text-[#9B8EC4]">person</span>
+            </div>
+          </div>
+          <div class="rounded-[16px] rounded-bl-sm bg-[#F2F2F7] px-4 py-3">
+            <div class="flex items-center gap-1">
+              <div class="h-1.5 w-1.5 rounded-full bg-[#8E8E93]/40" style="animation: bounce 1.4s ease-in-out infinite" />
+              <div class="h-1.5 w-1.5 rounded-full bg-[#8E8E93]/40" style="animation: bounce 1.4s ease-in-out 0.2s infinite" />
+              <div class="h-1.5 w-1.5 rounded-full bg-[#8E8E93]/40" style="animation: bounce 1.4s ease-in-out 0.4s infinite" />
+            </div>
+          </div>
+        </div>
+
+        <div ref="chatEndRef" />
       </section>
 
-      <section class="apple-card flex items-center gap-3 p-3">
-        <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full bg-[#f5f5f7] text-[#1d1d1f]">
-          <span class="material-symbols-outlined text-[20px]">add</span>
+      <!-- v4 底部进度条（无输入框，用户只是旁观者） -->
+      <div class="bg-white px-5 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-3">
+        <div class="mb-3 progress-bar">
+          <div class="progress-bar-fill" :style="{ width: `${(progress / totalRounds) * 100}%` }" />
+        </div>
+        <button
+          type="button"
+          class="primary-button w-full py-3 text-[15px]"
+          style="letter-spacing: -0.224px"
+          @click="goToReport"
+        >
+          查看匹配报告
         </button>
-        <input
-          type="text"
-          class="input-shell px-4 py-3 text-[17px]"
-          style="letter-spacing: -0.374px"
-          placeholder="发送一句温和开场"
-        />
-        <button type="button" class="primary-button h-11 px-4 text-[17px]" style="letter-spacing: -0.374px; line-height: 2.41">
-          发送
-        </button>
-      </section>
+      </div>
+
+      <TabBar />
     </div>
-
-    <TabBar />
   </main>
 </template>
+
+<style scoped>
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-3px); }
+}
+</style>
