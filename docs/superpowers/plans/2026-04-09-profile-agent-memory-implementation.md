@@ -1590,7 +1590,7 @@ import { enqueueExtractMemoryJob } from '../profile-agent/memoryService.js'
 import { transcribeAudio } from '../profile-agent/speechService.js'
 
 const prompts = [
-  '先从轻松的开始吧。你更喜欢热闹的场子，还是能慢慢熟起来的空间？',
+  '我们先从轻松的开始吧。你更喜欢热闹的场子，还是能慢慢熟起来的空间？',
   '如果遇到陌生人，你会更希望谁先开口？',
   '最近什么样的地方最容易吸引你停下来？',
   '最后一个问题，你希望自己的分身更像真实的你，还是更外放一点？',
