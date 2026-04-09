@@ -6,7 +6,7 @@
 
 当前项目的 `profile` 页面已经具备较强的角色感：用户能看到一个 3D 分身，并围绕足迹、情绪、记忆、社交四个气泡查看状态信息。但这些内容目前仍以模拟数据为主，缺少一个真正“会陪伴、会提问、会记住用户”的后端系统支撑。
 
-本设计文档的目标是：在当前 Vue + Express + Prisma + SQLite 的 MVP 架构下，为 `profile` 页面增加一个陪伴型主动式 Agent。该 Agent 通过按钮式语音交互与用户进行短会话，并在后台无感地将一问一答整理成长期记忆，用于提取用户的性格、兴趣爱好和人格画像。
+本设计文档的目标是：在当前 Vue + Express + Prisma + SQLite 的 MVP 架构下，为 `profile` 页面增加一个陪伴型主动式 Agent，并将 `onboarding/chat` 一并纳入同一套“先记录、后异步提炼画像”的处理链路。两类会话都会在后台无感地将问答内容整理成长期记忆候选，用于提取用户的性格、兴趣爱好和人格画像。
 
 ## 2. 目标
 
@@ -16,8 +16,10 @@
 2. 用户可以通过按钮语音进行回答
 3. 后端通过 ASR、LLM、TTS 完成一轮完整语音问答
 4. 系统将用户输入与 Agent 回复持久化到 SQLite
-5. 后台异步整理长期记忆，并从中提取用户的性格、兴趣和人格画像
-6. `profile` 页面顶部“记忆”按钮读取的是 AI 整理后的结果，而不是原始聊天记录
+5. `onboarding/chat` 中固定问题改为流式输出，支持语音或文本输入
+6. `onboarding/chat` 与 `profile-agent` 一样，先记录内容，再异步整理长期记忆
+7. 后台异步整理长期记忆，并从中提取用户的性格、兴趣和人格画像
+8. `profile` 页面顶部“记忆”按钮读取的是 AI 整理后的结果，而不是原始聊天记录
 
 ## 3. 非目标
 
@@ -29,9 +31,12 @@
 - WebSocket 全双工语音流
 - 多模态图像或视频理解
 - 复杂情绪治疗或心理咨询能力
-- 将地图、匹配、onboarding 直接写入长期记忆库
+- 将地图、匹配事件直接写入长期记忆库
 
-本阶段只聚焦于 `profile` 页面内的陪伴式短会话。
+本阶段只聚焦于两类问答来源：
+
+- `profile` 页面内的陪伴式短会话
+- `onboarding/chat` 页面内的引导式固定问题问答
 
 ## 4. 产品定位
 
@@ -78,6 +83,17 @@
 
 ## 6. 总体流程
 
+## 6. 总体流程
+
+本阶段存在两条问答链路，但它们共享同一条画像提炼原则：
+
+1. 用户输入先转成标准文字
+2. 标准文字与当前问题先落库
+3. 当前轮次即时响应继续推进
+4. 后台异步提炼人格线索、兴趣线索和画像更新
+
+### 6.1 `profile` 陪伴会话流程
+
 一次完整的 `profile` 陪伴会话流程如下：
 
 1. 用户进入 `/profile`
@@ -100,9 +116,28 @@
 - 用户可见的是即时对话和整理后的记忆结果
 - 系统内部保留的是原始问答轮次和异步提炼结果
 
+### 6.2 `onboarding/chat` 引导问答流程
+
+`onboarding/chat` 的固定问题流也按同样的“先记录、后提炼”原则处理：
+
+1. 用户进入 `/onboarding/chat`
+2. 前端通过打字机或分段流式效果展示当前固定问题
+3. 在问题流式输出完成前，输入区保持禁用
+4. 用户通过语音或文本输入回答
+5. 若是语音输入，后端先调用 ASR 将音频转成文字
+6. 若是文本输入，后端直接使用原始文本
+7. 后端将“当前问题 + 用户回答 + 输入方式”先写入数据库
+8. 后端立即返回下一题或结束信号，不等待长期记忆提炼
+9. 后台异步创建记忆提炼 job
+10. Qwen 从该轮回答中抽取社交偏好、兴趣、性格和人格画像线索
+11. 抽取结果写入统一画像库
+12. 当固定问题结束后，系统汇总当前 onboarding 画像，生成 persona 草案
+
+`onboarding/chat` 的首要目标仍是辅助 persona 初始化，因此它产生的长期记忆默认不直接显示在 `profile` 的“记忆”按钮中，但会进入统一画像库供后续会话与 persona 生成使用。
+
 ## 7. 数据模型设计
 
-在现有 `users` 与 `personas` 的基础上，新增以下 5 组表。
+在现有 `users` 与 `personas` 的基础上，新增以下 5 组表，并补充 onboarding 轮次记录表。
 
 ### 7.1 `profile_agent_sessions`
 
@@ -232,15 +267,43 @@
 - 保证前台响应速度
 - 支持失败重试
 
+### 7.6 `onboarding_turns`
+
+表示 onboarding 固定问题中的一轮问答。
+
+核心字段：
+
+- `id`
+- `session_id`
+- `user_id` 可为空
+- `turn_index`
+- `assistant_prompt_text`
+- `user_input_mode`
+  - `voice | text`
+- `user_audio_url`
+- `asr_text`
+- `user_text`
+- `normalized_user_text`
+- `assistant_reply_text`
+- `created_at`
+
+职责：
+
+- 记录 onboarding 每一轮真实输入来源和标准化结果
+- 为异步长期记忆提炼提供证据
+- 与 `profile_agent_turns` 在画像提炼层共享同一套异步 job 逻辑
+
 ## 8. 数据分层原则
 
-本功能采用三层分离：
+本功能采用四层分离：
 
-1. `profile_agent_turns`
-   - 保存原始问答材料
-2. `profile_memory_items`
+1. `profile_agent_turns` / `onboarding_turns`
+   - 保存两类问答来源的原始材料
+2. `profile_memory_jobs`
+   - 负责异步提炼调度
+3. `profile_memory_items`
    - 保存给用户展示的长期记忆结果
-3. `profile_persona_traits`
+4. `profile_persona_traits`
    - 保存系统当前使用的人格画像结论
 
 这样可以同时满足：
@@ -248,10 +311,79 @@
 - 原始材料可追踪
 - 用户前台界面保持干净
 - 后台可持续更新画像而不破坏展示结构
+- 不同问答来源可以共享一套画像库，但保持展示层隔离
 
 ## 9. API 设计
 
-### 9.1 `POST /api/profile-agent/session/start`
+### 9.1 Onboarding Chat API 扩展
+
+#### `POST /api/onboarding/session`
+
+用途：
+
+- 创建 onboarding 会话
+- 返回第一题
+- 返回当前问题序号与总题数
+
+返回字段建议补充：
+
+- `questionText`
+- `questionIndex`
+- `totalQuestions`
+- `streamMode`
+  - `typewriter`
+
+#### `POST /api/onboarding/turns/text`
+
+用途：
+
+- 接收用户文字回答
+- 先落库到 `onboarding_turns`
+- 返回下一题或结束信号
+- 异步创建长期记忆提炼 job
+
+请求示例：
+
+```json
+{
+  "sessionId": "onb_001",
+  "text": "我更喜欢能慢慢熟起来的空间。"
+}
+```
+
+#### `POST /api/onboarding/turns/voice`
+
+用途：
+
+- 接收用户语音回答
+- 先走 ASR 转文字
+- 再落库到 `onboarding_turns`
+- 返回下一题或结束信号
+- 异步创建长期记忆提炼 job
+
+请求形式：
+
+- `multipart/form-data`
+
+字段：
+
+- `sessionId`
+- `audio`
+
+#### `POST /api/onboarding/complete`
+
+用途：
+
+- 固定问题结束后汇总当前 onboarding 画像
+- 生成 persona 草案
+- 提供给 confirm 页面使用
+
+说明：
+
+- `onboarding/chat` 不再把“写库、推进问题、生成 persona 草案、长期记忆提炼”揉进一个接口中
+- 文本输入和语音输入分流后，在“标准化成文字”之后重新合流
+
+### 9.2 `POST /api/profile-agent/session/start`
 
 用途：
 
@@ -284,7 +416,7 @@
 }
 ```
 
-### 9.2 `POST /api/profile-agent/turns/voice`
+### 9.3 `POST /api/profile-agent/turns/voice`
 
 用途：
 
@@ -328,7 +460,7 @@
 }
 ```
 
-### 9.3 `POST /api/profile-agent/turns/text`
+### 9.4 `POST /api/profile-agent/turns/text`
 
 用途：
 
@@ -347,7 +479,7 @@
 
 返回结构与语音接口保持一致。
 
-### 9.4 `POST /api/profile-agent/session/end`
+### 9.5 `POST /api/profile-agent/session/end`
 
 用途：
 
@@ -376,11 +508,12 @@
 }
 ```
 
-### 9.5 `GET /api/profile-agent/memories`
+### 9.6 `GET /api/profile-agent/memories`
 
 用途：
 
 - 供 `profile` 顶部“记忆”按钮读取整理后的长期记忆内容
+- 默认只返回 `source = profile_agent` 且 `is_visible = true` 的结果
 
 请求参数：
 
@@ -411,7 +544,7 @@
 }
 ```
 
-### 9.6 `GET /api/profile-agent/traits`
+### 9.7 `GET /api/profile-agent/traits`
 
 用途：
 
@@ -446,7 +579,7 @@
 }
 ```
 
-### 9.7 内部调试接口
+### 9.8 内部调试接口
 
 第一版可保留一个内部接口用于后台调试，但不暴露给用户：
 
@@ -496,10 +629,11 @@
 - 保存 turn 数据
 - 创建异步 job
 - 处理 job 并更新 `profile_memory_items`、`profile_persona_traits`
+- 统一接收来自 `profile_agent` 与 `onboarding` 的候选问答材料
 
 ## 11. Qwen 的职责拆分
 
-建议只保留 3 类 prompt 模式。
+建议保留 4 类 prompt 模式。
 
 ### 11.1 `proactive_prompt_generation`
 
@@ -552,6 +686,24 @@
 - 含置信度
 - 可区分“内部候选信号”与“最终对用户展示的记忆”
 
+### 11.4 `onboarding_quick_parse`
+
+用途：
+
+- 在 onboarding 每轮提交后快速抽取当前轮可用的偏好信息
+- 不阻塞问题推进
+
+输入：
+
+- 当前固定问题
+- 用户标准化后的回答文字
+
+输出要求：
+
+- 轻量结构化
+- 能快速更新 persona 草案
+- 与异步长期记忆提炼共享字段语义，但不要求最终成文记忆卡片
+
 ## 12. 记忆提炼策略
 
 长期记忆不直接由单轮原话直接曝光，而采用两段式整理：
@@ -573,6 +725,12 @@
 - 用户可见的长期记忆卡片
 - 系统内部可使用的人格画像槽位
 - 会话级总结
+
+对于 `onboarding` 来源，合并后的结果默认策略为：
+
+- 进入统一画像库
+- 默认不进入 `profile` “记忆”按钮展示层
+- 主要用于 persona 初始化与后续主动提问 personalization
 
 这样可以避免用户随口一句话就被过度定性，同时让“记忆”页呈现得更稳定、更像被理解后的整理结果。
 
@@ -599,6 +757,7 @@ Agent 的系统风格建议固定为：
 - `PROFILE_AGENT_ASR_MODEL`
 - `PROFILE_AGENT_TTS_MODEL`
 - `PROFILE_AGENT_TTS_VOICE`
+- `ONBOARDING_STREAM_CHUNK_MS`
 
 建议默认值：
 
@@ -631,15 +790,21 @@ Agent 的系统风格建议固定为：
 
 ## 16. 阶段划分
 
-### Phase 1：可运行陪伴 Agent 基础版
+### Phase 1：可运行问答与画像基础版
 
 P0：
 
+- 建立 `onboarding_turns`
 - 建立 `profile_agent_sessions`
 - 建立 `profile_agent_turns`
 - 建立 `profile_memory_items`
 - 建立 `profile_persona_traits`
 - 建立 `profile_memory_jobs`
+- 接通 `/api/onboarding/turns/text`
+- 接通 `/api/onboarding/turns/voice`
+- 接通 `/api/onboarding/complete`
+- 支持 onboarding 固定问题流式输出
+- 支持 onboarding 先落库再异步提炼长期记忆
 - 接通 `/session/start`
 - 接通 `/turns/voice`
 - 接通 `/turns/text`
@@ -711,14 +876,22 @@ P1：
 - 将原始 turn、长期记忆、画像 traits 分层建模
 - 让“记忆”页只依赖 `profile_memory_items`
 
+### 风险 5：onboarding 与 profile-agent 两条链路再次分叉
+
+应对：
+
+- 统一采用“输入标准化后先落库，再异步提炼画像”的原则
+- 共享同一套 traits 与 memory jobs
+- 只在展示层按来源过滤
+
 ## 18. 最终结论
 
 本功能的正确落地方式不是从“持续监听”和“系统级语音助手”切入，而是：
 
-1. 先在 `profile` 页面内做一个按钮式的陪伴型短会话 Agent
-2. 由后端统一编排 `ASR -> Qwen -> TTS`
-3. 将一问一答持久化到 SQLite
-4. 通过异步 job 在后台无感整理长期记忆
-5. 将用户可见内容收敛到“记忆卡片 + 人格画像”，而不是原始聊天记录
+1. 让 `onboarding/chat` 和 `profile` 都遵循“输入标准化后先落库”的统一原则
+2. 由后端统一编排 `ASR -> Qwen -> TTS` 与异步画像提炼
+3. 将两类问答都持久化到 SQLite
+4. 通过异步 job 在后台无感整理长期记忆与人格画像
+5. 将用户可见内容收敛到“记忆卡片 + 人格画像”，并在展示层按来源过滤
 
-这条路径最适合当前项目阶段：既能快速让 3D 分身真正“活起来”，又能为后续更复杂的语音陪伴能力保留清晰的升级路线。
+这条路径最适合当前项目阶段：既能快速让 3D 分身真正“活起来”，也能让 onboarding 不再停留在 mock 问答，同时为后续更复杂的语音陪伴和持续用户理解能力保留清晰的升级路线。
