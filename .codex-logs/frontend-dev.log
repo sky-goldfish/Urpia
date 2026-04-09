@@ -1,0 +1,351 @@
+
+> zoopia-frontend@0.1.0 dev
+> vite
+
+Port 3000 is in use, trying another one...
+
+  [32m[1mVITE[22m v6.4.2[39m  [2mready in [0m[1m752[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3001[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.40:[1m3001[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.27.128.1:[1m3001[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m08:27:07[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/map-dom.html[22m
+[2m08:27:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/Temp/scoped_dir55624_583194781/CRX_INSTALL/offscreendocument.html[22m
+[2m08:27:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/ghbmnnjooekpmoecnnnilnnbdlolhkhi/1.102.1_0/offscreendocument.html[22m
+[2m08:27:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/Temp/scoped_dir55624_583194781/CRX_INSTALL/offscreendocument.html[22m
+[2m08:28:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/Temp/scoped_dir55624_618480217/CRX_INSTALL/offscreen.html[22m
+[2m08:28:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/Temp/scoped_dir55624_618480217/CRX_INSTALL/options.html[22m
+[2m08:28:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/Temp/scoped_dir55624_618480217/CRX_INSTALL/popup.html[22m
+[2m08:28:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/aapbdbdomjkkjkaonfhkkikfgjllcleb/2.0.16_0/offscreen.html[22m
+[2m08:28:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/aapbdbdomjkkjkaonfhkkikfgjllcleb/2.0.16_0/options.html[22m
+[2m08:28:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/aapbdbdomjkkjkaonfhkkikfgjllcleb/2.0.16_0/popup.html[22m
+[2m08:28:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/Temp/scoped_dir55624_618480217/CRX_INSTALL/offscreen.html[22m
+[2m08:28:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/Temp/scoped_dir55624_618480217/CRX_INSTALL/options.html[22m
+[2m08:28:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extensions/Temp/scoped_dir55624_618480217/CRX_INSTALL/popup.html[22m
+[2m08:31:53[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css, /src/views/explore/ExploreMap.vue?vue&type=style&index=0&scoped=fd4eb3df&lang.css[22m
+[2m08:32:09[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m08:32:09[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m08:32:24[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m08:32:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m08:34:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/index.ts[22m
+[2m08:34:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/map/AmapContainer.vue[22m
+[2m08:34:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/AmapEntry.vue[22m
+[2m08:37:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css[22m
+[2m08:39:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/assets/styles/main.css[22m
+[2m08:42:14[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/onboarding/useOnboardingChat.ts[22m
+[2m08:42:14[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/assets/styles/main.css[22m
+[2m08:42:14[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/assets/styles/main.css[22m
+[2m08:43:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css, /src/views/profile/PersonaStatus.vue?vue&type=style&index=0&scoped=b7b5cab2&lang.css[22m
+[2m08:46:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/revealFlow.config.ts[22m
+[2m08:46:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css, /src/views/profile/PersonaStatus.vue?vue&type=style&index=0&scoped=b7b5cab2&lang.css[22m
+[2m08:46:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/assets/styles/main.css, /src/views/social/SocialMatchChat.vue?vue&type=style&index=0&scoped=54ed0b2c&lang.css[22m
+[2m08:48:17[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/素材压缩/boy1.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/素材压缩/boy2.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/素材压缩/boy3.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/素材压缩/boy4.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/素材压缩/boy5.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/素材压缩/girl2.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/素材压缩/girl1.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/素材压缩/girl3.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/素材压缩/girl4.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/素材压缩/girl5.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/__MACOSX/素材压缩/._boy1.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/__MACOSX/素材压缩/._boy2.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/__MACOSX/素材压缩/._boy3.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/__MACOSX/素材压缩/._boy4.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/__MACOSX/素材压缩/._boy5.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/__MACOSX/素材压缩/._girl1.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/__MACOSX/素材压缩/._girl3.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/__MACOSX/素材压缩/._girl2.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/__MACOSX/素材压缩/._girl4.glb[22m
+[2m08:48:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/__MACOSX/素材压缩/._girl5.glb[22m
+[2m08:50:30[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css[22m
+[2m08:50:51[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m08:50:56[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/profile/ProfileAvatar3D.vue[22m
+[2m08:56:00[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css[22m
+[2m09:00:55[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ new dependencies optimized: [33mthree, three/examples/jsm/loaders/GLTFLoader.js[32m[39m
+[2m09:00:55[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ optimized dependencies changed. reloading[39m
+[2m09:01:42[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css[22m
+[2m09:01:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ new dependencies optimized: [33mthree/examples/jsm/loaders/DRACOLoader.js[32m[39m
+[2m09:01:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ optimized dependencies changed. reloading[39m
+[2m09:03:32[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css[22m
+[2m09:03:37[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/profile/ProfileAvatar3D.vue?vue&type=style&index=0&scoped=ac315db2&lang.css[22m
+[2m09:04:49[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css, /src/components/profile/ProfileAvatar3D.vue?vue&type=style&index=0&scoped=ac315db2&lang.css[22m
+[2m09:06:41[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css, /src/components/profile/ProfileAvatar3D.vue?vue&type=style&index=0&scoped=ac315db2&lang.css[22m
+[2m09:06:41[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css, /src/views/profile/PersonaStatus.vue?vue&type=style&index=0&scoped=b7b5cab2&lang.css[22m
+[2m09:08:56[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css[22m
+[2m09:08:56[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css[22m
+[2m09:09:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css[22m
+[2m09:13:21[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css[22m
+[2m09:14:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css[22m
+[2m09:16:10[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css[22m
+[2m09:18:04[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/CameraGuide.vue, /src/assets/styles/main.css[22m
+[2m09:21:26[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/onboarding/CameraGuide.vue, /src/views/onboarding/AiGuideChat.vue, /src/views/onboarding/Generating.vue, /src/views/onboarding/ConfirmPersona.vue[22m
+[2m09:21:26[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\ui\OnboardingStepHeader.vue, /src/assets/styles/main.css[22m
+[2m09:21:26[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css[22m
+[2m09:21:26[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:25:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-04.glb[22m
+[2m09:25:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-04.glb[22m
+[2m09:25:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-01.glb[22m
+[2m09:25:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-02.glb[22m
+[2m09:25:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-01.glb[22m
+[2m09:25:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-02.glb[22m
+[2m09:25:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-03.glb[22m
+[2m09:25:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-05.glb[22m
+[2m09:25:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-05.glb[22m
+[2m09:27:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/onboarding/CameraGuide.vue, /src/views/onboarding/AiGuideChat.vue, /src/views/onboarding/Generating.vue, /src/views/onboarding/ConfirmPersona.vue[22m
+[2m09:27:37[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/profile/PersonaStatus.vue[22m
+[2m09:28:22[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css[22m
+[2m09:28:39[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/CameraGuide.vue, /src/assets/styles/main.css[22m
+[2m09:28:53[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/Generating.vue, /src/assets/styles/main.css[22m
+[2m09:29:19[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:29:27[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/onboarding/AiGuideChat.vue[22m
+[2m09:29:34[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/explore/ExploreMap.vue, /@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue[22m
+[2m09:29:41[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css[22m
+[2m09:30:04[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:30:10[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:36:20[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css[22m
+[2m09:36:30[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:37:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/CameraGuide.vue, /src/assets/styles/main.css[22m
+[2m09:37:34[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/Generating.vue, /src/assets/styles/main.css[22m
+[2m09:37:49[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:38:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css[22m
+[2m09:40:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/onboarding/CameraGuide.vue, /src/views/onboarding/AiGuideChat.vue, /src/views/onboarding/Generating.vue, /src/views/onboarding/ConfirmPersona.vue[22m
+[2m09:41:01[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/CameraGuide.vue, /src/assets/styles/main.css[22m
+[2m09:41:09[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:41:52[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/CameraGuide.vue?vue&type=style&index=0&scoped=e85e91e5&lang.css[22m
+[2m09:43:20[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/onboarding/CameraGuide.vue, /src/views/onboarding/AiGuideChat.vue, /src/views/onboarding/Generating.vue, /src/views/onboarding/ConfirmPersona.vue[22m
+[2m09:43:27[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/CameraGuide.vue, /src/assets/styles/main.css[22m
+[2m09:43:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:43:54[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/index.ts[22m
+[2m09:45:32[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:45:51[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:46:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css[22m
+[2m09:47:14[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/CameraGuide.vue, /src/assets/styles/main.css, /src/views/onboarding/CameraGuide.vue?vue&type=style&index=0&scoped=e85e91e5&lang.css[22m
+[2m09:49:51[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m09:57:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue, /src/assets/styles/main.css, /src/views/onboarding/AiGuideChat.vue?vue&type=style&index=0&scoped=407330ea&lang.css[22m
+[2m09:58:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue, /src/assets/styles/main.css, /src/views/onboarding/AiGuideChat.vue?vue&type=style&index=0&scoped=407330ea&lang.css[22m
+[2m09:58:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue, /src/assets/styles/main.css[22m
+[2m10:01:10[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue, /src/assets/styles/main.css, /src/views/onboarding/AiGuideChat.vue?vue&type=style&index=0&scoped=407330ea&lang.css[22m
+[2m10:02:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue?vue&type=style&index=0&scoped=407330ea&lang.css[22m
+[2m10:04:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue?vue&type=style&index=0&scoped=407330ea&lang.css[22m
+[2m10:05:33[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue, /src/assets/styles/main.css, /src/views/onboarding/AiGuideChat.vue?vue&type=style&index=0&scoped=407330ea&lang.css[22m
+[2m10:05:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue?vue&type=style&index=0&scoped=407330ea&lang.css[22m
+[2m10:07:11[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue, /src/assets/styles/main.css, /src/views/onboarding/AiGuideChat.vue?vue&type=style&index=0&scoped=407330ea&lang.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/explore/ExploreMap.vue, /@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/index.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m changed tsconfig file detected: D:/CodeWorkSpace/xiaohongshu/server/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/superpowers/plans/2026-04-09-handdrawn-social-redesign.md[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/superpowers/plans/2026-04-09-xiaohongshu-mvp-implementation.md[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/draco/draco_decoder.js[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/draco/draco_wasm_wrapper.js[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-01.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-02.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-03.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-04.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-05.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-01.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-02.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-03.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-04.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-05.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/badminton-court-interior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/gym-interior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/hema-exterior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/gym-alt-interior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/hema-mr-interior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/kfc-exterior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/kfc-interior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/seven-eleven-interior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/mcdonalds-interior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/naixue-interior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/blue-frog-exterior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/coooon-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/coucou-hotpot-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/gaga-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/hema-mr-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/heytea-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/golao-guan-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/island-bookstore-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/jixiang-wonton-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/lefit-fitness-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/mcdonalds-exterior.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/mixue-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/seven-eleven-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/luckin-coffee-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/muji-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/naixue-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/pop-mart-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/saizeriya-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/starbucks-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/peets-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/sushiexpress-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/xiaomi-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/yer-shari-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/zuotingyouyuan-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/wagas-board.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/prisma/migrations/20260408224956_init/migration.sql[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/package.json[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tsconfig.json[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/app.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/index.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/routes/discovery.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/routes/me.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/routes/matches.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/routes/onboarding.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/routes/pois.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/lib/errors.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/lib/rules.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/lib/prisma.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tests/health.test.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tests/explore-social.test.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tests/me.test.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tests/onboarding.test.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tests/prisma-schema.test.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/prisma/migrations/migration_lock.toml[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/prisma/schema.prisma[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css, /src/components/profile/ProfileAvatar3D.vue?vue&type=style&index=0&scoped=ac315db2&lang.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\ui\ActivityDots.vue, /src/assets/styles/main.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/prisma/seed.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\ui\OnboardingStepHeader.vue, /src/assets/styles/main.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/PageHeaderBar.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\ui\CenteredOverlayCard.vue, /src/assets/styles/main.css, /src/components/ui/CenteredOverlayCard.vue?vue&type=style&index=0&scoped=88ef5db9&lang.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/InfoSectionCard.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/RevealFlowLayout.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/onboarding/CameraGuide.vue, /src/views/onboarding/AiGuideChat.vue, /src/views/onboarding/Generating.vue, /src/views/onboarding/ConfirmPersona.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/profile/matchHistory.config.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/social/matchReport.config.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/boy1.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/boy2.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/boy3.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/boy4.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/boy5.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/girl1.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/girl2.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/girl3.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/girl4.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/素材压缩/girl5.glb[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/exploreMap.config.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/revealFlow.config.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/poiInfo.config.ts[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/onboarding/AiGuideChat.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/onboarding/Generating.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/profile/PersonaStatus.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/profile/PersonaStatus.vue, /src/views/onboarding/ConfirmPersona.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/assets/styles/main.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/CameraGuide.vue, /src/assets/styles/main.css, /src/views/onboarding/CameraGuide.vue?vue&type=style&index=0&scoped=e85e91e5&lang.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/map/AmapContainer.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/AmapEntry.vue[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/CameraGuide.vue, /src/assets/styles/main.css, /src/views/onboarding/CameraGuide.vue?vue&type=style&index=0&scoped=e85e91e5&lang.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue, /src/assets/styles/main.css, /src/views/onboarding/AiGuideChat.vue?vue&type=style&index=0&scoped=407330ea&lang.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css, /src/views/explore/ExploreMap.vue?vue&type=style&index=0&scoped=fd4eb3df&lang.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/Generating.vue, /src/assets/styles/main.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css, /src/views/onboarding/ConfirmPersona.vue?vue&type=style&index=0&scoped=7b6081ad&lang.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/assets/styles/main.css, /src/views/social/SocialMatchChat.vue?vue&type=style&index=0&scoped=54ed0b2c&lang.css[22m
+[2m10:10:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css, /src/views/profile/PersonaStatus.vue?vue&type=style&index=0&scoped=b7b5cab2&lang.css[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/superpowers/plans/2026-04-09-handdrawn-social-redesign.md[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/superpowers/plans/2026-04-09-xiaohongshu-mvp-implementation.md[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/draco/draco_wasm_wrapper.js[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/draco/draco_decoder.js[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-01.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/map/AmapContainer.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/AmapEntry.vue[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-02.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-03.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-04.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-05.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/boy-05.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-01.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-02.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-03.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-04.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/profile-avatars/girl-05.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/badminton-court-interior.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/gym-alt-interior.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/gym-interior.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/hema-exterior.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/hema-mr-interior.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/kfc-exterior.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/kfc-interior.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/mcdonalds-interior.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/naixue-interior.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/seven-eleven-interior.glb[22m
+[2m10:10:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-scenes/seven-eleven-interior.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/blue-frog-exterior.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/blue-frog-exterior.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/coooon-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/coucou-hotpot-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/gaga-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/golao-guan-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/hema-mr-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/heytea-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/island-bookstore-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/jixiang-wonton-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/lefit-fitness-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/luckin-coffee-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/mcdonalds-exterior.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/mixue-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/muji-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/naixue-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/peets-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/pop-mart-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/saizeriya-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/seven-eleven-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/starbucks-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/sushiexpress-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/wagas-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/xiaomi-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/yer-shari-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpublic/models/store-signboards/zuotingyouyuan-board.glb[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/package.json[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/prisma/seed.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/prisma/schema.prisma[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/lib/mockData.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/index.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m changed tsconfig file detected: D:/CodeWorkSpace/xiaohongshu/server/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tsconfig.json[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\ui\ActivityDots.vue, /src/assets/styles/main.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\ui\CenteredOverlayCard.vue, /src/assets/styles/main.css, /src/components/ui/CenteredOverlayCard.vue?vue&type=style&index=0&scoped=88ef5db9&lang.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/InfoSectionCard.vue[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\ui\OnboardingStepHeader.vue, /src/assets/styles/main.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/PageHeaderBar.vue[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/exploreMap.config.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/poiInfo.config.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/revealFlow.config.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/RevealFlowLayout.vue[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/onboarding/Generating.vue, /src/views/onboarding/ConfirmPersona.vue[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/onboarding/useOnboardingChat.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/onboarding/Generating.vue[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/profile/matchHistory.config.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/profile/PersonaStatus.vue[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /src/views/profile/PersonaStatus.vue, /src/views/onboarding/ConfirmPersona.vue[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/social/matchReport.config.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css, /@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/assets/styles/main.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue, /src/assets/styles/main.css, /src/views/onboarding/AiGuideChat.vue?vue&type=style&index=0&scoped=407330ea&lang.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/prisma/migrations/migration_lock.toml[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/app.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/src/index.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/CameraGuide.vue, /src/assets/styles/main.css, /src/views/onboarding/CameraGuide.vue?vue&type=style&index=0&scoped=e85e91e5&lang.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/assets/styles/main.css, /src/views/social/SocialMatchChat.vue?vue&type=style&index=0&scoped=54ed0b2c&lang.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/assets/styles/main.css, /src/views/profile/PersonaStatus.vue?vue&type=style&index=0&scoped=b7b5cab2&lang.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/Generating.vue, /src/assets/styles/main.css[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tests/explore-social.test.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tests/health.test.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tests/me.test.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tests/onboarding.test.ts[22m
+[2m10:10:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mserver/tests/prisma-schema.test.ts[22m
+[2m10:10:37[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\profile\ProfileAvatar3D.vue, /src/assets/styles/main.css, /src/components/profile/ProfileAvatar3D.vue?vue&type=style&index=0&scoped=ac315db2&lang.css[22m
+[2m10:39:19[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mREADME.md[22m
+[2m10:39:35[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mREADME.md[22m
+[2m10:41:21[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mREADME.md[22m
+[2m10:41:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mREADME.md[22m

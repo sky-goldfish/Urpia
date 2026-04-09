@@ -1,0 +1,106 @@
+
+> zoopia-frontend@0.1.0 dev
+> vite --host 127.0.0.1 --port 5174
+
+
+  [32m[1mVITE[22m v6.4.2[39m  [2mready in [0m[1m525[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m5174[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/index.ts[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/main.ts[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/vite-env.d.ts[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/superpowers/plans/2026-04-08-amap-migration-implementation.md[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/superpowers/specs/2026-04-08-amap-migration-design.md[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/CapsuleDemo.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/capsule_3d.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/lightbutton.md[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/spiritbubble.md[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/wave.md[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/wavecapsule.md[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/effects/Capsule3D.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/map/AmapContainer.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/map/Map3DEffects.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/map/MapContainer.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/MoodColorSelector.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/config/mapConfig.ts[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/lib/amapLoader.ts[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/stores/moodStore.ts[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/stores/poiStore.ts[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/types/amap.d.ts[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/effects/SpiritBubbleDemo.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/AmapEntry.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/poi/indoor/components/AssetPreloader.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/poi/indoor/components/IndoorNavigation.vue[22m
+[2m07:14:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/poi/indoor/components/IndoorScene.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/superpowers/plans/2026-04-08-amap-migration-implementation.md[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/superpowers/specs/2026-04-08-amap-migration-design.md[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/CapsuleDemo.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/capsule_3d.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/lightbutton.md[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/spiritbubble.md[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/wave.md[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/assets/styles/wavecapsule.md[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/effects/Capsule3D.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/map/AmapContainer.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/map/Map3DEffects.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/map/MapContainer.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/MoodColorSelector.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/config/mapConfig.ts[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/lib/amapLoader.ts[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/main.ts[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/index.ts[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/stores/moodStore.ts[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/stores/poiStore.ts[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/types/amap.d.ts[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/effects/SpiritBubbleDemo.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/AmapEntry.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/poi/indoor/components/AssetPreloader.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/poi/indoor/components/IndoorNavigation.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/poi/indoor/components/IndoorScene.vue[22m
+[2m07:14:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/vite-env.d.ts[22m
+[2m07:34:32[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m07:39:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/__tests__/TabBar.spec.ts[22m
+[2m07:39:36[22m [36m[1m[vite][22m[39m [90m[2m([2m07:46:53[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css[22m
+[2m07:47:08[22m [36m[1m[vite][22m[39m changed tsconfig file detected: D:/CodeWorkSpace/xiaohongshu/server/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+[2m07:47:08[22m [36m[1m[vite][22m[39m changed tsconfig file detected: D:/CodeWorkSpace/xiaohongshu/server/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+[2m07:47:10[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m07:47:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css[22m
+[2m07:47:52[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/TabBar.vue[22m
+[2m07:48:06[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/TabBar.vue[22m
+[2m07:49:33[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/social/SocialMatchChat.vue[22m
+[2m07:50:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/social/SocialMatchChat.vue[22m
+[2m08:13:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/social/SocialMatchChat.vue[22m
+[2m08:14:00[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/social/SocialMatchChat.vue[22m
+[2m08:16:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/social/SocialMatchChat.vue[22m
+-reload to ensure TypeScript is compiled with updated config values.
+[2m07:47:10[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m07:47:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/assets/styles/main.css[22m
+[2m07:47:52[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\ui\TabBar.vue[22m
+[2m07:48:06[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\components\ui\TabBar.vue[22m
+[2m07:48:09[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/views/explore/ExploreMap.vue?vue&type=style&index=0&scoped=fd4eb3df&lang.css[22m
+[2m07:49:15[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/views/explore/ExploreMap.vue?vue&type=style&index=0&scoped=fd4eb3df&lang.css[22m
+[2m07:49:21[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/social/SocialPage.vue[22m
+[2m07:49:31[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/social/SocialPage.vue[22m
+[2m07:49:33[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/views/social/SocialMatchChat.vue?vue&type=style&index=0&scoped=54ed0b2c&lang.css[22m
+[2m07:50:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/views/social/SocialMatchChat.vue?vue&type=style&index=0&scoped=54ed0b2c&lang.css[22m
+[2m07:50:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/views/profile/PersonaStatus.vue?vue&type=style&index=0&scoped=b7b5cab2&lang.css[22m
+[2m07:51:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue, /src/views/profile/PersonaStatus.vue?vue&type=style&index=0&scoped=b7b5cab2&lang.css[22m
+[2m07:51:52[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue[22m
+[2m07:51:59[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/__tests__/TabBar.spec.ts[22m
+[2m07:52:09[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/__tests__/ExploreMap.spec.ts[22m
+[2m07:52:34[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/ui/__tests__/TabBar.spec.ts[22m
+[2m07:52:39[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/__tests__/ExploreMap.spec.ts[22m
+[2m08:09:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/AiGuideChat.vue[22m
+[2m08:09:41[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue[22m
+[2m08:09:54[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue[22m
+[2m08:10:10[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue[22m
+[2m08:10:20[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue[22m
+[2m08:13:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/social/SocialPage.vue[22m
+[2m08:13:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue, /src/views/social/SocialMatchChat.vue?vue&type=style&index=0&scoped=54ed0b2c&lang.css[22m
+[2m08:14:00[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue[22m
+[2m08:15:03[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/profile/PersonaStatus.vue[22m
+[2m08:16:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\xiaohongshu\src\views\social\SocialMatchChat.vue[22m
+[2m08:16:50[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/views/explore/__tests__/ExploreMap.spec.ts[22m
