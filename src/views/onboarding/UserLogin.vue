@@ -128,27 +128,32 @@ onMounted(() => {
 
 <style scoped>
 .device-shell {
-  min-height: 100vh;
-  min-height: 100dvh;
+  position: fixed;
+  inset: 0;
   width: 100vw;
   width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
   background: linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 100%);
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .page-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   width: 100%;
   max-width: min(100%, 480px);
   margin: 0 auto;
   padding: calc(env(safe-area-inset-top) + 60px) 32px calc(env(safe-area-inset-bottom) + 40px);
   box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Logo 区域 */

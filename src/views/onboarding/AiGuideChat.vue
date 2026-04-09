@@ -176,10 +176,12 @@ const {
 
 <style scoped>
 .chat-stage {
-  min-height: 100vh;
-  min-height: 100dvh;
+  position: fixed;
+  inset: 0;
   width: 100vw;
   width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -191,7 +193,7 @@ const {
   background-position: center;
   padding: 24px 16px;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* iPhone 外壳样式 - 已注释掉
@@ -216,8 +218,10 @@ const {
 
 .iphone-screen {
   position: relative;
-  min-height: calc(100dvh - 48px);
-  max-height: none;
+  height: calc(100vh - 48px);
+  height: calc(100dvh - 48px);
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
   overflow: hidden;
   border-radius: 0;
   background: #ededed;
