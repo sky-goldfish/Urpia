@@ -61,11 +61,27 @@ export const writeStoredProfileModelUrl = (modelUrl: string) => {
   window.localStorage.setItem(PROFILE_MODEL_STORAGE_KEY, normalizeModelUrl(modelUrl))
 }
 
+const USER_INFO_KEY = 'urpia:user-info'
+
 export const readStoredProfileNickname = () => {
   if (typeof window === 'undefined') {
     return FALLBACK_NICKNAME
   }
 
+  // 优先从 Login 页面保存的 user-info 中读取昵称
+  const userInfoStr = window.localStorage.getItem(USER_INFO_KEY)
+  if (userInfoStr) {
+    try {
+      const userInfo = JSON.parse(userInfoStr)
+      if (userInfo.nickname) {
+        return userInfo.nickname
+      }
+    } catch (e) {
+      console.error('[profileModel] failed to parse user info', e)
+    }
+  }
+
+  // 兼容旧数据：从 profile 自己的 storage key 读取
   return window.localStorage.getItem(PROFILE_NICKNAME_STORAGE_KEY) || FALLBACK_NICKNAME
 }
 

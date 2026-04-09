@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import TabBar from '../../components/ui/TabBar.vue'
-import MapContainer from '../../components/map/MapContainer.vue'
+import UnifiedMapContainer from '../../components/map/UnifiedMapContainer.vue'
 import { useExploreMap } from './useExploreMap'
 import { readStoredProfileAvatarImageUrl, readStoredProfileModelUrl } from '../profile/profileModel.config'
 import { storeCatalog, type StoreCatalogItem } from '../../config/storeCatalog'
@@ -12,6 +12,12 @@ const {
   locateUser,
 } = useExploreMap()
 const router = useRouter()
+
+// 地图切换功能 - 默认使用高德地图
+const currentMapProvider = ref<'mapbox' | 'amap'>('amap')
+const toggleMapProvider = () => {
+  currentMapProvider.value = currentMapProvider.value === 'amap' ? 'mapbox' : 'amap'
+}
 
 const joystickRef = ref<HTMLDivElement | null>(null)
 const joystickActive = ref(false)
@@ -129,7 +135,7 @@ const closeStoreStory = () => {
 <template>
   <main class="device-shell overflow-visible">
     <div class="relative h-[100dvh] w-full overflow-hidden">
-      <MapContainer
+      <UnifiedMapContainer
         ref="mapRef"
         class="absolute inset-0 z-0"
         :markers="[]"
@@ -138,14 +144,22 @@ const closeStoreStory = () => {
         :enable-avatar="true"
         :avatar-model-url="avatarModelUrl"
         :avatar-image-url="avatarImageUrl"
+        :force-provider="currentMapProvider"
         @nearest-premium-change="activeEnterStore = $event"
         @store-locator-click="openStoreStory"
       />
 
       <div class="pointer-events-none absolute inset-x-0 top-0 z-20 bg-gradient-to-b from-white/90 via-white/45 to-transparent px-4 pb-10 pt-[calc(env(safe-area-inset-top)+16px)]">
         <div class="pointer-events-auto flex items-start justify-between gap-3">
-          <div class="max-w-[220px]">
-            <p class="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#8E8E93]">Explore</p>
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <p class="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#8E8E93]">Explore</p>
+              <!-- 地图切换按钮 - 在Explore右侧 -->
+              <div class="map-switcher" @click="toggleMapProvider">
+                <div class="switcher-indicator" :class="currentMapProvider"></div>
+                <span class="switcher-label">{{ currentMapProvider === 'amap' ? '高德' : 'Mapbox' }}</span>
+              </div>
+            </div>
             <h1 class="mt-1 text-[24px] font-semibold text-[#1D1D1F]" style="letter-spacing: -0.5px;">城市情绪地图</h1>
           </div>
           <div class="flex items-start gap-3">
@@ -249,5 +263,47 @@ const closeStoreStory = () => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* 地图切换按钮 */
+.map-switcher {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 4px 10px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.map-switcher:active {
+  transform: scale(0.95);
+}
+
+.switcher-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.switcher-indicator.mapbox {
+  background-color: #4264fb;
+}
+
+.switcher-indicator.amap {
+  background-color: #00bfff;
+}
+
+.switcher-label {
+  color: #333;
+  font-size: 11px;
+  white-space: nowrap;
 }
 </style>

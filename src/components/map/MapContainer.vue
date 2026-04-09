@@ -108,11 +108,11 @@ const STORE_SCALE_ADJUST = 44
 const AVATAR_MOVE_SPEED = 52.5
 const NPC_MOVE_SPEED = 12
 const AVATAR_TURN_SPEED = 0.18
-const STORE_MARKER_MIN_ZOOM = 11
-const STORE_MARKER_MAX_VISIBLE = 10
-const STORE_MARKER_PADDING_RATIO = 0.22
+const STORE_MARKER_MIN_ZOOM = 14
+const STORE_MARKER_MAX_VISIBLE = 6
+const STORE_MARKER_PADDING_RATIO = 0.35
 const STORE_SYNC_DEBOUNCE_MS = 90
-const OVERLAY_BASE_SCALE = 68
+const OVERLAY_BASE_SCALE = 60
 const MAP_DEBUG_NAMESPACE = '[MapContainer]'
 const DEFAULT_AVATAR_INPUT: AvatarInput = { x: 0, y: 0 }
 
@@ -402,14 +402,17 @@ const fitStoreModel = (root: THREE.Object3D, store: StoreCatalogItem) => {
   const center = box.getCenter(new THREE.Vector3())
   const size = box.getSize(new THREE.Vector3())
   const maxAxis = Math.max(size.x, size.y, size.z)
-  const fitScale = maxAxis > 0 ? (6.4 / maxAxis) * (store.mapScale ?? 1.4) : 1.4
+  // 缩小到原来的25%：基础缩放从6.4改为1.6，默认mapScale从1.4改为0.35
+  const fitScale = maxAxis > 0 ? (1.6 / maxAxis) * (store.mapScale ?? 0.35) : 0.35
 
   root.position.sub(center)
   root.scale.setScalar(fitScale)
 
   const fittedBox = new THREE.Box3().setFromObject(root)
-  root.position.y -= fittedBox.min.y + 0.22
-  root.rotation.y = store.mapRotationY ?? 0
+  // 将建筑物向上移动，使其显示在星标上方（增加Y轴偏移量）
+  root.position.y -= fittedBox.min.y
+  // 调整模型旋转：默认 facing camera (正面)，可通过 mapRotationY 覆盖
+  root.rotation.y = store.mapRotationY ?? - Math.PI / 2
 }
 
 const createStoreLayer = (mapInstance: MapboxMapLike): StoreLayer => {
@@ -455,6 +458,32 @@ const createStoreLayer = (mapInstance: MapboxMapLike): StoreLayer => {
     try {
       const gltf = await gltfLoader.loadAsync(record.modelUrl)
       record.model = gltf.scene
+      
+      // 优化模型材质以减少锯齿和方块化
+      record.model.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          // 启用阴影
+          child.castShadow = true
+          child.receiveShadow = true
+          
+          // 优化材质
+          if (child.material) {
+            // 如果材质是数组，遍历所有材质
+            const materials = Array.isArray(child.material) ? child.material : [child.material]
+            materials.forEach((mat) => {
+              // 启用各向异性过滤以提高纹理质量
+              if (mat.map) {
+                mat.map.anisotropy = renderer.capabilities.getMaxAnisotropy()
+                mat.map.minFilter = THREE.LinearMipmapLinearFilter
+                mat.map.magFilter = THREE.LinearFilter
+              }
+              // 启用平滑着色
+              mat.flatShading = false
+            })
+          }
+        }
+      })
+      
       fitStoreModel(record.model, record.store)
       record.root = new THREE.Group()
       record.root.matrixAutoUpdate = false
@@ -545,9 +574,16 @@ const createStoreLayer = (mapInstance: MapboxMapLike): StoreLayer => {
         canvas: mapInstance.getCanvas(),
         context: gl,
         antialias: true,
+        powerPreference: 'high-performance',
       })
       renderer.autoClear = false
       renderer.outputColorSpace = THREE.SRGBColorSpace
+      
+      // 启用阴影和更好的渲染质量
+      renderer.shadowMap.enabled = true
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap
+      renderer.toneMapping = THREE.ACESFilmicToneMapping
+      renderer.toneMappingExposure = 1.0
     },
 
     onRemove() {
@@ -560,11 +596,18 @@ const createStoreLayer = (mapInstance: MapboxMapLike): StoreLayer => {
     render(_gl, matrix) {
       camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix)
 
+      // 获取当前地图缩放级别，用于动态调整建筑物大小
+      const currentZoom = mapInstance.getZoom?.() ?? 14
+      // 调整缩放比例关系 - 与人物模型保持一致
+      const zoomScale = Math.pow(1.5, currentZoom - 14)
+
       storeRecords.forEach((record) => {
         if (!record.root) return
 
         const translation = new THREE.Matrix4().makeTranslation(record.x, record.y, record.z)
-        const scaling = new THREE.Matrix4().makeScale(record.mercatorScale, -record.mercatorScale, record.mercatorScale)
+        // 应用基于地图缩放的动态缩放
+        const dynamicScale = record.mercatorScale * zoomScale
+        const scaling = new THREE.Matrix4().makeScale(dynamicScale, -dynamicScale, dynamicScale)
         const baseRotation = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(Math.PI / 2, 0, 0, 'XYZ'))
 
         record.root.matrix.copy(translation).multiply(scaling).multiply(baseRotation)
@@ -660,7 +703,8 @@ const fitAvatarModel = (root: THREE.Object3D) => {
   const center = box.getCenter(new THREE.Vector3())
   const size = box.getSize(new THREE.Vector3())
   const maxAxis = Math.max(size.x, size.y, size.z)
-  const fitScale = maxAxis > 0 ? 4.2 / maxAxis : 1
+  // 调整模型尺寸 - 增加到原来的3倍
+  const fitScale = maxAxis > 0 ? 1.4 / maxAxis : 0.3
 
   root.position.sub(center)
   root.scale.setScalar(fitScale)
@@ -939,7 +983,8 @@ const renderOverlayScene = (dt: number) => {
   const width = avatarOverlayHost.value.clientWidth
   const height = avatarOverlayHost.value.clientHeight
   const zoom = map.value.getZoom?.() ?? props.zoom
-  const zoomScale = Math.pow(2, zoom - 14)
+  // 调整缩放比例关系 - 使用更平缓的指数使模型随缩放变化更自然
+  const zoomScale = Math.pow(1.5, zoom - 14)
 
   overlayCharacters.forEach((character) => {
     character.mixer?.update(dt)
@@ -958,12 +1003,25 @@ const renderOverlayScene = (dt: number) => {
       screenPoint.y > -320 &&
       screenPoint.y < height + 220
 
-    character.group.position.set(screenPoint.x - width / 2, height / 2 - screenPoint.y, 0)
+    // 统一坐标：GLB模型和头像标记都基于屏幕坐标系
+    // GLB模型位置（Three.js坐标系：原点在屏幕中心，Y轴向上）
+    const modelScreenX = screenPoint.x
+    const modelScreenY = screenPoint.y - character.markerSize / 2 // 模型中心与头像中心对齐
+    
+    // 转换为Three.js坐标
+    character.group.position.set(
+      modelScreenX - width / 2, 
+      height / 2 - modelScreenY, 
+      0
+    )
     character.group.rotation.set(0, character.currentYaw, 0)
     character.group.scale.setScalar(scale)
 
+    // 头像标记位置（CSS坐标系：原点在左上角，Y轴向下）
     character.markerElement.style.display = character.group.visible ? 'flex' : 'none'
-    character.markerElement.style.transform = `translate(${screenPoint.x - character.markerSize / 2}px, ${screenPoint.y - character.markerSize - 26}px)`
+    const markerX = screenPoint.x - character.markerSize / 2
+    const markerY = screenPoint.y - character.markerSize / 2
+    character.markerElement.style.transform = `translate(${markerX}px, ${markerY}px)`
   })
 
   overlayRenderer.clear()
@@ -1147,6 +1205,10 @@ const initMap = async () => {
     assertMapConfig()
     mapboxgl.accessToken = MAP_CONFIG.MAPBOX_TOKEN
 
+    // 禁用 Mapbox 遥测/事件统计功能
+    // @ts-ignore
+    mapboxgl.config = { ...mapboxgl.config, EVENTS_URL: null }
+
     const mapInstance = new mapboxgl.Map({
       container: mapCanvasHost.value,
       style: MAP_CONFIG.MAPBOX_STYLE,
@@ -1156,6 +1218,8 @@ const initMap = async () => {
       bearing: MAP_CONFIG.DEFAULT_BEARING,
       antialias: true,
       attributionControl: false,
+      maxZoom: 22,
+      minZoom: 3,
     })
 
     const safeMap = mapInstance as MapboxMapLike

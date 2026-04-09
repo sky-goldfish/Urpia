@@ -1,3 +1,15 @@
+<script setup lang="ts">
+// Earth loader component
+</script>
+
+<template>
+  <div class="earth">
+    <div class="earth-loader">
+      <slot></slot>
+    </div>
+  </div>
+</template>
+
 <style scoped>
   .earth-loader {
     --watercolor: #3344c1;

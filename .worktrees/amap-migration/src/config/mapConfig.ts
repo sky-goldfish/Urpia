@@ -2,7 +2,7 @@ export const MAP_CONFIG = {
   AMAP_KEY: import.meta.env.VITE_AMAP_KEY || '',
   AMAP_SECURITY_JS_CODE: import.meta.env.VITE_AMAP_SECURITY_JS_CODE || '',
   DEFAULT_CENTER: [121.4737, 31.2304] as [number, number],
-  DEFAULT_ZOOM: 14,
+  DEFAULT_ZOOM: 10,
   DEFAULT_VIEW_MODE: '2D' as const,
 }
 
