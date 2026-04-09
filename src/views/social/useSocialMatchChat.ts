@@ -1,10 +1,10 @@
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { matchChat } from '../../lib/mockData'
+import { getSocialMatchChatMessages } from '../../data/socialData'
 import { socialParticipants } from './social.config'
 
 export const useSocialMatchChat = () => {
   const chatEndRef = ref<HTMLDivElement | null>(null)
-  const messages = ref(matchChat)
+  const messages = ref(getSocialMatchChatMessages())
   const isTyping = ref(true)
   const progress = ref(1)
   const currentSpeaker = ref<'match' | 'user'>('match')

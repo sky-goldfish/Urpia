@@ -1,0 +1,1 @@
+import{p as e}from"./mockData-DHs1uqvi.js";const n=s=>({...s,moods:[...s.moods],summaryLine:`${s.district} · ${s.distance} · ${s.occupancy}`,searchIndex:[s.name,s.vibe,s.district,...s.moods].join(" ").toLowerCase()}),r=()=>e.map(n),c=s=>{const o=r();return o.find(t=>t.id===s)??o[0]??null};export{c as a,r as g};

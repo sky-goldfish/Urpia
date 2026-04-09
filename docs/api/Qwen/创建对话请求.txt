@@ -1,0 +1,287 @@
+创建对话请求（OpenAI）
+Creates a model response for the given chat conversation.
+
+POST
+/
+chat
+/
+completions
+
+
+curl --request POST \
+  --url https://api.siliconflow.cn/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "model": "Pro/zai-org/GLM-4.7",
+    "messages": [
+      {"role": "system", "content": "你是一个有用的助手"},
+      {"role": "user", "content": "你好，请介绍一下你自己"}
+    ]
+  }'
+
+
+{
+  "id": "019bdaa55225ef854b320e9b838f77ce",
+  "object": "chat.completion",
+  "created": 1768899826,
+  "model": "Pro/zai-org/GLM-4.7",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "你好！...",
+        "reasoning_content": "..."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 15,
+    "completion_tokens": 1540,
+    "total_tokens": 1555,
+    "completion_tokens_details": {
+      "reasoning_tokens": 1190
+    },
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 15
+  },
+  "system_fingerprint": ""
+}
+Authorizations
+​
+Authorization
+stringheaderrequired
+Use the following format for authentication: Bearer
+
+Body
+application/json
+LLM
+VLM
+​
+model
+stringrequired
+Corresponding Model Name. We periodically update our models to enhance service quality. Changes may include model on/offlining or capability adjustments. We will strive to notify you via announcements or push messages. For a complete list of available models, please check the Models.
+
+Example:
+"Pro/zai-org/GLM-4.7"
+
+​
+messages
+object[]required
+A list of messages comprising the conversation so far.
+
+Required array length: 1 - 10 elements
+Show child attributes
+
+​
+stream
+boolean
+If set, tokens are returned as Server-Sent Events as they are made available. Stream terminates with data: [DONE]
+
+Example:
+false
+
+​
+max_tokens
+integer
+The maximum number of tokens to generate. Ensure that input tokens + max_tokens do not exceed the model’s context window. As some services are still being updated, avoid setting max_tokens to the window’s upper bound; reserve ~10k tokens as buffer for input and system overhead. See Models(https://cloud.siliconflow.cn/models) for details.
+
+Example:
+4096
+
+​
+enable_thinking
+boolean
+Switches between thinking and non-thinking modes. This field supports the following models:
+
+- Pro/zai-org/GLM-5
+- Pro/zai-org/GLM-4.7
+- deepseek-ai/DeepSeek-V3.2
+- Pro/deepseek-ai/DeepSeek-V3.2
+- zai-org/GLM-4.6
+- Qwen/Qwen3-8B
+- Qwen/Qwen3-14B
+- Qwen/Qwen3-32B
+- Qwen/Qwen3-30B-A3B
+- tencent/Hunyuan-A13B-Instruct
+- zai-org/GLM-4.5V
+- deepseek-ai/DeepSeek-V3.1-Terminus
+- Pro/deepseek-ai/DeepSeek-V3.1-Terminus        
+- Qwen/Qwen3.5-397B-A17B
+- Qwen/Qwen3.5-122B-A10B
+- Qwen/Qwen3.5-35B-A3B
+- Qwen/Qwen3.5-27B
+- Qwen/Qwen3.5-9B
+- Qwen/Qwen3.5-4B
+Example:
+false
+
+​
+thinking_budget
+integerdefault:4096
+Maximum number of tokens for chain-of-thought output. This field applies to most Reasoning models.
+
+Required range: 128 <= x <= 32768
+Example:
+4096
+
+​
+min_p
+number<float>
+Dynamic filtering threshold that adapts based on token probabilities.This field only applies to Qwen3.
+
+Required range: 0 <= x <= 1
+Example:
+0.05
+
+​
+stop
+
+Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.
+
+Example:
+null
+
+​
+temperature
+number<float>
+Determines the degree of randomness in the response.
+
+Example:
+0.7
+
+​
+top_p
+number<float>default:0.7
+The top_p (nucleus) parameter is used to dynamically adjust the number of choices for each predicted token based on the cumulative probabilities.
+
+Example:
+0.7
+
+​
+top_k
+number<float>
+Example:
+50
+
+​
+frequency_penalty
+number<float>
+Example:
+0.5
+
+​
+n
+integer
+Number of generations to return
+
+Example:
+1
+
+​
+response_format
+object
+An object specifying the format that the model must output.
+
+Show child attributes
+
+​
+tools
+object[]
+A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for. A max of 128 functions are supported.
+
+Show child attributes
+
+Response
+
+200
+
+application/json
+The response from the model. The response header contains the x-siliconcloud-trace-id field, which serves as a unique identifier for tracing requests, facilitating log queries and issue troubleshooting.
+
+​
+id
+string
+​
+choices
+object[]
+Hide child attributes
+
+​
+choices.message
+object
+Show child attributes
+
+​
+choices.finish_reason
+enum<string>
+Available options: stop, eos, length, tool_calls 
+​
+usage
+object
+Hide child attributes
+
+​
+usage.prompt_tokens
+integerrequired
+Number of tokens in the prompt.
+
+​
+usage.completion_tokens
+integerrequired
+Number of tokens in the generated completion.
+
+​
+usage.total_tokens
+integerrequired
+Total number of tokens used in the request (prompt + completion).
+
+​
+usage.prompt_cache_hit_tokens
+integer
+The number of tokens in the input of this request that resulted in a cache hit.
+
+​
+usage.prompt_cache_miss_tokens
+integer
+The number of tokens in the input of this request that did not result in a cache hit.
+
+​
+usage.completion_tokens_details
+object
+Breakdown of tokens used in a completion.
+
+Hide child attributes
+
+​
+usage.completion_tokens_details.reasoning_tokens
+integerdefault:0
+Tokens generated by the model for reasoning.
+
+​
+usage.prompt_tokens_details
+object
+Breakdown of tokens used in the prompt.
+
+Hide child attributes
+
+​
+usage.prompt_tokens_details.cached_tokens
+integerdefault:0
+Cached tokens present in the prompt.
+
+​
+created
+integer
+​
+model
+string
+​
+object
+enum<string>
+Available options: chat.completion 

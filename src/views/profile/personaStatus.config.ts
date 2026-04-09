@@ -5,7 +5,7 @@ export interface MoodAttribute {
 }
 
 export interface PersonaBubbleCard {
-  id: 'mood' | 'bio' | 'encounter' | 'collection'
+  id: 'footprint' | 'mood' | 'memory' | 'social'
   label: string
   icon: string
   iconColor: string
@@ -24,35 +24,35 @@ export const personaMoodAttrs: MoodAttribute[] = [
 
 export const personaBubbleCards: PersonaBubbleCard[] = [
   {
-    id: 'mood',
-    label: '情绪星云',
-    icon: 'auto_awesome',
-    iconColor: '#6BBFA3',
-    chip: '情绪',
+    id: 'footprint',
+    label: '足迹',
+    icon: 'explore',
+    iconColor: '#E8A44A',
+    chip: '12处',
     positionClass: 'left-[6%] top-[12%]',
   },
   {
-    id: 'bio',
-    label: '灵感自白',
-    icon: 'edit_note',
+    id: 'mood',
+    label: '情绪',
+    icon: 'sentiment_calm',
+    iconColor: '#6BBFA3',
+    chip: '情绪',
+    positionClass: 'left-[32%] top-[12%]',
+  },
+  {
+    id: 'memory',
+    label: '记忆',
+    icon: 'history',
     iconColor: '#9B8EC4',
-    chip: '自白',
-    positionClass: 'right-[6%] top-[12%]',
+    chip: '7段',
+    positionClass: 'right-[32%] top-[12%]',
   },
   {
-    id: 'encounter',
-    label: '相遇记录',
-    icon: 'diversity_3',
+    id: 'social',
+    label: '社交',
+    icon: 'forum',
     iconColor: '#D4788C',
-    chip: '87%',
-    positionClass: 'bottom-[16%] left-[6%]',
-  },
-  {
-    id: 'collection',
-    label: '盲盒展柜',
-    icon: 'redeem',
-    iconColor: '#E8A44A',
-    chip: '2个',
-    positionClass: 'bottom-[16%] right-[6%]',
+    chip: '3位',
+    positionClass: 'right-[6%] top-[12%]',
   },
 ]

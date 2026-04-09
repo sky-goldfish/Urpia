@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { getStoreById, type IndoorFixedCamera, type StoreCatalogItem } from '../config/storeCatalog'
 
 // POI基础信息接口
 export interface POIInfo {
@@ -10,6 +11,12 @@ export interface POIInfo {
   description?: string
   category?: string
   thumbnail?: string
+  tier?: string
+  canEnter?: boolean
+  signboardModelUrl?: string
+  exteriorModelUrl?: string
+  interiorModelUrl?: string
+  fixedIndoorCamera?: IndoorFixedCamera
 }
 
 // POI室内数据接口
@@ -21,6 +28,9 @@ export interface POIIndoorData {
   hotspots: Hotspot[]
   assets: AssetManifest
   navigation: NavigationData
+  canEnter: boolean
+  primaryModelUrl?: string
+  fixedCamera?: IndoorFixedCamera
 }
 
 // 交互热点接口
@@ -62,37 +72,25 @@ export const usePOIStore = defineStore('poi', () => {
   const indoorDataCache = ref<Map<string, POIIndoorData>>(new Map())
   const isLoading = ref(false)
   
-  // 模拟POI数据库
-  const poiDatabase: Record<string, POIInfo> = {
-    'poi-1': {
-      id: 'poi-1',
-      name: '人民广场',
-      coordinates: [121.4737, 31.2304],
-      address: '上海市黄浦区人民广场',
-      description: '上海市中心最大的公共广场',
-      category: 'landmark'
-    },
-    'poi-2': {
-      id: 'poi-2',
-      name: '外滩',
-      coordinates: [121.4878, 31.2356],
-      address: '上海市黄浦区外滩',
-      description: '上海著名的历史文化街区',
-      category: 'landmark'
-    },
-    'poi-3': {
-      id: 'poi-3',
-      name: '静安寺',
-      coordinates: [121.4453, 31.2165],
-      address: '上海市静安区南京西路',
-      description: '上海著名的佛教寺庙',
-      category: 'temple'
-    }
-  }
-  
+  const toPOIInfo = (store: StoreCatalogItem): POIInfo => ({
+    id: store.id,
+    name: store.name,
+    coordinates: store.coordinates,
+    address: store.address,
+    description: store.tier === 'premium' ? '可进入的高等级店家空间' : '地图中的普通店家外饰点位',
+    category: store.tier,
+    tier: store.tier,
+    canEnter: store.canEnter,
+    signboardModelUrl: store.signboardModelUrl,
+    exteriorModelUrl: store.exteriorModelUrl,
+    interiorModelUrl: store.interiorModelUrl,
+    fixedIndoorCamera: store.fixedIndoorCamera,
+  })
+
   // 获取POI基础信息
   const getPOIInfo = (id: string): POIInfo | null => {
-    return poiDatabase[id] || null
+    const store = getStoreById(id)
+    return store ? toPOIInfo(store) : null
   }
   
   // 获取POI室内场景数据
@@ -109,78 +107,28 @@ export const usePOIStore = defineStore('poi', () => {
     await new Promise(resolve => setTimeout(resolve, 500))
     
     const poiInfo = getPOIInfo(id)
+    const primaryModelUrl = poiInfo?.interiorModelUrl || poiInfo?.exteriorModelUrl || poiInfo?.signboardModelUrl
     
-    // 生成模拟室内数据
     const indoorData: POIIndoorData = {
       id,
       name: poiInfo?.name || '未知地点',
-      currentArea: '主厅',
-      areas: ['主厅', '侧厅', '走廊', '出口'],
-      hotspots: [
-        {
-          id: 'hotspot-1',
-          name: '信息点',
-          x: 30,
-          y: 40,
-          type: 'info',
-          icon: 'ℹ️'
-        },
-        {
-          id: 'hotspot-2',
-          name: '互动点',
-          x: 60,
-          y: 50,
-          type: 'action',
-          icon: '✋'
-        },
-        {
-          id: 'hotspot-3',
-          name: '传送点',
-          x: 80,
-          y: 30,
-          type: 'portal',
-          icon: '🚪'
-        }
-      ],
+      currentArea: poiInfo?.canEnter ? '店内空间' : '门店外饰',
+      areas: poiInfo?.canEnter ? ['店内空间'] : ['门店外饰'],
+      hotspots: [],
       assets: {
-        textures: [
-          'floor_diffuse.jpg',
-          'wall_normal.jpg',
-          'ceiling_roughness.jpg'
-        ],
-        models: [
-          'room_main.glb',
-          'furniture_set.glb'
-        ],
-        audio: [
-          'ambient.mp3'
-        ],
-        data: [
-          'hotspots.json',
-          'navigation.json'
-        ]
+        textures: [],
+        models: primaryModelUrl ? [primaryModelUrl] : [],
+        audio: [],
+        data: [],
       },
       navigation: {
         entryPoint: [0, 0, 0],
-        exitPoints: [[10, 0, 10]],
-        waypoints: [
-          {
-            id: 'wp-1',
-            position: [0, 0, 0],
-            connectedTo: ['wp-2']
-          },
-          {
-            id: 'wp-2',
-            position: [5, 0, 5],
-            connectedTo: ['wp-1', 'wp-3']
-          },
-          {
-            id: 'wp-3',
-            position: [10, 0, 10],
-            connectedTo: ['wp-2']
-          }
-        ]
-      }
+        exitPoints: [[0, 0, 0]],
+        waypoints: [],
+      },
+      canEnter: Boolean(poiInfo?.canEnter && poiInfo?.interiorModelUrl),
+      primaryModelUrl,
+      fixedCamera: poiInfo?.fixedIndoorCamera,
     }
     
     // 缓存数据

@@ -6,37 +6,17 @@ export interface OnboardingModelOption {
   previewImage: string
 }
 
-const fallbackImages = [
-  '/avatars/4c4eae51-6996-40bf-b175-5a2e692a1301.jpg',
-  '/avatars/404b0503-83e0-45a3-8a03-9c222e2bdc32.jpg',
-  '/avatars/88a1e9e7-378f-4108-b288-c713865a7b03.jpg',
-  '/avatars/012fe965-2bf7-4b71-8c21-347f0999ef33.jpg',
-] as const
-
-const previewImages = [
-  '/avatars/4c4eae51-6996-40bf-b175-5a2e692a1301.jpg',
-  '/avatars/404b0503-83e0-45a3-8a03-9c222e2bdc32.jpg',
-  '/avatars/88a1e9e7-378f-4108-b288-c713865a7b03.jpg',
-  '/avatars/012fe965-2bf7-4b71-8c21-347f0999ef33.jpg',
-  '/avatars/1b737fbf-d486-41f9-9627-a2c8157e4279.jpg',
-  '/avatars/1ddd88e4-cf6e-49b3-a111-21f630d1575f.jpg',
-  '/avatars/1e92af49-74f3-4855-aa4b-757dfe210a7b.jpg',
-  '/avatars/4729bbcf-7789-4505-8c03-6be6fdbb962a.jpg',
-  '/avatars/4789d992-0668-4358-87c4-606f4e072356-1.jpg',
-  '/avatars/4f483526-cf71-4730-a054-005c16996218.jpg',
-] as const
-
 export const onboardingModelOptions: OnboardingModelOption[] = [
-  { id: 'Bella', label: 'Bella', modelUrl: '/models/profile-avatars/Bella.glb', fallbackImage: fallbackImages[0], previewImage: previewImages[0] },
-  { id: 'Stella', label: 'Stella', modelUrl: '/models/profile-avatars/Stella.glb', fallbackImage: fallbackImages[1], previewImage: previewImages[1] },
-  { id: 'Zoe', label: 'Zoe', modelUrl: '/models/profile-avatars/Zoe.glb', fallbackImage: fallbackImages[2], previewImage: previewImages[2] },
-  { id: 'Luna', label: 'Luna', modelUrl: '/models/profile-avatars/Luna.glb', fallbackImage: fallbackImages[3], previewImage: previewImages[3] },
-  { id: 'Mia', label: 'Mia', modelUrl: '/models/profile-avatars/Mia.glb', fallbackImage: fallbackImages[0], previewImage: previewImages[4] },
-  { id: 'Finn', label: 'Finn', modelUrl: '/models/profile-avatars/Finn.glb', fallbackImage: fallbackImages[1], previewImage: previewImages[5] },
-  { id: 'Owen', label: 'Owen', modelUrl: '/models/profile-avatars/Owen.glb', fallbackImage: fallbackImages[2], previewImage: previewImages[6] },
-  { id: 'Sam', label: 'Sam', modelUrl: '/models/profile-avatars/Sam.glb', fallbackImage: fallbackImages[3], previewImage: previewImages[7] },
-  { id: 'Noah', label: 'Noah', modelUrl: '/models/profile-avatars/Noah.glb', fallbackImage: fallbackImages[0], previewImage: previewImages[8] },
-  { id: 'Leo', label: 'Leo', modelUrl: '/models/profile-avatars/Leo.glb', fallbackImage: fallbackImages[1], previewImage: previewImages[9] },
+  { id: 'Bella', label: 'Bella', modelUrl: '/models/profile-avatars/girl-01.glb', fallbackImage: '/avatars/girl-01.jpg', previewImage: '/avatars/girl-01.jpg' },
+  { id: 'Stella', label: 'Stella', modelUrl: '/models/profile-avatars/girl-02.glb', fallbackImage: '/avatars/girl-02.jpg', previewImage: '/avatars/girl-02.jpg' },
+  { id: 'Zoe', label: 'Zoe', modelUrl: '/models/profile-avatars/girl-03.glb', fallbackImage: '/avatars/girl-03.jpg', previewImage: '/avatars/girl-03.jpg' },
+  { id: 'Luna', label: 'Luna', modelUrl: '/models/profile-avatars/girl-04.glb', fallbackImage: '/avatars/girl-04.jpg', previewImage: '/avatars/girl-04.jpg' },
+  { id: 'Mia', label: 'Mia', modelUrl: '/models/profile-avatars/girl-05.glb', fallbackImage: '/avatars/girl-05.jpg', previewImage: '/avatars/girl-05.jpg' },
+  { id: 'Finn', label: 'Finn', modelUrl: '/models/profile-avatars/boy-01.glb', fallbackImage: '/avatars/boy-01.jpg', previewImage: '/avatars/boy-01.jpg' },
+  { id: 'Owen', label: 'Owen', modelUrl: '/models/profile-avatars/boy-02.glb', fallbackImage: '/avatars/boy-02.jpg', previewImage: '/avatars/boy-02.jpg' },
+  { id: 'Sam', label: 'Sam', modelUrl: '/models/profile-avatars/boy-03.glb', fallbackImage: '/avatars/boy-03.jpg', previewImage: '/avatars/boy-03.jpg' },
+  { id: 'Noah', label: 'Noah', modelUrl: '/models/profile-avatars/boy-04.glb', fallbackImage: '/avatars/boy-04.jpg', previewImage: '/avatars/boy-04.jpg' },
+  { id: 'Leo', label: 'Leo', modelUrl: '/models/profile-avatars/boy-05.glb', fallbackImage: '/avatars/boy-05.jpg', previewImage: '/avatars/boy-05.jpg' },
 ] as const
 
 export const cameraGuideContent = {

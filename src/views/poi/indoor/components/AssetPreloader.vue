@@ -2,7 +2,7 @@
 import { onMounted } from 'vue'
 
 interface Props {
-  poiId: string
+  assetUrls?: string[]
 }
 
 const props = defineProps<Props>()
@@ -11,27 +11,8 @@ const emit = defineEmits<{
   (e: 'complete'): void
 }>()
 
-// 美术资产路径配置
-const ASSET_PATHS = {
-  textures: `/assets/poi/${props.poiId}/textures/`,
-  models: `/assets/poi/${props.poiId}/models/`,
-  audio: `/assets/poi/${props.poiId}/audio/`,
-  data: `/assets/poi/${props.poiId}/data/`
-}
-
-// 预加载资产列表（将来从JSON配置文件读取）
 const getAssetList = async (): Promise<string[]> => {
-  // 模拟资产列表
-  return [
-    `${ASSET_PATHS.textures}floor_diffuse.jpg`,
-    `${ASSET_PATHS.textures}wall_normal.jpg`,
-    `${ASSET_PATHS.textures}ceiling_roughness.jpg`,
-    `${ASSET_PATHS.models}room_main.glb`,
-    `${ASSET_PATHS.models}furniture_set.glb`,
-    `${ASSET_PATHS.audio}ambient.mp3`,
-    `${ASSET_PATHS.data}hotspots.json`,
-    `${ASSET_PATHS.data}navigation.json`
-  ]
+  return props.assetUrls || []
 }
 
 // 预加载单个资产

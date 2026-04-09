@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import TabBar from '../../components/ui/TabBar.vue'
-import { matchHistory } from '../../lib/mockData'
+import { getMatchHistoryRecords } from '../../data/profileData'
 import PageHeaderBar from '../../components/ui/PageHeaderBar.vue'
 import InfoSectionCard from '../../components/ui/InfoSectionCard.vue'
 import { matchHistoryContent } from './matchHistory.config'
 
 const router = useRouter()
+const matchHistory = getMatchHistoryRecords()
 
 const goToReport = () => {
   void router.push('/report')
@@ -33,7 +34,7 @@ const goToReport = () => {
                   </div>
                   <div
                     class="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full"
-                    :class="record.status === '仍在联系' ? 'bg-[#34C759]' : 'bg-[#E5E5EA]'"
+                    :class="record.statusTone === 'active' ? 'bg-[#34C759]' : 'bg-[#E5E5EA]'"
                   />
                 </div>
 

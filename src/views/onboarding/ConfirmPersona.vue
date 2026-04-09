@@ -104,13 +104,18 @@ watch(selectedModel, (model) => {
         </div>
 
         <section class="space-y-4 pb-[calc(env(safe-area-inset-bottom)+24px)]">
-          <div class="mt-3 rounded-[22px] border border-[#E5E5EA] bg-[#F2F2F7]/80 px-5 py-4 text-center">
+          <div class="mt-3 rounded-[22px] border border-[#E5E5EA] bg-[#F2F2F7]/80 px-5 py-4">
             <p class="text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">
               {{ confirmPersonaContent.nicknameLabel }}
             </p>
-            <p class="mt-2 text-[18px] font-semibold text-[#1D1D1F]" style="letter-spacing: -0.3px">
-              {{ userNickname || selectedModel.label }}
-            </p>
+            <input
+              v-model="userNickname"
+              type="text"
+              :placeholder="confirmPersonaContent.nicknamePlaceholder"
+              maxlength="12"
+              class="mt-3 w-full border-0 bg-transparent px-0 text-center text-[18px] font-semibold text-[#1D1D1F] outline-none placeholder:text-[#C7C7CC]"
+              style="letter-spacing: -0.3px"
+            />
           </div>
 
           <button

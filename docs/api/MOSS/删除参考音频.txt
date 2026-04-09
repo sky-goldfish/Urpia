@@ -1,0 +1,62 @@
+删除参考音频
+Delete user-defined voice style
+
+POST
+/
+audio
+/
+voice
+/
+deletions
+Delete User Voice
+
+curl --request POST \
+  --url https://api.siliconflow.cn/v1/audio/voice/deletions \
+  --header 'Authorization: Bearer <token>' \
+  --header 'Content-Type: application/json' \
+  --data '
+{
+  "uri": "speech:your-voice-name:xxx:xxxx"
+}
+'
+
+200
+
+400
+
+401
+
+403
+
+404
+
+429
+
+503
+
+504
+"<string>"
+Authorizations
+​
+Authorization
+stringheaderrequired
+Use the following format for authentication: Bearer
+
+Body
+application/json
+​
+uri
+stringrequired
+Voice style to be deleted by the user
+
+Example:
+"speech:your-voice-name:xxx:xxxx"
+
+Response
+
+200
+
+application/json
+Successful response
+
+The response is of type string.

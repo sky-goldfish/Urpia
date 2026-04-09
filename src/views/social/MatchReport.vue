@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { reportTopics } from '../../lib/mockData'
+import { getMatchReportTopics } from '../../data/socialData'
 import PageHeaderBar from '../../components/ui/PageHeaderBar.vue'
 import InfoSectionCard from '../../components/ui/InfoSectionCard.vue'
 import { socialParticipants, socialReportContent } from './social.config'
@@ -8,6 +8,7 @@ import { matchReportContent } from './matchReport.config'
 
 const router = useRouter()
 const compatibility = socialReportContent.compatibility
+const reportTopics = getMatchReportTopics()
 
 const goToMap = () => {
   void router.push('/map')

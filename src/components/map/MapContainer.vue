@@ -770,7 +770,7 @@ const fadeToAction = (character: OverlayCharacter, nextAction: THREE.AnimationAc
 
 const syncOverlayAnimation = (character: OverlayCharacter) => {
   if (character.role === 'player') {
-    fadeToAction(character, character.isMoving ? character.idleAction : character.runAction)
+    fadeToAction(character, character.isMoving ? character.runAction : character.idleAction)
     return
   }
 

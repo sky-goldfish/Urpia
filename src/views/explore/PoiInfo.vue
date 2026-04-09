@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { poiList } from '../../lib/mockData'
+import { getExplorePoiById } from '../../data/exploreData'
 import PageHeaderBar from '../../components/ui/PageHeaderBar.vue'
 import InfoSectionCard from '../../components/ui/InfoSectionCard.vue'
 import { poiInfoContent } from './poiInfo.config'
@@ -9,7 +9,7 @@ import { poiInfoContent } from './poiInfo.config'
 const route = useRoute()
 const router = useRouter()
 
-const poi = computed(() => poiList.find((item) => item.id === route.params.id) ?? poiList[0])
+const poi = computed(() => getExplorePoiById(String(route.params.id ?? '')))
 
 const goToDiscovery = () => {
   void router.push('/discovery')

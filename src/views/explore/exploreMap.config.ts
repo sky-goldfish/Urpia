@@ -1,4 +1,4 @@
-import type { PointOfInterest } from '../../lib/mockData'
+import type { ExplorePoiViewModel } from '../../data/exploreData'
 
 export type ExploreMoodKey = 'healing' | 'energy' | 'romantic' | 'creative' | 'social' | 'cozy'
 
@@ -22,7 +22,7 @@ export const exploreMoodOptions: ExploreMoodOption[] = [
   { key: 'cozy', label: '温馨', color: '#B89A80' },
 ]
 
-export const explorePoiMetaMap: Record<PointOfInterest['id'], ExplorePoiMeta> = {
+export const explorePoiMetaMap: Record<ExplorePoiViewModel['id'], ExplorePoiMeta> = {
   'harbor-light': {
     coordinates: [121.4489, 31.2295],
     mood: 'healing',

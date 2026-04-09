@@ -58,7 +58,7 @@ onMounted(() => {
 <template>
   <main class="poi-indoor-view">
     <AssetPreloader
-      :poi-id="poiId"
+      :asset-urls="poiData?.assets.models || []"
       @progress="loadProgress = $event"
     />
 

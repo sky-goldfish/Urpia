@@ -1,0 +1,91 @@
+上传参考音频
+Upload user-provided voice style, which can be in base64 encoding or file format. Refer to (https://docs.siliconflow.cn/capabilities/text-to-speech#2-2)
+
+POST
+/
+uploads
+/
+audio
+/
+voice
+
+
+curl -X POST "https://api.siliconflow.cn/v1/uploads/audio/voice" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "file=@test.mp3" \
+  -F "model=IndexTeam/IndexTTS-2" \
+  -F "customName=your-voice-name" \
+  -F "text=慢工出细活，再给我两分钟，你马上就能见识到超梦分析的厉害了"
+
+200
+
+400
+
+401
+
+403
+
+404
+
+429
+
+503
+
+504
+{
+  "uri": "speech:your-voice-name:xxx:xxx"
+}
+Authorizations
+​
+Authorization
+stringheaderrequired
+Use the following format for authentication: Bearer
+
+Body
+multipart/form-data
+Option 1
+Option 2
+​
+model
+stringrequired
+Predefined voice style model name
+
+Example:
+"FunAudioLLM/CosyVoice2-0.5B"
+
+​
+customName
+stringrequired
+User-defined voice style name
+
+Example:
+"your-voice-name"
+
+​
+text
+stringrequired
+Corresponding text content for the audio
+
+Example:
+"在一无所知中, 梦里的一天结束了，一个新的轮回便会开始"
+
+​
+audio
+string
+Audio file encoded in base64 with the header format of data:audio/mpeg;base64
+
+Example:
+"data:audio/mpeg;base64,aGVsbG93b3JsZA=="
+
+Response
+
+200
+
+application/json
+Successful response
+
+​
+uri
+string
+Example:
+"speech:your-voice-name:xxx:xxx"

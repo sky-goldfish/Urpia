@@ -1,0 +1,60 @@
+参考音频列表获取
+Get list of user-defined voice styles
+
+GET
+/
+audio
+/
+voice
+/
+list
+Get Voice List
+
+curl --request GET \
+  --url https://api.siliconflow.cn/v1/audio/voice/list \
+  --header 'Authorization: Bearer <token>'
+
+200
+
+400
+
+401
+
+403
+
+404
+
+429
+
+503
+
+504
+{
+  "results": [
+    {
+      "model": "fishaudio/fish-speech-1.4",
+      "customName": "your-voice-name",
+      "text": "在一无所知中, 梦里的一天结束了，一个新的轮回便会开始",
+      "uri": "speech:your-voice-name:xxx:xxx"
+    }
+  ]
+}
+Authorizations
+​
+Authorization
+stringheaderrequired
+Use the following format for authentication: Bearer
+
+Response
+
+200
+
+application/json
+Successful response
+
+User-defined voice style list response
+
+​
+results
+object[]
+Predefined voice style list

@@ -1,0 +1,70 @@
+创建语音转文本请求
+Creates an audio transcription.
+
+POST
+/
+audio
+/
+transcriptions
+cURL
+
+curl --request POST \
+  --url https://api.siliconflow.cn/v1/audio/transcriptions \
+  -H "Authorization: Bearer <YOUR_API_KEY>" \
+  -F "file=@path/to/your/audio.mp3" \
+  -F "model=FunAudioLLM/SenseVoiceSmall"
+
+200
+
+400
+
+401
+
+403
+
+404
+
+429
+
+503
+
+504
+{
+  "text": "<string>"
+}
+Authorizations
+​
+Authorization
+stringheaderrequired
+Use the following format for authentication: Bearer
+
+Body
+multipart/form-data
+​
+file
+filerequired
+The audio file object (not file name) to transcribe.
+File upload specifications are limited to:duration not exceeding 1 hour, and file size not exceeding 50MB.
+
+​
+model
+enum<string>required
+Corresponding Model Name. To better enhance service quality, we will make periodic changes to the models provided by this service, including but not limited to model on/offlining and adjustments to model service capabilities. We will notify you of such changes through appropriate means such as announcements or message pushes where feasible.
+
+Available options: FunAudioLLM/SenseVoiceSmall, TeleAI/TeleSpeechASR 
+Example:
+"FunAudioLLM/SenseVoiceSmall"
+
+Response
+
+200
+
+application/json
+The response from the model. The response header contains the x-siliconcloud-trace-id field, which serves as a unique identifier for tracing requests, facilitating log queries and issue troubleshooting.
+
+Represents a transcription response returned by model, based on the provided input.
+
+​
+text
+stringrequired
+The transcribed text.

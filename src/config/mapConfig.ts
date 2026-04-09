@@ -1,13 +1,14 @@
 export const MAP_CONFIG = {
-  AMAP_KEY: import.meta.env.VITE_AMAP_KEY || '',
-  AMAP_SECURITY_JS_CODE: import.meta.env.VITE_AMAP_SECURITY_JS_CODE || '',
-  DEFAULT_CENTER: [121.4737, 31.2304] as [number, number],
+  MAPBOX_TOKEN: import.meta.env.VITE_MAPBOX_TOKEN || '',
+  MAPBOX_STYLE: 'mapbox://styles/mapbox/light-v11',
+  DEFAULT_CENTER: [121.6017, 31.2048] as [number, number],
   DEFAULT_ZOOM: 14,
-  DEFAULT_VIEW_MODE: '2D' as const,
+  DEFAULT_PITCH: 55,
+  DEFAULT_BEARING: -12,
 }
 
 export const assertMapConfig = () => {
-  if (!MAP_CONFIG.AMAP_KEY || !MAP_CONFIG.AMAP_SECURITY_JS_CODE) {
-    throw new Error('AMap config is incomplete. Please check VITE_AMAP_KEY and VITE_AMAP_SECURITY_JS_CODE.')
+  if (!MAP_CONFIG.MAPBOX_TOKEN) {
+    throw new Error('Mapbox config is incomplete. Please check VITE_MAPBOX_TOKEN.')
   }
 }

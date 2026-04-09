@@ -1,6 +1,6 @@
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { poiList, type PointOfInterest } from '../../lib/mockData'
+import { getExplorePois, type ExplorePoiViewModel } from '../../data/exploreData'
 import { MAP_CONFIG } from '../../config/mapConfig'
 import { moodColors, useMoodStore } from '../../stores/moodStore'
 import type { ExploreMoodKey } from './exploreMap.config'
@@ -11,7 +11,7 @@ interface ExploreMarker {
   position: [number, number]
   title?: string
   color?: string
-  data: PointOfInterest
+  data: ExplorePoiViewModel
 }
 
 interface MarkerEventPayload {
@@ -23,6 +23,7 @@ interface MarkerEventPayload {
 }
 
 const fallbackColor = '#8E8E93'
+const explorePois = getExplorePois()
 
 export const useExploreMap = () => {
   const router = useRouter()
@@ -30,9 +31,11 @@ export const useExploreMap = () => {
 
   const mapRef = ref<{
     flyTo: (options: { center?: [number, number]; zoom?: number }) => void
+    centerOnAvatar?: () => void
+    setAvatarInput?: (input: { x: number; y: number }) => void
   } | null>(null)
   const searchQuery = ref('')
-  const selectedPoiId = ref<string>(poiList[0]?.id ?? '')
+  const selectedPoiId = ref<string>(explorePois[0]?.id ?? '')
   const showSearch = ref(false)
   const showMatchChat = ref(false)
 
@@ -44,11 +47,9 @@ export const useExploreMap = () => {
   const filteredPois = computed(() => {
     const query = searchQuery.value.trim().toLowerCase()
 
-    return poiList.filter((poi) => {
+    return explorePois.filter((poi) => {
       const matchesMood = activeMood.value ? explorePoiMetaMap[poi.id]?.mood === activeMood.value : true
-      const matchesQuery = query
-        ? [poi.name, poi.vibe, poi.district, ...poi.moods].some((value) => value.toLowerCase().includes(query))
-        : true
+      const matchesQuery = query ? poi.searchIndex.includes(query) : true
 
       return matchesMood && matchesQuery
     })
@@ -88,6 +89,11 @@ export const useExploreMap = () => {
   }
 
   const locateUser = () => {
+    if (mapRef.value?.centerOnAvatar) {
+      mapRef.value.centerOnAvatar()
+      return
+    }
+
     mapRef.value?.flyTo({
       center: MAP_CONFIG.DEFAULT_CENTER,
       zoom: 15,

@@ -4,24 +4,59 @@ import { useRouter } from 'vue-router'
 import TabBar from '../../components/ui/TabBar.vue'
 import CenteredOverlayCard from '../../components/ui/CenteredOverlayCard.vue'
 import { personaBubbleCards, personaMoodAttrs, type PersonaBubbleCard } from './personaStatus.config'
-import { readStoredProfileModelUrl, readStoredProfileNickname } from './profileModel.config'
+import { readStoredProfileAvatarImageUrl, readStoredProfileModelUrl, readStoredProfileNickname } from './profileModel.config'
 
 const ProfileAvatar3D = defineAsyncComponent(() => import('../../components/profile/ProfileAvatar3D.vue'))
 
 const router = useRouter()
 
 const nickname = ref(readStoredProfileNickname())
-const avatarUrl = '/avatars/4c4eae51-6996-40bf-b175-5a2e692a1301.jpg'
-const bio = '一个热爱在咖啡香中寻找灵感的自由灵魂～'
+const avatarUrl = readStoredProfileAvatarImageUrl()
 const profileModelUrl = readStoredProfileModelUrl()
 const areBubblesVisible = ref(true)
 
 // 当前展开的气泡详情
-type BubbleId = 'mood' | 'bio' | 'encounter' | 'collection' | null
+type BubbleId = 'footprint' | 'mood' | 'memory' | 'social' | null
 const activeBubble = ref<BubbleId>(null)
 
 const moodAttrs = personaMoodAttrs
 const topMood = computed(() => moodAttrs.reduce((a, b) => (a.value > b.value ? a : b)))
+const currentMoodTagline = '今天想以一种温和、好靠近的方式被看见。'
+
+const footprintHighlights = [
+  { place: '长泰广场', note: '点亮了 3 个据点，带回 1 枚盲盒徽章。', time: '今天 18:20' },
+  { place: '汇智国际', note: '和分身一起解锁了夜间路线。', time: '昨天 21:05' },
+  { place: '张江创新园', note: '完成第一次地图点亮连线。', time: '4月7日' },
+]
+
+const footprintBadges = [
+  { name: '夜色采集', tone: '#E8A44A', icon: 'hotel_class' },
+  { name: '雨天散步', tone: '#6BBFA3', icon: 'rainy' },
+  { name: '盲盒连开', tone: '#9B8EC4', icon: 'deployed_code' },
+  { name: '待点亮', tone: '#C7C7CC', icon: 'lock' },
+]
+
+const moodTimeline = [
+  { label: '现在', mood: `${topMood.value.name} ${topMood.value.value}%`, note: '适合轻声开场，慢慢把对话聊热。', color: topMood.value.color },
+  { label: '今天下午', mood: '浪漫 60%', note: '容易被有画面感的句子打动。', color: '#D4788C' },
+  { label: '昨天夜里', mood: '创意 40%', note: '更想去有新鲜感的地方逛逛。', color: '#9B8EC4' },
+]
+
+const memoryEntries = [
+  { title: '凌晨的咖啡馆对话', summary: '你提到“想和能懂沉默的人待在一起”，分身把它记成了今天最重要的一句。', time: '今天 00:14' },
+  { title: '长泰广场的第一次驻足', summary: '在路灯下停了三分钟，系统记录为一段“安静但有陪伴感”的记忆。', time: '昨天 21:05' },
+  { title: '关于理想周末的回答', summary: '你说最想要的是“有人一起乱逛，也有人一起发呆”。', time: '4月7日' },
+]
+
+const socialThreads = [
+  { name: '云野', state: '刚刚回过你', snippet: '下次一起去那个有玻璃顶的地方？', badge: 'A2A', accent: '#9B8EC4' },
+  { name: '岚岫', state: '今晚在线', snippet: '我把路线收藏了，等你一起点亮。', badge: '同频', accent: '#D4788C' },
+]
+
+const socialMatches = [
+  { name: '序章', match: '91%', note: '适合从地图足迹开始聊，一起补完一条夜路。', accent: '#6BBFA3' },
+  { name: '慢慢', match: '87%', note: '会认真接你的情绪状态，聊起来节奏很舒服。', accent: '#E8A44A' },
+]
 
 const toggleBubble = (id: BubbleId) => {
   activeBubble.value = activeBubble.value === id ? null : id
@@ -122,153 +157,153 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
 
       <!-- 气泡详情弹窗 -->
       <CenteredOverlayCard :visible="Boolean(activeBubble)" max-height="min(58dvh, 520px)" @close="closeBubble">
-          <!-- 情绪星云详情 -->
+          <!-- 足迹详情 -->
+          <div
+            v-if="activeBubble === 'footprint'"
+            class="space-y-4"
+          >
+            <div class="rounded-[18px] bg-[#F2F2F7] px-4 py-3">
+              <p class="text-[12px] font-semibold uppercase text-[#8E8E93]" style="letter-spacing: 0.12em">Footprint</p>
+              <p class="mt-1 text-[17px] font-semibold text-[#1D1D1F]">本周点亮 12 处 · 已收集 8 / 24</p>
+            </div>
+            <div class="overflow-y-auto pr-1" style="max-height: min(calc(58dvh - 120px), 380px)">
+              <p class="mb-4 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">点亮地图与盲盒收集</p>
+              <p class="mb-4 text-[14px] leading-6 text-[#1D1D1F]" style="letter-spacing: -0.224px">
+                这里记录你和分身一起走过的城市坐标。每点亮一个地方，都会留下路线、情绪和盲盒成就。
+              </p>
+              <div class="space-y-3">
+                <div v-for="item in footprintHighlights" :key="item.place" class="apple-card p-4">
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <p class="text-[15px] font-medium text-[#1D1D1F]">{{ item.place }}</p>
+                      <p class="mt-1 text-[13px] leading-5 text-[#6C6C70]">{{ item.note }}</p>
+                    </div>
+                    <span class="text-[11px] text-[#8E8E93]">{{ item.time }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 grid grid-cols-2 gap-3">
+                <div
+                  v-for="badge in footprintBadges"
+                  :key="badge.name"
+                  class="apple-card p-3"
+                  :class="{ 'opacity-45': badge.icon === 'lock' }"
+                >
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full" :style="{ background: `${badge.tone}1F` }">
+                    <span class="material-symbols-outlined text-[20px]" :style="{ color: badge.tone }">{{ badge.icon }}</span>
+                  </div>
+                  <p class="mt-2 text-[13px] font-medium text-[#1D1D1F]">{{ badge.name }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 情绪详情 -->
           <div
             v-if="activeBubble === 'mood'"
             class="space-y-4"
           >
             <div class="rounded-[18px] bg-[#F2F2F7] px-4 py-3">
-              <p class="text-[12px] font-semibold uppercase text-[#8E8E93]" style="letter-spacing: 0.12em">Mood Snapshot</p>
+              <p class="text-[12px] font-semibold uppercase text-[#8E8E93]" style="letter-spacing: 0.12em">Mood Status</p>
               <p class="mt-1 text-[17px] font-semibold text-[#1D1D1F]">{{ topMood.name }} {{ topMood.value }}%</p>
             </div>
             <div class="overflow-y-auto pr-1" style="max-height: min(calc(58dvh - 120px), 380px)">
-              <p class="mb-4 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">情绪星云</p>
-              <p class="mb-4 text-[14px] leading-6 text-[#1D1D1F]" style="letter-spacing: -0.224px">
-                你的灵魂是<span class="font-medium" :style="{ color: topMood.color }">"温暖的{{ topMood.name }}色"</span>。高治愈与高浪漫的叠加，让你在社交中自带温和的吸引力。
-              </p>
+              <p class="mb-4 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">像微信状态一样表达今天</p>
+              <div class="apple-card mb-4 p-4">
+                <p class="text-[15px] font-medium text-[#1D1D1F]">此刻状态</p>
+                <p class="mt-2 text-[14px] leading-6 text-[#6C6C70]">{{ currentMoodTagline }}</p>
+              </div>
               <div class="space-y-3">
-                <div v-for="attr in moodAttrs" :key="attr.name" class="flex items-center gap-3">
-                  <span class="w-10 text-[13px] text-[#6C6C6C]">{{ attr.name }}</span>
-                  <div class="progress-bar flex-1">
-                    <div
-                      class="progress-bar-fill"
-                      :style="{ width: `${attr.value}%`, backgroundColor: attr.color }"
-                    />
+                <div v-for="entry in moodTimeline" :key="entry.label" class="apple-card p-4">
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="text-[12px] text-[#8E8E93]">{{ entry.label }}</span>
+                    <span class="text-[13px] font-medium" :style="{ color: entry.color }">{{ entry.mood }}</span>
                   </div>
-                  <span class="w-10 text-right text-[13px] font-medium text-[#1D1D1F]">{{ attr.value }}%</span>
+                  <p class="mt-2 text-[13px] leading-5 text-[#6C6C70]">{{ entry.note }}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 灵感自白详情 -->
+          <!-- 记忆详情 -->
           <div
-            v-if="activeBubble === 'bio'"
+            v-if="activeBubble === 'memory'"
             class="space-y-4"
           >
             <div class="rounded-[18px] bg-[#F2F2F7] px-4 py-3">
-              <p class="text-[12px] font-semibold uppercase text-[#8E8E93]" style="letter-spacing: 0.12em">Bio Note</p>
-              <p class="mt-1 text-[17px] font-semibold text-[#1D1D1F]">你的灵感自白</p>
+              <p class="text-[12px] font-semibold uppercase text-[#8E8E93]" style="letter-spacing: 0.12em">Memory Archive</p>
+              <p class="mt-1 text-[17px] font-semibold text-[#1D1D1F]">你和分身留下的 7 段记忆</p>
             </div>
-            <div class="flex max-h-[min(calc(58dvh-120px),360px)] flex-col items-center overflow-y-auto">
-              <p class="mb-6 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">灵感自白</p>
-              <div class="flex w-full flex-1 items-center justify-center py-8">
-                <p class="text-center text-[20px] font-normal leading-8 text-[#1D1D1F]/80" style="letter-spacing: -0.3px">
-                  "{{ bio }}"
-                </p>
+            <div class="overflow-y-auto pr-1" style="max-height: min(calc(58dvh - 120px), 360px)">
+              <p class="mb-4 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">高光对话与羁绊回看</p>
+              <div class="apple-card mb-4 p-4">
+                <p class="text-[15px] font-medium text-[#1D1D1F]">今日最有共鸣的话</p>
+                <p class="mt-2 text-[16px] leading-7 text-[#1D1D1F]/80">“最舒服的关系，是不用一直找话，也不会觉得空。”</p>
+              </div>
+              <div class="space-y-3">
+                <div v-for="entry in memoryEntries" :key="entry.title" class="apple-card p-4">
+                  <div class="flex items-center justify-between gap-3">
+                    <p class="text-[15px] font-medium text-[#1D1D1F]">{{ entry.title }}</p>
+                    <span class="text-[11px] text-[#8E8E93]">{{ entry.time }}</span>
+                  </div>
+                  <p class="mt-2 text-[13px] leading-5 text-[#6C6C70]">{{ entry.summary }}</p>
+                </div>
               </div>
               <button
                 type="button"
                 class="secondary-button w-full py-3 text-[15px]"
                 style="letter-spacing: -0.224px"
               >
-                编辑自白
+                继续回看记忆
               </button>
             </div>
           </div>
 
-          <!-- 相遇记录详情 -->
+          <!-- 社交详情 -->
           <div
-            v-if="activeBubble === 'encounter'"
+            v-if="activeBubble === 'social'"
             class="space-y-4"
           >
             <div class="rounded-[18px] bg-[#F2F2F7] px-4 py-3">
-              <p class="text-[12px] font-semibold uppercase text-[#8E8E93]" style="letter-spacing: 0.12em">Recent Resonance</p>
-              <p class="mt-1 text-[17px] font-semibold text-[#1D1D1F]">最近遇见的共鸣对象</p>
+              <p class="text-[12px] font-semibold uppercase text-[#8E8E93]" style="letter-spacing: 0.12em">Social Link</p>
+              <p class="mt-1 text-[17px] font-semibold text-[#1D1D1F]">A2A 聊天与同频搭子</p>
             </div>
             <div class="overflow-y-auto pr-1" style="max-height: min(calc(58dvh - 120px), 360px)">
-              <p class="mb-4 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">遇见过的共鸣 (6)</p>
-              <div class="apple-card mb-3 p-4">
-                <div class="flex items-center gap-3">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#F2F2F7]">
-                    <span class="material-symbols-outlined text-[20px] text-[#9B8EC4]">person</span>
-                  </div>
-                  <div class="flex-1">
-                    <div class="flex items-center justify-between">
-                      <span class="text-[15px] font-medium text-[#1D1D1F]">云野</span>
-                      <span class="text-[16px] font-semibold text-[#1D1D1F]">87%</span>
+              <p class="mb-4 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">最近会话与同频搭子</p>
+              <div class="space-y-3">
+                <div v-for="thread in socialThreads" :key="thread.name" class="apple-card p-4">
+                  <div class="flex items-start gap-3">
+                    <div class="mt-0.5 flex h-10 w-10 items-center justify-center rounded-full bg-[#F2F2F7]">
+                      <span class="material-symbols-outlined text-[20px]" :style="{ color: thread.accent }">person</span>
                     </div>
-                    <p class="mt-1 text-[13px] text-[#8E8E93]" style="font-style: italic; letter-spacing: -0.08px">
-                      "天哪我也是！有个咖啡馆我特别喜欢..."
-                    </p>
-                    <p class="mt-2 text-[11px] text-[#8E8E93]">10分钟前活跃 · 距离 0.5km</p>
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-center justify-between gap-3">
+                        <p class="text-[15px] font-medium text-[#1D1D1F]">{{ thread.name }}</p>
+                        <span class="rounded-full px-2 py-0.5 text-[11px]" :style="{ background: `${thread.accent}1A`, color: thread.accent }">{{ thread.badge }}</span>
+                      </div>
+                      <p class="mt-1 text-[13px] leading-5 text-[#6C6C70]">{{ thread.snippet }}</p>
+                      <p class="mt-2 text-[11px] text-[#8E8E93]">{{ thread.state }}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="apple-card mb-3 p-4">
-                <div class="flex items-center gap-3">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#F2F2F7]">
-                    <span class="material-symbols-outlined text-[20px] text-[#D4788C]">person</span>
+              <div class="mt-4 grid grid-cols-1 gap-3">
+                <div v-for="match in socialMatches" :key="match.name" class="apple-card p-4">
+                  <div class="flex items-center justify-between gap-3">
+                    <p class="text-[15px] font-medium text-[#1D1D1F]">{{ match.name }}</p>
+                    <span class="text-[14px] font-semibold" :style="{ color: match.accent }">{{ match.match }}</span>
                   </div>
-                  <div class="flex-1">
-                    <div class="flex items-center justify-between">
-                      <span class="text-[15px] font-medium text-[#1D1D1F]">岚岫</span>
-                      <span class="text-[16px] font-semibold text-[#1D1D1F]">82%</span>
-                    </div>
-                    <p class="mt-1 text-[13px] text-[#8E8E93]" style="font-style: italic; letter-spacing: -0.08px">
-                      "在水边据点完成了情绪卡片交换。"
-                    </p>
-                    <p class="mt-2 text-[11px] text-[#8E8E93]">3月28日 · 距离 1.2km</p>
-                  </div>
+                  <p class="mt-2 text-[13px] leading-5 text-[#6C6C70]">{{ match.note }}</p>
                 </div>
               </div>
               <button
                 type="button"
-                class="secondary-button w-full py-3 text-[15px]"
+                class="secondary-button mt-4 w-full py-3 text-[15px]"
                 style="letter-spacing: -0.224px"
                 @click="openHistory"
               >
-                查看全部记录
+                查看聊天历史
               </button>
-            </div>
-          </div>
-
-          <!-- 盲盒展柜详情 -->
-          <div
-            v-if="activeBubble === 'collection'"
-            class="space-y-4"
-          >
-            <div class="rounded-[18px] bg-[#F2F2F7] px-4 py-3">
-              <p class="text-[12px] font-semibold uppercase text-[#8E8E93]" style="letter-spacing: 0.12em">Collection</p>
-              <p class="mt-1 text-[17px] font-semibold text-[#1D1D1F]">你的观测所得</p>
-            </div>
-            <div class="overflow-y-auto pr-1" style="max-height: min(calc(58dvh - 120px), 360px)">
-              <p class="mb-4 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">观测所得 (2/12)</p>
-              <div class="grid grid-cols-2 gap-3">
-                <div class="apple-card p-3">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-full" style="background: rgba(107, 191, 163, 0.15)">
-                    <span class="material-symbols-outlined text-[20px]" style="color: #6BBFA3">spa</span>
-                  </div>
-                  <p class="mt-2 text-[13px] font-medium text-[#1D1D1F]">M50 咖啡馆</p>
-                  <span class="text-[11px]" style="color: #6BBFA3">治愈系</span>
-                  <p class="mt-1.5 text-[11px] leading-4 text-[#8E8E93]" style="font-style: italic">
-                    "弥漫着浓郁豆香的艺术空间。"
-                  </p>
-                </div>
-                <div class="apple-card p-3">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-full" style="background: rgba(155, 142, 196, 0.15)">
-                    <span class="material-symbols-outlined text-[20px]" style="color: #9B8EC4">palette</span>
-                  </div>
-                  <p class="mt-2 text-[13px] font-medium text-[#1D1D1F]">Glasshouse</p>
-                  <span class="text-[11px]" style="color: #9B8EC4">创意系</span>
-                  <p class="mt-1.5 text-[11px] leading-4 text-[#8E8E93]" style="font-style: italic">
-                    "植物温室主题的社交空间。"
-                  </p>
-                </div>
-                <div v-for="i in 4" :key="i" class="apple-card flex items-center justify-center p-3 opacity-30">
-                  <span class="material-symbols-outlined text-[24px] text-[#8E8E93]">lock</span>
-                </div>
-              </div>
             </div>
           </div>
       </CenteredOverlayCard>
