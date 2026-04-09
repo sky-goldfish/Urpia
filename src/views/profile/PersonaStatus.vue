@@ -429,18 +429,29 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
                 :class="msg.role"
                 :style="{ animationDelay: `${index * 0.1}s` }"
               >
-                <div class="flex items-start gap-2">
-                  <div
-                    class="agent-avatar-xs"
-                    :class="msg.role"
-                  >
-                    <span class="text-[12px]">
-                      {{ msg.role === 'agent1' ? '👦' : '👧' }}
-                    </span>
+                <!-- Agent1 消息 - 左侧 -->
+                <div v-if="msg.role === 'agent1'" class="flex items-start gap-2">
+                  <div class="agent-avatar-xs agent1">
+                    <span class="text-[12px]">👦</span>
                   </div>
-                  <div class="agent-bubble">
+                  <div class="agent-bubble agent1-bubble">
                     <p class="text-[13px] leading-5 text-[#1D1D1F]">{{ msg.content }}</p>
                   </div>
+                </div>
+                <!-- Agent2 消息 - 右侧 -->
+                <div v-else class="flex items-start gap-2 flex-row-reverse">
+                  <div class="agent-avatar-xs agent2">
+                    <span class="text-[12px]">👧</span>
+                  </div>
+                  <div class="agent-bubble agent2-bubble">
+                    <p class="text-[13px] leading-5 text-[#1D1D1F]">{{ msg.content }}</p>
+                  </div>
+                </div>
+                <!-- 最后一条消息显示达成 emoji -->
+                <div v-if="index === agentMessages.length - 1 && !isAgentLoading" class="flex justify-center mt-3">
+                  <span class="text-[24px] animate-bounce">✨</span>
+                  <span class="text-[24px] animate-bounce" style="animation-delay: 0.1s">🎯</span>
+                  <span class="text-[24px] animate-bounce" style="animation-delay: 0.2s">✨</span>
                 </div>
               </div>
             </div>
@@ -457,6 +468,17 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
                 <span></span>
                 <span></span>
               </div>
+            </div>
+
+            <!-- 底部按钮 -->
+            <div v-if="!isAgentLoading && agentMessages.length > 0" class="mt-4 pt-3 border-t border-[#E5E5EA]/50">
+              <button
+                type="button"
+                class="w-full py-3 px-4 bg-gradient-to-r from-[#9B8EC4] to-[#6BBFA3] text-white font-medium text-[15px] rounded-[12px] hover:opacity-90 transition-opacity flex items-center justify-center"
+                @click="closeAgentDialog"
+              >
+                认识一下
+              </button>
             </div>
           </div>
         </div>
@@ -681,7 +703,17 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
   background: #F2F2F7;
   border-radius: 12px;
   padding: 10px 14px;
-  max-width: calc(100% - 40px);
+  max-width: calc(100% - 50px);
+}
+
+.agent-bubble.agent1-bubble {
+  background: linear-gradient(135deg, #E8E4F3 0%, #F0EDF7 100%);
+  border-bottom-left-radius: 4px;
+}
+
+.agent-bubble.agent2-bubble {
+  background: linear-gradient(135deg, #E0F2EC 0%, #E8F5F0 100%);
+  border-bottom-right-radius: 4px;
 }
 
 /* 正在输入指示器 */

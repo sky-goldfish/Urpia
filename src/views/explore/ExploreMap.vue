@@ -6,6 +6,7 @@ import UnifiedMapContainer from '../../components/map/UnifiedMapContainer.vue'
 import { useExploreMap } from './useExploreMap'
 import { readStoredProfileAvatarImageUrl, readStoredProfileModelUrl } from '../profile/profileModel.config'
 import { storeCatalog, type StoreCatalogItem } from '../../config/storeCatalog'
+import { exploreMoodOptions, type ExploreMoodKey } from './exploreMap.config'
 
 const {
   mapRef,
@@ -27,6 +28,24 @@ const avatarModelUrl = computed(() => readStoredProfileModelUrl())
 const avatarImageUrl = computed(() => readStoredProfileAvatarImageUrl())
 const activeEnterStore = ref<StoreCatalogItem | null>(null)
 const activeStoryStore = ref<StoreCatalogItem | null>(null)
+
+// 情绪标签切换
+const selectedMood = ref<ExploreMoodKey | null>(null)
+const isMoodSelectorOpen = ref(false)
+
+const toggleMoodSelector = () => {
+  isMoodSelectorOpen.value = !isMoodSelectorOpen.value
+}
+
+const selectMood = (mood: ExploreMoodKey) => {
+  selectedMood.value = selectedMood.value === mood ? null : mood
+  isMoodSelectorOpen.value = false
+}
+
+const clearMood = () => {
+  selectedMood.value = null
+  isMoodSelectorOpen.value = false
+}
 
 const mockStoreStories: Record<string, { text: string; images: string[] }> = {
   'seven-eleven-zhongxing': {
@@ -161,6 +180,35 @@ const enterNearestStore = () => {
   void router.push(`/poi/${activeEnterStore.value.id}/indoor`)
 }
 
+// 店铺室内场景图片列表
+const storeSceneImages = [
+  '/models/store-scenes/1 (1).png',
+  '/models/store-scenes/1 (2).png',
+  '/models/store-scenes/1 (3).png',
+  '/models/store-scenes/1 (4).png',
+  '/models/store-scenes/1 (5).png',
+  '/models/store-scenes/1 (6).png',
+  '/models/store-scenes/1 (7).png',
+  '/models/store-scenes/1 (8).png',
+  '/models/store-scenes/1 (9).png',
+]
+
+// 当前显示的室内场景图片
+const currentStoreSceneImage = ref<string | null>(null)
+const isStoreSceneModalOpen = ref(false)
+
+const enterStore = (store: StoreCatalogItem) => {
+  // 随机选择一张店铺场景图片
+  const randomIndex = Math.floor(Math.random() * storeSceneImages.length)
+  currentStoreSceneImage.value = storeSceneImages[randomIndex]
+  isStoreSceneModalOpen.value = true
+}
+
+const closeStoreSceneModal = () => {
+  isStoreSceneModalOpen.value = false
+  currentStoreSceneImage.value = null
+}
+
 const openStoreStory = (store: StoreCatalogItem) => {
   activeStoryStore.value = store
 }
@@ -201,6 +249,63 @@ const closeStoreStory = () => {
             <h1 class="mt-1 text-[24px] font-semibold text-[#1D1D1F]" style="letter-spacing: -0.5px;">城市情绪地图</h1>
           </div>
           <div class="flex items-start gap-3">
+            <!-- 情绪标签切换按钮 -->
+            <div class="relative">
+              <button
+                type="button"
+                class="flex h-11 items-center gap-1.5 rounded-full bg-white/92 px-3 shadow-[0_6px_18px_rgba(0,0,0,0.08)] transition-all"
+                :class="selectedMood ? 'ring-2' : ''"
+                :style="selectedMood ? { ringColor: exploreMoodOptions.find(m => m.key === selectedMood)?.color } : {}"
+                @click="toggleMoodSelector"
+              >
+                <span v-if="selectedMood" class="text-[20px]">{{ exploreMoodOptions.find(m => m.key === selectedMood)?.emoji }}</span>
+                <span v-else class="material-symbols-outlined text-[20px] text-[#6C6C6C]">mood</span>
+                <span v-if="selectedMood" class="text-[13px] font-medium" :style="{ color: exploreMoodOptions.find(m => m.key === selectedMood)?.color }">
+                  {{ exploreMoodOptions.find(m => m.key === selectedMood)?.label }}
+                </span>
+              </button>
+
+              <!-- 情绪标签选择器下拉菜单 -->
+              <Transition
+                enter-active-class="transition-all duration-200 ease-out"
+                enter-from-class="opacity-0 scale-95 -translate-y-2"
+                enter-to-class="opacity-100 scale-100 translate-y-0"
+                leave-active-class="transition-all duration-150 ease-in"
+                leave-from-class="opacity-100 scale-100 translate-y-0"
+                leave-to-class="opacity-0 scale-95 -translate-y-2"
+              >
+                <div
+                  v-if="isMoodSelectorOpen"
+                  class="absolute right-0 top-full mt-2 w-[160px] rounded-[16px] bg-white/95 p-2 shadow-[0_12px_40px_rgba(0,0,0,0.15)] backdrop-blur-xl"
+                >
+                  <div class="space-y-1">
+                    <button
+                      v-for="mood in exploreMoodOptions"
+                      :key="mood.key"
+                      type="button"
+                      class="flex w-full items-center gap-2 rounded-[10px] px-3 py-2.5 transition-colors hover:bg-[#F2F2F7]"
+                      :class="selectedMood === mood.key ? 'bg-[#F2F2F7]' : ''"
+                      @click="selectMood(mood.key)"
+                    >
+                      <span class="text-[18px]">{{ mood.emoji }}</span>
+                      <span class="text-[14px] font-medium text-[#1D1D1F]">{{ mood.label }}</span>
+                      <span v-if="selectedMood === mood.key" class="material-symbols-outlined ml-auto text-[16px]" :style="{ color: mood.color }">check</span>
+                    </button>
+                    <div v-if="selectedMood" class="border-t border-[#E5E5EA] pt-1 mt-1">
+                      <button
+                        type="button"
+                        class="flex w-full items-center justify-center gap-1 rounded-[10px] px-3 py-2 text-[13px] text-[#8E8E93] transition-colors hover:bg-[#F2F2F7]"
+                        @click="clearMood"
+                      >
+                        <span class="material-symbols-outlined text-[16px]">close</span>
+                        <span>清除筛选</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Transition>
+            </div>
+
             <button
               type="button"
               class="flex h-11 w-11 items-center justify-center rounded-full bg-white/92 shadow-[0_6px_18px_rgba(0,0,0,0.08)]"
@@ -253,9 +358,18 @@ const closeStoreStory = () => {
             @click.stop
           >
             <div class="mb-3 flex items-start justify-between gap-3">
-              <div>
+              <div class="flex-1">
                 <p class="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#8E8E93]">Story</p>
                 <h3 class="mt-1 text-[22px] font-semibold text-[#1D1D1F]">{{ activeStoryStore.name }}</h3>
+                <!-- 进入室内按钮 -->
+                <button
+                  type="button"
+                  class="mt-2 flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#9B8EC4] to-[#6BBFA3] px-4 py-1.5 text-[13px] font-medium text-white shadow-sm hover:opacity-90 transition-opacity"
+                  @click="enterStore(activeStoryStore)"
+                >
+                  <span class="material-symbols-outlined text-[16px]">door_open</span>
+                  <span>进入室内</span>
+                </button>
               </div>
               <button
                 type="button"
@@ -368,18 +482,29 @@ const closeStoreStory = () => {
                 :class="msg.role"
                 :style="{ animationDelay: `${index * 0.1}s` }"
               >
-                <div class="flex items-start gap-2">
-                  <div
-                    class="agent-avatar-xs"
-                    :class="msg.role"
-                  >
-                    <span class="text-[12px]">
-                      {{ msg.role === 'agent1' ? '👦' : '👧' }}
-                    </span>
+                <!-- Agent1 消息 - 左侧 -->
+                <div v-if="msg.role === 'agent1'" class="flex items-start gap-2">
+                  <div class="agent-avatar-xs agent1">
+                    <span class="text-[12px]">👦</span>
                   </div>
-                  <div class="agent-bubble">
+                  <div class="agent-bubble agent1-bubble">
                     <p class="text-[13px] leading-5 text-[#1D1D1F]">{{ msg.content }}</p>
                   </div>
+                </div>
+                <!-- Agent2 消息 - 右侧 -->
+                <div v-else class="flex items-start gap-2 flex-row-reverse">
+                  <div class="agent-avatar-xs agent2">
+                    <span class="text-[12px]">👧</span>
+                  </div>
+                  <div class="agent-bubble agent2-bubble">
+                    <p class="text-[13px] leading-5 text-[#1D1D1F]">{{ msg.content }}</p>
+                  </div>
+                </div>
+                <!-- 最后一条消息显示达成 emoji -->
+                <div v-if="index === agentMessages.length - 1 && !isAgentLoading" class="flex justify-center mt-3">
+                  <span class="text-[24px] animate-bounce">✨</span>
+                  <span class="text-[24px] animate-bounce" style="animation-delay: 0.1s">🎯</span>
+                  <span class="text-[24px] animate-bounce" style="animation-delay: 0.2s">✨</span>
                 </div>
               </div>
             </div>
@@ -397,7 +522,48 @@ const closeStoreStory = () => {
                 <span></span>
               </div>
             </div>
+
+            <!-- 底部按钮 -->
+            <div v-if="!isAgentLoading && agentMessages.length > 0" class="mt-4 pt-3 border-t border-[#E5E5EA]/50">
+              <button
+                type="button"
+                class="w-full py-3 px-4 bg-gradient-to-r from-[#9B8EC4] to-[#6BBFA3] text-white font-medium text-[15px] rounded-[12px] hover:opacity-90 transition-opacity flex items-center justify-center"
+                @click="closeAgentDialog"
+              >
+                认识一下
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
+
+  <!-- 店铺室内场景弹窗 -->
+  <Teleport to="body">
+    <Transition name="store-scene">
+      <div
+        v-if="isStoreSceneModalOpen"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+        @click.self="closeStoreSceneModal"
+      >
+        <div class="relative max-h-[90vh] max-w-[90vw] overflow-hidden rounded-[20px] shadow-[0_24px_80px_rgba(0,0,0,0.4)]">
+          <!-- 关闭按钮 -->
+          <button
+            type="button"
+            class="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-opacity hover:bg-black/60"
+            @click="closeStoreSceneModal"
+          >
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+
+          <!-- 图片 -->
+          <img
+            v-if="currentStoreSceneImage"
+            :src="currentStoreSceneImage"
+            alt="店铺室内场景"
+            class="max-h-[85vh] max-w-[85vw] object-contain"
+          />
         </div>
       </div>
     </Transition>
@@ -640,6 +806,28 @@ const closeStoreStory = () => {
   transition: all 0.3s ease;
 }
 
+/* 店铺室内场景弹窗动画 */
+.store-scene-enter-active,
+.store-scene-leave-active {
+  transition: all 0.3s ease;
+}
+
+.store-scene-enter-from,
+.store-scene-leave-to {
+  opacity: 0;
+}
+
+.store-scene-enter-from img,
+.store-scene-leave-to img {
+  transform: scale(0.9);
+  opacity: 0;
+}
+
+.store-scene-enter-active img,
+.store-scene-leave-active img {
+  transition: all 0.3s ease;
+}
+
 /* 消息气泡 */
 .agent-message {
   animation: messageSlideIn 0.4s ease forwards;
@@ -658,7 +846,17 @@ const closeStoreStory = () => {
   background: #F2F2F7;
   border-radius: 12px;
   padding: 10px 14px;
-  max-width: calc(100% - 40px);
+  max-width: calc(100% - 50px);
+}
+
+.agent-bubble.agent1-bubble {
+  background: linear-gradient(135deg, #E8E4F3 0%, #F0EDF7 100%);
+  border-bottom-left-radius: 4px;
+}
+
+.agent-bubble.agent2-bubble {
+  background: linear-gradient(135deg, #E0F2EC 0%, #E8F5F0 100%);
+  border-bottom-right-radius: 4px;
 }
 
 /* 正在输入指示器 */

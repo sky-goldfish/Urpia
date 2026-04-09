@@ -108,6 +108,9 @@ const characterRecords = new Map<string, CharacterRenderRecord>()
 // POI 标记点记录
 const poiMarkers = new Map<string, any>()
 
+// 用户头像标记
+let userAvatarMarker: any = null
+
 // 初始化地图
 const initMap = async () => {
   if (!mapContainer.value) return
@@ -163,6 +166,9 @@ const initMap = async () => {
 
     // 同步人物模型
     syncCharacterModels()
+
+    // 创建用户头像标记
+    createUserAvatarMarker(AMap)
 
     isReady.value = true
     emit('ready', mapInstance)
@@ -782,6 +788,71 @@ const clearPOIMarkers = () => {
   poiMarkers.clear()
 }
 
+// 创建用户圆形头像标记
+const createUserAvatarMarker = (AMap: any) => {
+  if (!map.value || !props.avatarImageUrl) return
+  
+  // 如果标记已存在，先移除
+  if (userAvatarMarker) {
+    map.value.remove(userAvatarMarker)
+    userAvatarMarker = null
+  }
+  
+  // 创建圆形头像图标
+  const avatarUrl = props.avatarImageUrl
+  const size = 48
+  
+  // 使用 canvas 创建圆形头像
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')
+  
+  if (ctx) {
+    // 绘制圆形背景
+    ctx.beginPath()
+    ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2)
+    ctx.fillStyle = '#fff'
+    ctx.fill()
+    ctx.lineWidth = 3
+    ctx.strokeStyle = '#9B8EC4'
+    ctx.stroke()
+    
+    // 加载并绘制头像图片
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => {
+      ctx.save()
+      ctx.beginPath()
+      ctx.arc(size / 2, size / 2, size / 2 - 5, 0, Math.PI * 2)
+      ctx.clip()
+      ctx.drawImage(img, 0, 0, size, size)
+      ctx.restore()
+      
+      // 创建图标
+      const iconUrl = canvas.toDataURL()
+      const icon = new AMap.Icon({
+        size: new AMap.Size(size, size),
+        image: iconUrl,
+        imageSize: new AMap.Size(size, size),
+      })
+      
+      // 创建标记
+      userAvatarMarker = new AMap.Marker({
+        position: props.avatarInitialPosition,
+        anchor: 'center',
+        offset: new AMap.Pixel(0, 0),
+        icon: icon,
+        zIndex: 100,
+      })
+      
+      // 添加到地图
+      map.value.add(userAvatarMarker)
+    }
+    img.src = avatarUrl
+  }
+}
+
 // 适配商店模型
 const fitStoreModel = (root: THREE.Object3D, store: StoreCatalogItem) => {
   const box = new THREE.Box3().setFromObject(root)
@@ -827,6 +898,12 @@ watch(() => props.avatarInitialPosition, () => {
   syncCharacterModels()
 })
 
+watch(() => props.avatarImageUrl, () => {
+  if (map.value) {
+    createUserAvatarMarker(map.value)
+  }
+})
+
 // 生命周期
 onMounted(() => {
   initMap()
@@ -835,7 +912,13 @@ onMounted(() => {
 onUnmounted(() => {
   // 清除所有 POI 标记
   clearPOIMarkers()
-  
+
+  // 清除用户头像标记
+  if (map.value && userAvatarMarker) {
+    map.value.remove(userAvatarMarker)
+    userAvatarMarker = null
+  }
+
   if (map.value) {
     map.value.destroy()
     map.value = null
