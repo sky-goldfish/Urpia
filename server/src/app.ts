@@ -6,6 +6,7 @@ import { matchesRouter } from './routes/matches.js'
 import { onboardingRouter } from './routes/onboarding.js'
 import { meRouter } from './routes/me.js'
 import { poisRouter } from './routes/pois.js'
+import { profileAgentRouter } from './routes/profile-agent.js'
 
 export const createApp = () => {
   const app = express()
@@ -23,6 +24,7 @@ export const createApp = () => {
   app.use('/api/discovery', discoveryRouter)
   app.use('/api/matches', matchesRouter)
   app.use('/api/me', meRouter)
+  app.use('/api/profile-agent', profileAgentRouter)
 
   app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     if (error instanceof ApiError) {

@@ -3,7 +3,11 @@ import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import OnboardingStepHeader from '../../components/ui/OnboardingStepHeader.vue'
 import { confirmPersonaContent, onboardingModelOptions } from './onboarding.config'
-import { writeStoredProfileModelUrl, writeStoredProfileNickname } from '../profile/profileModel.config'
+import {
+  writeStoredProfileAvatarUrl,
+  writeStoredProfileModelUrl,
+  writeStoredProfileNickname
+} from '../profile/profileModel.config'
 
 const ProfileAvatar3D = defineAsyncComponent(() => import('../../components/profile/ProfileAvatar3D.vue'))
 
@@ -41,6 +45,7 @@ const handleLoadingChange = (loading: boolean) => {
 
 const handleConfirm = () => {
   writeStoredProfileModelUrl(selectedModel.value.modelUrl)
+  writeStoredProfileAvatarUrl(selectedModel.value.fallbackImage)
   // 优先使用用户输入的昵称，如果没有则使用模型名称
   const nicknameToSave = userNickname.value || selectedModel.value.label
   writeStoredProfileNickname(nicknameToSave)

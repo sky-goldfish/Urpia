@@ -8,16 +8,21 @@ datasource db {
 }
 
 model User {
-  id          String       @id @default(cuid())
-  nickname    String
-  avatarUrl   String
-  mbti        String?
-  bio         String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  persona     Persona?
-  discoveries Discovery[]
-  matches     Match[]
+  id                   String                @id @default(cuid())
+  nickname             String
+  avatarUrl            String
+  mbti                 String?
+  bio                  String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  persona              Persona?
+  discoveries          Discovery[]
+  matches              Match[]
+  profileAgentSessions ProfileAgentSession[]
+  profileAgentTurns    ProfileAgentTurn[]
+  profileMemoryItems   ProfileMemoryItem[]
+  profilePersonaTraits ProfilePersonaTrait[]
+  profileMemoryJobs    ProfileMemoryJob[]
 }
 
 model Persona {
@@ -39,6 +44,127 @@ model OnboardingSession {
   extractedProfileJson String
   status               String
   createdAt            DateTime @default(now())
+  turns                OnboardingTurn[]
+  memoryJobs           ProfileMemoryJob[]
+}
+
+model OnboardingTurn {
+  id                  String            @id @default(cuid())
+  sessionId           String
+  userId              String?
+  turnIndex           Int
+  assistantPromptText String
+  userInputMode       String
+  userAudioUrl        String?
+  asrText             String?
+  userText            String?
+  normalizedUserText  String
+  assistantReplyText  String
+  createdAt           DateTime          @default(now())
+  session             OnboardingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  memoryJobs          ProfileMemoryJob[]
+
+  @@unique([sessionId, turnIndex])
+}
+
+model ProfileAgentSession {
+  id               String             @id @default(cuid())
+  userId           String
+  status           String
+  triggerType      String
+  summary          String?
+  moodSnapshotJson String
+  startedAt        DateTime           @default(now())
+  endedAt          DateTime?
+  lastTurnAt       DateTime?
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  turns            ProfileAgentTurn[]
+  memoryJobs       ProfileMemoryJob[]
+
+  @@index([userId, status])
+}
+
+model ProfileAgentTurn {
+  id                     String              @id @default(cuid())
+  sessionId              String
+  userId                 String
+  turnIndex              Int
+  agentPromptText        String
+  agentPromptAudioUrl    String?
+  userAudioUrl           String?
+  userTranscriptText     String
+  assistantReplyText     String
+  assistantReplyAudioUrl String?
+  inputMode              String
+  asrProvider            String
+  llmProvider            String
+  ttsProvider            String
+  createdAt              DateTime            @default(now())
+  session                ProfileAgentSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user                   User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  memoryJobs             ProfileMemoryJob[]
+
+  @@unique([sessionId, turnIndex])
+  @@index([userId, createdAt])
+}
+
+model ProfileMemoryItem {
+  id              String   @id @default(cuid())
+  userId          String
+  sourceType      String
+  sourceSessionId String
+  memoryType      String
+  title           String
+  summary         String
+  evidenceJson    String
+  confidence      Float
+  importance      Int
+  isVisible       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, sourceType, isVisible])
+}
+
+model ProfilePersonaTrait {
+  id             String   @id @default(cuid())
+  userId         String
+  traitKey       String
+  traitLabel     String
+  traitValue     String
+  score          Float
+  sourceMemoryId String?
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, traitKey])
+}
+
+model ProfileMemoryJob {
+  id                    String             @id @default(cuid())
+  userId                String?
+  sourceType            String
+  sessionId             String
+  turnId                String?
+  jobType               String
+  status                String
+  attemptCount          Int                @default(0)
+  errorMessage          String?
+  scheduledAt           DateTime           @default(now())
+  finishedAt            DateTime?
+  profileAgentSessionId String?
+  profileAgentTurnId    String?
+  onboardingSessionId   String?
+  onboardingTurnId      String?
+  user                  User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileAgentSession   ProfileAgentSession? @relation(fields: [profileAgentSessionId], references: [id], onDelete: Cascade)
+  profileAgentTurn      ProfileAgentTurn?  @relation(fields: [profileAgentTurnId], references: [id], onDelete: Cascade)
+  onboardingSession     OnboardingSession? @relation(fields: [onboardingSessionId], references: [id], onDelete: Cascade)
+  onboardingTurn        OnboardingTurn?    @relation(fields: [onboardingTurnId], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduledAt])
+  @@index([sourceType, sessionId])
 }
 
 model Poi {

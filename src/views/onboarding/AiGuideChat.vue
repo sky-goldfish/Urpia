@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import ActivityDots from '../../components/ui/ActivityDots.vue'
 import { useOnboardingChat } from './useOnboardingChat'
@@ -13,19 +14,26 @@ const handleBack = () => {
 
 const {
   messages,
+  currentQuestion,
   inputText,
   inputMode,
   isAiTyping,
+  isStreamingQuestion,
   chatEndRef,
   isRecording,
   speechSupported,
   canSend,
   handleSend,
+  startSession,
   switchToTextMode,
   switchToVoiceMode,
   startRecording,
   stopRecording,
 } = useOnboardingChat()
+
+onMounted(async () => {
+  await startSession()
+})
 </script>
 
 <template>
@@ -86,7 +94,18 @@ const {
             </div>
           </article>
 
-          <div v-if="isAiTyping" class="message-row message-row-ai">
+          <div v-if="isStreamingQuestion" class="message-row message-row-ai">
+            <img
+              :src="guideAvatarUrl"
+              :alt="onboardingChatContent.title"
+              class="message-avatar"
+            />
+            <div class="message-bubble message-bubble-ai">
+              {{ currentQuestion || '...' }}
+            </div>
+          </div>
+
+          <div v-else-if="isAiTyping" class="message-row message-row-ai">
             <img
               :src="guideAvatarUrl"
               :alt="onboardingChatContent.title"

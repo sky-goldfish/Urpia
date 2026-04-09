@@ -1,224 +1,224 @@
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { onboardingFollowUps } from './onboarding.config'
+import { apiClient } from '../../lib/api'
+import { useOnboardingChatStore } from '../../stores/onboardingChat'
+import type {
+  OnboardingMessage,
+  PersonaConfirmResponse,
+  OnboardingSessionStartResponse,
+  OnboardingTurnResponse
+} from '../../types/onboardingChat'
+import {
+  readStoredProfileAvatarUrl,
+  readStoredProfileNickname,
+  writeStoredProfileUserId
+} from '../profile/profileModel.config'
 
-interface Message {
-  id: number
-  role: 'ai' | 'user'
-  text: string
-}
+const STREAM_CHUNK_MS = Number(import.meta.env.VITE_ONBOARDING_STREAM_CHUNK_MS ?? 28)
 
-type InputMode = 'voice' | 'text'
-
-interface BrowserSpeechRecognitionEvent {
-  results: SpeechRecognitionResultList
-}
-
-interface BrowserSpeechRecognition {
-  lang: string
-  interimResults: boolean
-  continuous: boolean
-  onresult: ((event: BrowserSpeechRecognitionEvent) => void) | null
-  onend: (() => void) | null
-  onerror: (() => void) | null
-  start: () => void
-  stop: () => void
-}
-
-type SpeechRecognitionConstructor = new () => BrowserSpeechRecognition
+const sleep = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms))
 
 export const useOnboardingChat = () => {
   const router = useRouter()
-  const messages = ref<Message[]>([])
+  const store = useOnboardingChatStore()
   const inputText = ref('')
-  const inputMode = ref<InputMode>('voice')
-  const isAiTyping = ref(false)
   const chatEndRef = ref<HTMLDivElement | null>(null)
   const isRecording = ref(false)
-  const speechSupported = ref(false)
+  const speechSupported = ref(
+    typeof window !== 'undefined' &&
+      typeof MediaRecorder !== 'undefined' &&
+      typeof navigator !== 'undefined' &&
+      !!navigator.mediaDevices?.getUserMedia
+  )
 
-  let recognition: BrowserSpeechRecognition | null = null
-  let msgId = 0
-  let userReplyCount = 0
-  let initialized = false
+  let msgId = store.messages.length
+  let recorder: MediaRecorder | null = null
+  let stream: MediaStream | null = null
+  let recordedChunks: BlobPart[] = []
 
   const scrollToBottom = async () => {
     await nextTick()
     chatEndRef.value?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  const sendMessageToLLM = async (): Promise<string> => {
-    const index = Math.min(userReplyCount, onboardingFollowUps.length - 1)
-    const reply =
-      onboardingFollowUps[index] ??
-      onboardingFollowUps[onboardingFollowUps.length - 1] ??
-      '了解你了，我们继续。'
-
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(reply), 600 + Math.random() * 800)
-    })
+  const pushMessage = (role: OnboardingMessage['role'], text: string) => {
+    store.messages.push({ id: ++msgId, role, text })
+    void scrollToBottom()
   }
 
-  const addAiMessage = (text: string) => {
-    if (text.startsWith('[DONE]')) {
-      const cleanText = text.replace(/^\[DONE\]\s*/, '')
-      messages.value.push({ id: ++msgId, role: 'ai', text: cleanText })
-      void scrollToBottom()
-      window.setTimeout(() => {
-        void router.push('/map')
-      }, 1200)
+  const streamQuestion = async (text: string) => {
+    store.isStreamingQuestion = true
+    store.currentQuestion = ''
+
+    for (const char of text) {
+      store.currentQuestion += char
+      await sleep(STREAM_CHUNK_MS)
+    }
+
+    pushMessage('ai', text)
+    store.isStreamingQuestion = false
+  }
+
+  const finishIfDone = async (done: boolean) => {
+    if (!done) {
       return
     }
 
-    messages.value.push({ id: ++msgId, role: 'ai', text })
-    void scrollToBottom()
+    const confirmed = await apiClient.postJson<PersonaConfirmResponse>('/api/personas/confirm', {
+      sessionId: store.sessionId,
+      nickname: readStoredProfileNickname(),
+      avatarUrl: readStoredProfileAvatarUrl()
+    })
+
+    writeStoredProfileUserId(confirmed.user.id)
+    window.setTimeout(() => {
+      void router.push('/map')
+    }, 1200)
   }
 
-  const addUserMessage = (text: string) => {
-    messages.value.push({ id: ++msgId, role: 'user', text })
-    void scrollToBottom()
+  const startSession = async () => {
+    const data = await apiClient.postJson<OnboardingSessionStartResponse>('/api/onboarding/session', {})
+    store.sessionId = data.sessionId
+    store.questionIndex = data.questionIndex
+    store.totalQuestions = data.totalQuestions
+    await streamQuestion(data.questionText)
   }
 
-  const handleSend = async () => {
-    const text = inputText.value.trim()
-    if (!text || isAiTyping.value) return
+  const submitText = async (text: string) => {
+    const normalized = text.trim()
+    if (!normalized || store.isSubmitting || store.isStreamingQuestion) {
+      return null
+    }
 
-    addUserMessage(text)
+    store.isSubmitting = true
+    pushMessage('user', normalized)
     inputText.value = ''
-    userReplyCount++
-    isAiTyping.value = true
 
     try {
-      const reply = await sendMessageToLLM()
-      isAiTyping.value = false
-      addAiMessage(reply)
-    } catch {
-      isAiTyping.value = false
-      addAiMessage('网络好像走神了，能再说一次吗？')
+      const data = await apiClient.postJson<OnboardingTurnResponse>('/api/onboarding/turns/text', {
+        sessionId: store.sessionId,
+        text: normalized
+      })
+
+      await streamQuestion(data.reply)
+      await finishIfDone(data.done)
+      return data
+    } finally {
+      store.isSubmitting = false
     }
   }
 
-  const canSend = () => inputText.value.trim().length > 0 && !isAiTyping.value
-
-  const switchToTextMode = () => {
-    if (isRecording.value && recognition) {
-      recognition.stop()
-      isRecording.value = false
+  const submitVoice = async (audioBlob: Blob) => {
+    if (store.isSubmitting || store.isStreamingQuestion) {
+      return null
     }
 
-    inputMode.value = 'text'
+    store.isSubmitting = true
+
+    try {
+      const form = new FormData()
+      form.append('sessionId', store.sessionId)
+      form.append('audio', audioBlob, 'onboarding.webm')
+
+      const data = await apiClient.postForm<OnboardingTurnResponse>('/api/onboarding/turns/voice', form)
+      if (data.transcript) {
+        pushMessage('user', data.transcript)
+      }
+
+      await streamQuestion(data.reply)
+      await finishIfDone(data.done)
+      return data
+    } finally {
+      store.isSubmitting = false
+    }
+  }
+
+  const handleSend = async () => submitText(inputText.value)
+
+  const canSend = () => inputText.value.trim().length > 0 && !store.isSubmitting && !store.isStreamingQuestion
+
+  const switchToTextMode = () => {
+    if (isRecording.value) {
+      void stopRecording()
+    }
+
+    store.inputMode = 'text'
   }
 
   const switchToVoiceMode = () => {
-    if (!speechSupported.value) return
-    inputMode.value = 'voice'
-  }
-
-  const initSpeechRecognition = () => {
-    const SpeechRecognitionAPI = ((window as Window & {
-      SpeechRecognition?: SpeechRecognitionConstructor
-      webkitSpeechRecognition?: SpeechRecognitionConstructor
-    }).SpeechRecognition ||
-      (window as Window & { webkitSpeechRecognition?: SpeechRecognitionConstructor }).webkitSpeechRecognition)
-
-    if (!SpeechRecognitionAPI) {
-      speechSupported.value = false
-      inputMode.value = 'text'
+    if (!speechSupported.value) {
       return
     }
 
-    speechSupported.value = true
-    inputMode.value = 'voice'
-    recognition = new SpeechRecognitionAPI()
-    recognition.lang = 'zh-CN'
-    recognition.interimResults = true
-    recognition.continuous = false
+    store.inputMode = 'voice'
+  }
 
-    recognition.onresult = (event: BrowserSpeechRecognitionEvent) => {
-      let transcript = ''
-      for (let i = 0; i < event.results.length; i++) {
-        const result = event.results[i]
-        const alternative = result?.[0]
-        if (alternative) {
-          transcript += alternative.transcript
-        }
-      }
-      inputText.value = transcript
+  const startRecording = async () => {
+    if (!speechSupported.value || store.isSubmitting || store.isStreamingQuestion || isRecording.value) {
+      return
     }
 
-    recognition.onend = () => {
-      isRecording.value = false
-      if (inputMode.value === 'voice' && inputText.value.trim()) {
-        void handleSend()
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    recordedChunks = []
+    recorder = new MediaRecorder(stream)
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        recordedChunks.push(event.data)
       }
     }
 
-    recognition.onerror = () => {
-      isRecording.value = false
-    }
+    recorder.start()
+    isRecording.value = true
   }
 
-  const startRecording = () => {
-    if (!recognition || isAiTyping.value) return
-    inputText.value = ''
-
-    try {
-      recognition.start()
-      isRecording.value = true
-    } catch {
-      // Ignore duplicate start errors from rapid interaction.
+  const stopRecording = async () => {
+    if (!recorder || !isRecording.value) {
+      return
     }
-  }
 
-  const stopRecording = () => {
-    if (!recognition || !isRecording.value) return
-    recognition.stop()
+    const activeRecorder = recorder
+    const activeStream = stream
+
     isRecording.value = false
-  }
 
-  onBeforeUnmount(() => {
-    if (recognition) {
-      recognition.onend = null
-      recognition.onerror = null
-      try {
-        recognition.stop()
-      } catch {
-        // noop
+    const audioBlob = await new Promise<Blob>((resolve) => {
+      activeRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: activeRecorder.mimeType || 'audio/webm' })
+        recordedChunks = []
+        resolve(blob)
       }
+
+      activeRecorder.stop()
+      activeStream?.getTracks().forEach((track) => track.stop())
+    })
+
+    recorder = null
+    stream = null
+
+    if (audioBlob.size > 0) {
+      await submitVoice(audioBlob)
     }
-  })
-
-  onMounted(async () => {
-    if (initialized) return
-    initialized = true
-
-    initSpeechRecognition()
-    isAiTyping.value = true
-    void scrollToBottom()
-
-    try {
-      const reply = await sendMessageToLLM()
-      isAiTyping.value = false
-      addAiMessage(reply)
-    } catch {
-      isAiTyping.value = false
-      addAiMessage('嗨，想先聊聊你平时的社交习惯吗？')
-    }
-  })
+  }
 
   return {
-    messages,
+    sessionId: computed(() => store.sessionId),
+    currentQuestion: computed(() => store.currentQuestion),
+    messages: computed(() => store.messages),
     inputText,
-    inputMode,
-    isAiTyping,
+    inputMode: computed(() => store.inputMode),
+    isAiTyping: computed(() => store.isStreamingQuestion || store.isSubmitting),
+    isStreamingQuestion: computed(() => store.isStreamingQuestion),
     chatEndRef,
     isRecording,
     speechSupported,
     canSend,
     handleSend,
+    submitText,
+    submitVoice,
+    startSession,
     switchToTextMode,
     switchToVoiceMode,
     startRecording,
-    stopRecording,
+    stopRecording
   }
 }

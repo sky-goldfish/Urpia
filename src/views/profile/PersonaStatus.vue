@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, ref } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import ProfileVoiceButton from '../../components/profile/ProfileVoiceButton.vue'
 import TabBar from '../../components/ui/TabBar.vue'
 import CenteredOverlayCard from '../../components/ui/CenteredOverlayCard.vue'
 import { personaBubbleCards, personaMoodAttrs, type PersonaBubbleCard } from './personaStatus.config'
-import { readStoredProfileModelUrl, readStoredProfileNickname } from './profileModel.config'
+import { readStoredProfileAvatarUrl, readStoredProfileModelUrl, readStoredProfileNickname } from './profileModel.config'
+import { useProfileAgent } from './useProfileAgent'
 
 const ProfileAvatar3D = defineAsyncComponent(() => import('../../components/profile/ProfileAvatar3D.vue'))
 
 const router = useRouter()
 
 const nickname = ref(readStoredProfileNickname())
-const avatarUrl = '/avatars/4c4eae51-6996-40bf-b175-5a2e692a1301.jpg'
-const bio = '一个热爱在咖啡香中寻找灵感的自由灵魂～'
+const avatarUrl = readStoredProfileAvatarUrl()
 const profileModelUrl = readStoredProfileModelUrl()
 const areBubblesVisible = ref(true)
+const { memories, traits, promptText, isLoadingMemories, isRecording, speechSupported, bootstrap, startRecording, stopRecording } = useProfileAgent()
 
 // 当前展开的气泡详情
 type BubbleId = 'mood' | 'bio' | 'encounter' | 'collection' | null
@@ -47,8 +49,16 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
     return `${topMood.value.name} ${topMood.value.value}%`
   }
 
+  if (bubble.id === 'bio') {
+    return memories.value.length > 0 ? `${memories.value.length}条` : '记忆'
+  }
+
   return bubble.chip
 }
+
+onMounted(async () => {
+  await bootstrap()
+})
 </script>
 
 <template>
@@ -114,8 +124,19 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
             class="mt-1.5 inline-block rounded-[999px] px-2.5 py-0.5 text-[13px] font-medium"
             style="background: rgba(155, 142, 196, 0.12); color: #9B8EC4; border: 1px solid rgba(155, 142, 196, 0.25)"
           >
-            ENFP
+            {{ traits[0]?.label ?? '陪伴型分身' }}
           </span>
+          <p v-if="promptText" class="mt-4 max-w-[280px] text-center text-[14px] leading-6 text-[#6C6C70]">
+            {{ promptText }}
+          </p>
+          <div class="mt-5">
+            <ProfileVoiceButton
+              :is-recording="isRecording"
+              :disabled="!speechSupported"
+              @hold-start="startRecording"
+              @hold-end="stopRecording"
+            />
+          </div>
         </div>
 
       </section>
@@ -157,23 +178,28 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
             class="space-y-4"
           >
             <div class="rounded-[18px] bg-[#F2F2F7] px-4 py-3">
-              <p class="text-[12px] font-semibold uppercase text-[#8E8E93]" style="letter-spacing: 0.12em">Bio Note</p>
-              <p class="mt-1 text-[17px] font-semibold text-[#1D1D1F]">你的灵感自白</p>
+              <p class="text-[12px] font-semibold uppercase text-[#8E8E93]" style="letter-spacing: 0.12em">Memory Vault</p>
+              <p class="mt-1 text-[17px] font-semibold text-[#1D1D1F]">长期记忆</p>
             </div>
-            <div class="flex max-h-[min(calc(58dvh-120px),360px)] flex-col items-center overflow-y-auto">
-              <p class="mb-6 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">灵感自白</p>
-              <div class="flex w-full flex-1 items-center justify-center py-8">
-                <p class="text-center text-[20px] font-normal leading-8 text-[#1D1D1F]/80" style="letter-spacing: -0.3px">
-                  "{{ bio }}"
-                </p>
+            <div class="max-h-[min(calc(58dvh-120px),360px)] overflow-y-auto pr-1">
+              <p class="mb-4 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">被悄悄整理好的你</p>
+              <div v-if="isLoadingMemories" class="apple-card p-4">
+                <p class="text-[14px] leading-6 text-[#6C6C70]">分身正在整理你的长期记忆...</p>
               </div>
-              <button
-                type="button"
-                class="secondary-button w-full py-3 text-[15px]"
-                style="letter-spacing: -0.224px"
-              >
-                编辑自白
-              </button>
+              <div v-else-if="memories.length === 0" class="apple-card p-4">
+                <p class="text-[14px] leading-6 text-[#6C6C70]">分身还在慢慢认识你。等你和它聊过几轮之后，这里会出现被整理好的长期记忆。</p>
+              </div>
+              <div v-else class="space-y-3">
+                <div v-for="memory in memories" :key="memory.id" class="apple-card p-4">
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <p class="text-[15px] font-medium text-[#1D1D1F]">{{ memory.title }}</p>
+                      <p class="mt-2 text-[13px] leading-6 text-[#6C6C70]">{{ memory.summary }}</p>
+                    </div>
+                    <span class="shrink-0 text-[11px] font-medium text-[#9B8EC4]">{{ Math.round(memory.confidence * 100) }}%</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

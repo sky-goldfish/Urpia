@@ -1,10 +1,16 @@
 import { randomUUID } from 'node:crypto'
 import { Router } from 'express'
+import multer from 'multer'
 import { prisma } from '../lib/prisma.js'
 import { ApiError } from '../lib/errors.js'
 import { draftPersona, onboardingPrompts } from '../lib/rules.js'
+import {
+  submitOnboardingTextTurn,
+  submitOnboardingVoiceTurn
+} from '../services/onboarding/onboardingTurnService.js'
 
 export const onboardingRouter = Router()
+const upload = multer()
 
 onboardingRouter.post('/session', async (_req, res) => {
   const session = await prisma.onboardingSession.create({
@@ -19,6 +25,10 @@ onboardingRouter.post('/session', async (_req, res) => {
   res.json({
     sessionId: session.id,
     reply: onboardingPrompts[0],
+    questionText: onboardingPrompts[0],
+    questionIndex: 1,
+    totalQuestions: onboardingPrompts.length,
+    streamMode: 'typewriter',
     personaDraft: draftPersona([])
   })
 })
@@ -30,30 +40,47 @@ onboardingRouter.post('/chat', async (req, res, next) => {
       throw new ApiError(400, 'INVALID_REQUEST', '缺少会话或消息')
     }
 
-    const session = await prisma.onboardingSession.findUnique({ where: { id: sessionId } })
-    if (!session) {
-      throw new ApiError(404, 'SESSION_NOT_FOUND', 'onboarding 会话不存在')
-    }
-
-    const messages = JSON.parse(session.messagesJson) as string[]
-    messages.push(message)
-    const personaDraft = draftPersona(messages)
-    const done = messages.length >= onboardingPrompts.length
-
-    await prisma.onboardingSession.update({
-      where: { id: sessionId },
-      data: {
-        messagesJson: JSON.stringify(messages),
-        extractedProfileJson: JSON.stringify(personaDraft),
-        status: done ? 'completed' : 'active'
-      }
-    })
+    const result = await submitOnboardingTextTurn(sessionId, message)
 
     res.json({
-      reply: done ? '了解你了，正在生成你的分身...' : onboardingPrompts[messages.length],
-      progress: messages.length,
-      personaDraft,
-      done
+      reply: result.reply,
+      progress: result.turn.turnIndex,
+      personaDraft: result.personaDraft,
+      done: result.done,
+      turnId: result.turn.id
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+onboardingRouter.post('/turns/text', async (req, res, next) => {
+  try {
+    const result = await submitOnboardingTextTurn(String(req.body.sessionId ?? ''), String(req.body.text ?? ''))
+    res.json({
+      reply: result.reply,
+      done: result.done,
+      turnId: result.turn.id,
+      personaDraft: result.personaDraft
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+onboardingRouter.post('/turns/voice', upload.single('audio'), async (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw new ApiError(400, 'ONBOARDING_AUDIO_REQUIRED', '请上传语音内容')
+    }
+
+    const result = await submitOnboardingVoiceTurn(String(req.body.sessionId ?? ''), req.file.buffer)
+    res.json({
+      reply: result.reply,
+      done: result.done,
+      turnId: result.turn.id,
+      transcript: result.turn.normalizedUserText,
+      personaDraft: result.personaDraft
     })
   } catch (error) {
     next(error)
