@@ -48,6 +48,44 @@ const fallbackStory = {
   images: ['/avatars/girl-01.jpg', '/avatars/boy-01.jpg', '/avatars/girl-02.jpg'],
 }
 
+// Agent LLM 对话相关
+const isAgentDialogOpen = ref(false)
+const isAgentLoading = ref(false)
+const agentMessages = ref<Array<{ role: 'agent1' | 'agent2'; content: string }>>([])
+
+// 模拟 Agent 对话数据
+const mockAgentConversation = [
+  { role: 'agent1' as const, content: '我注意到用户最近经常去咖啡馆，尤其是晚上。' },
+  { role: 'agent2' as const, content: '是的，而且他在长泰广场停留的时间最长，可能喜欢那里的氛围。' },
+  { role: 'agent1' as const, content: '他的情绪标签显示「温和」占比最高，说明他最近状态比较稳定。' },
+  { role: 'agent2' as const, content: '不过昨天深夜的活跃度有点异常，可能是有心事？' },
+  { role: 'agent1' as const, content: '我查了一下，他收藏了几篇关于「独处与陪伴」的文章。' },
+  { role: 'agent2' as const, content: '看来他在思考人际关系的话题，我们可以推荐一些社交活动。' },
+  { role: 'agent1' as const, content: '他关注的城市探索类内容增加了40%，可能对线下活动感兴趣。' },
+  { role: 'agent2' as const, content: '要不要推送「城市漫步」主题的 meetup 给他？' },
+  { role: 'agent1' as const, content: '好主意，匹配度87%的「慢慢」也喜欢这类活动。' },
+  { role: 'agent2' as const, content: '已生成推荐卡片，等他下次打开应用时展示。' },
+]
+
+const openAgentDialog = async () => {
+  isAgentDialogOpen.value = true
+  isAgentLoading.value = true
+  agentMessages.value = []
+
+  // 模拟加载过程，逐条显示对话
+  for (let i = 0; i < mockAgentConversation.length; i++) {
+    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 600))
+    agentMessages.value.push(mockAgentConversation[i])
+  }
+
+  isAgentLoading.value = false
+}
+
+const closeAgentDialog = () => {
+  isAgentDialogOpen.value = false
+  agentMessages.value = []
+}
+
 const activeStoryContent = computed(() => {
   if (!activeStoryStore.value) {
     return null
@@ -245,9 +283,125 @@ const closeStoreStory = () => {
         </div>
       </Transition>
 
+      <!-- Agent LLM 卡片 - 放在 Menu 栏上方 -->
+      <div class="absolute bottom-[calc(74px+env(safe-area-inset-bottom)+8px)] left-4 right-4 z-20">
+        <div
+          class="agent-llm-card cursor-pointer"
+          @click="openAgentDialog"
+        >
+          <div class="flex items-center justify-center gap-3 py-3">
+            <!-- Agent 1 头像 - 男孩子 -->
+            <div class="agent-avatar agent-1">
+              <span class="text-[20px]">👦</span>
+            </div>
+
+            <!-- 脉冲连接线 -->
+            <div class="pulse-line">
+              <div class="pulse-dot"></div>
+              <div class="dashed-line"></div>
+            </div>
+
+            <!-- Agent 2 头像 - 女孩子 -->
+            <div class="agent-avatar agent-2">
+              <span class="text-[20px]">👧</span>
+            </div>
+          </div>
+          <p class="text-center text-[12px] text-[#8E8E93] mt-1 pb-2">您的分身找到新的匹配灵魂了</p>
+        </div>
+      </div>
+
       <TabBar />
     </div>
   </main>
+
+  <!-- Agent 对话弹窗 -->
+  <Teleport to="body">
+    <Transition name="agent-dialog">
+      <div
+        v-if="isAgentDialogOpen"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+        @click.self="closeAgentDialog"
+      >
+        <div class="agent-dialog-content w-full max-w-[380px] max-h-[70dvh] rounded-[24px] border border-[#E5E5EA] bg-white/95 shadow-[0_24px_60px_rgba(0,0,0,0.2)] backdrop-blur-xl overflow-hidden">
+          <!-- 头部 -->
+          <div class="flex items-center justify-between px-5 py-4 border-b border-[#E5E5EA]/50">
+            <div class="flex items-center gap-3">
+              <div class="flex -space-x-2">
+                <div class="agent-avatar-small agent-1">
+                  <span class="text-[14px]">👦</span>
+                </div>
+                <div class="agent-avatar-small agent-2">
+                  <span class="text-[14px]">👧</span>
+                </div>
+              </div>
+              <div>
+                <p class="text-[15px] font-semibold text-[#1D1D1F]">Agent 对话</p>
+                <p class="text-[11px] text-[#8E8E93]">分析用户画像中...</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="flex h-8 w-8 items-center justify-center rounded-full bg-[#F2F2F7] text-[#8E8E93] hover:bg-[#E5E5EA] transition-colors"
+              @click="closeAgentDialog"
+            >
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+
+          <!-- 对话内容 -->
+          <div class="agent-messages overflow-y-auto px-5 py-4" style="max-height: calc(70dvh - 140px)">
+            <!-- 加载动画 -->
+            <div v-if="isAgentLoading && agentMessages.length === 0" class="flex items-center justify-center py-8">
+              <div class="agent-typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <!-- 消息列表 -->
+            <div class="space-y-3">
+              <div
+                v-for="(msg, index) in agentMessages"
+                :key="index"
+                class="agent-message"
+                :class="msg.role"
+                :style="{ animationDelay: `${index * 0.1}s` }"
+              >
+                <div class="flex items-start gap-2">
+                  <div
+                    class="agent-avatar-xs"
+                    :class="msg.role"
+                  >
+                    <span class="text-[12px]">
+                      {{ msg.role === 'agent1' ? '👦' : '👧' }}
+                    </span>
+                  </div>
+                  <div class="agent-bubble">
+                    <p class="text-[13px] leading-5 text-[#1D1D1F]">{{ msg.content }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 正在输入指示器 -->
+            <div v-if="isAgentLoading && agentMessages.length > 0" class="flex items-center gap-2 mt-3 pl-1">
+              <div class="agent-avatar-xs" :class="agentMessages.length % 2 === 0 ? 'agent1' : 'agent2'">
+                <span class="text-[12px]">
+                  {{ agentMessages.length % 2 === 0 ? '👦' : '👧' }}
+                </span>
+              </div>
+              <div class="agent-typing-indicator small">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -305,5 +459,265 @@ const closeStoreStory = () => {
   color: #333;
   font-size: 11px;
   white-space: nowrap;
+}
+
+/* Agent LLM 卡片样式 */
+.agent-llm-card {
+  background: linear-gradient(135deg, rgba(155, 142, 196, 0.12) 0%, rgba(107, 191, 163, 0.12) 100%);
+  border: 1px solid rgba(155, 142, 196, 0.25);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.agent-llm-card:hover {
+  background: linear-gradient(135deg, rgba(155, 142, 196, 0.18) 0%, rgba(107, 191, 163, 0.18) 100%);
+  border-color: rgba(155, 142, 196, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(155, 142, 196, 0.2);
+}
+
+/* Agent 头像 */
+.agent-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.agent-avatar.agent-1 {
+  background: linear-gradient(135deg, #9B8EC4 0%, #B8A9D9 100%);
+  color: white;
+}
+
+.agent-avatar.agent-2 {
+  background: linear-gradient(135deg, #6BBFA3 0%, #8DD4BD 100%);
+  color: white;
+}
+
+.agent-avatar-small {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+.agent-avatar-small.agent-1 {
+  background: linear-gradient(135deg, #9B8EC4 0%, #B8A9D9 100%);
+  color: white;
+}
+
+.agent-avatar-small.agent-2 {
+  background: linear-gradient(135deg, #6BBFA3 0%, #8DD4BD 100%);
+  color: white;
+}
+
+.agent-avatar-xs {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.agent-avatar-xs.agent1 {
+  background: linear-gradient(135deg, #9B8EC4 0%, #B8A9D9 100%);
+  color: white;
+}
+
+.agent-avatar-xs.agent2 {
+  background: linear-gradient(135deg, #6BBFA3 0%, #8DD4BD 100%);
+  color: white;
+}
+
+/* 脉冲虚线 */
+.pulse-line {
+  position: relative;
+  width: 60px;
+  height: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.dashed-line {
+  width: 100%;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    #C7C7CC 0px,
+    #C7C7CC 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.pulse-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: linear-gradient(135deg, #9B8EC4 0%, #6BBFA3 100%);
+  border-radius: 50%;
+  left: 0;
+  animation: pulseMove 2s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(155, 142, 196, 0.5);
+}
+
+@keyframes pulseMove {
+  /* 左 → 右 */
+  0% {
+    left: 0;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  5% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    left: 100%;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  /* 短暂停顿 */
+  55% {
+    left: 100%;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  /* 右 → 左 */
+  55.01% {
+    left: 100%;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  95% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    left: 0;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+/* 弹窗动画 */
+.agent-dialog-enter-active,
+.agent-dialog-leave-active {
+  transition: all 0.3s ease;
+}
+
+.agent-dialog-enter-from,
+.agent-dialog-leave-to {
+  opacity: 0;
+}
+
+.agent-dialog-enter-from .agent-dialog-content,
+.agent-dialog-leave-to .agent-dialog-content {
+  transform: scale(0.95) translateY(20px);
+  opacity: 0;
+}
+
+.agent-dialog-content {
+  transition: all 0.3s ease;
+}
+
+/* 消息气泡 */
+.agent-message {
+  animation: messageSlideIn 0.4s ease forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@keyframes messageSlideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.agent-bubble {
+  background: #F2F2F7;
+  border-radius: 12px;
+  padding: 10px 14px;
+  max-width: calc(100% - 40px);
+}
+
+/* 正在输入指示器 */
+.agent-typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  background: #F2F2F7;
+  border-radius: 16px;
+}
+
+.agent-typing-indicator.small {
+  padding: 6px 10px;
+}
+
+.agent-typing-indicator span {
+  width: 6px;
+  height: 6px;
+  background: #8E8E93;
+  border-radius: 50%;
+  animation: typingBounce 1.4s ease-in-out infinite both;
+}
+
+.agent-typing-indicator.small span {
+  width: 5px;
+  height: 5px;
+}
+
+.agent-typing-indicator span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.agent-typing-indicator span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes typingBounce {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 滚动条样式 */
+.agent-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.agent-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.agent-messages::-webkit-scrollbar-thumb {
+  background: #C7C7CC;
+  border-radius: 2px;
 }
 </style>

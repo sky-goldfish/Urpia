@@ -308,34 +308,34 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
             </div>
             <div class="overflow-y-auto pr-1" style="max-height: min(calc(58dvh - 120px), 360px)">
               <!-- Agent LLM 对话卡片 -->
-              <div 
+              <div
                 class="agent-llm-card mb-4 cursor-pointer"
                 @click="openAgentDialog"
               >
                 <div class="flex items-center justify-center gap-3 py-3">
-                  <!-- Agent 1 头像 -->
+                  <!-- Agent 1 头像 - 男孩子 -->
                   <div class="agent-avatar agent-1">
-                    <span class="material-symbols-outlined">smart_toy</span>
+                    <span class="text-[20px]">👦</span>
                   </div>
-                  
+
                   <!-- 脉冲连接线 -->
                   <div class="pulse-line">
                     <div class="pulse-dot"></div>
                     <div class="dashed-line"></div>
                   </div>
-                  
-                  <!-- Agent 2 头像 -->
+
+                  <!-- Agent 2 头像 - 女孩子 -->
                   <div class="agent-avatar agent-2">
-                    <span class="material-symbols-outlined">psychology</span>
+                    <span class="text-[20px]">👧</span>
                   </div>
                 </div>
-                <p class="text-center text-[12px] text-[#8E8E93] mt-2">点击查看 Agent 对话</p>
+                <p class="text-center text-[12px] text-[#8E8E93] mt-2">您的分身找到新的匹配灵魂了</p>
               </div>
               
               <p class="mb-4 text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">最近会话与同频搭子</p>
               <div class="space-y-3">
                 <div v-for="thread in socialThreads" :key="thread.name" class="apple-card p-4">
-                  <div class="flex items-start gap-3">
+                  <div class="flex items-start gap-3"> 
                     <div class="mt-0.5 flex h-10 w-10 items-center justify-center rounded-full bg-[#F2F2F7]">
                       <span class="material-symbols-outlined text-[20px]" :style="{ color: thread.accent }">person</span>
                     </div>
@@ -389,10 +389,10 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
             <div class="flex items-center gap-3">
               <div class="flex -space-x-2">
                 <div class="agent-avatar-small agent-1">
-                  <span class="material-symbols-outlined text-[16px]">smart_toy</span>
+                  <span class="text-[14px]">👦</span>
                 </div>
                 <div class="agent-avatar-small agent-2">
-                  <span class="material-symbols-outlined text-[16px]">psychology</span>
+                  <span class="text-[14px]">👧</span>
                 </div>
               </div>
               <div>
@@ -430,12 +430,12 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
                 :style="{ animationDelay: `${index * 0.1}s` }"
               >
                 <div class="flex items-start gap-2">
-                  <div 
+                  <div
                     class="agent-avatar-xs"
                     :class="msg.role"
                   >
-                    <span class="material-symbols-outlined text-[12px]">
-                      {{ msg.role === 'agent1' ? 'smart_toy' : 'psychology' }}
+                    <span class="text-[12px]">
+                      {{ msg.role === 'agent1' ? '👦' : '👧' }}
                     </span>
                   </div>
                   <div class="agent-bubble">
@@ -448,8 +448,8 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
             <!-- 正在输入指示器 -->
             <div v-if="isAgentLoading && agentMessages.length > 0" class="flex items-center gap-2 mt-3 pl-1">
               <div class="agent-avatar-xs" :class="agentMessages.length % 2 === 0 ? 'agent1' : 'agent2'">
-                <span class="material-symbols-outlined text-[12px]">
-                  {{ agentMessages.length % 2 === 0 ? 'smart_toy' : 'psychology' }}
+                <span class="text-[12px]">
+                  {{ agentMessages.length % 2 === 0 ? '👦' : '👧' }}
                 </span>
               </div>
               <div class="agent-typing-indicator small">
@@ -596,12 +596,13 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
 }
 
 @keyframes pulseMove {
+  /* 左 → 右 */
   0% {
     left: 0;
     opacity: 0;
     transform: scale(0.5);
   }
-  10% {
+  5% {
     opacity: 1;
     transform: scale(1);
   }
@@ -614,9 +615,17 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
     opacity: 0;
     transform: scale(0.5);
   }
-  51% {
-    left: 0;
+  /* 短暂停顿 */
+  55% {
+    left: 100%;
     opacity: 0;
+    transform: scale(0.5);
+  }
+  /* 右 → 左 */
+  55.01% {
+    left: 100%;
+    opacity: 0;
+    transform: scale(0.5);
   }
   60% {
     opacity: 1;
@@ -627,7 +636,7 @@ const bubbleChip = (bubble: PersonaBubbleCard) => {
     transform: scale(1);
   }
   100% {
-    left: 100%;
+    left: 0;
     opacity: 0;
     transform: scale(0.5);
   }
