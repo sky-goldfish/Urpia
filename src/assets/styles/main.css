@@ -2,23 +2,23 @@
 
 :root {
   /* v4 现代简约 — 克制的优雅 */
-  --zoopia-bg: #F7F7F8;
-  --zoopia-surface: rgba(255, 255, 255, 0.92);
-  --zoopia-card: #FFFFFF;
-  --zoopia-text: #1D1D1F;
-  --zoopia-muted: #8E8E93;
-  --zoopia-secondary: #6C6C6C;
-  --zoopia-accent: #1D1D1F;
-  --zoopia-highlight: #FF6B35;
-  --zoopia-positive: #34C759;
-  --zoopia-divider: #E5E5EA;
-  --zoopia-input-bg: #F2F2F7;
-  --zoopia-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  --zoopia-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --zoopia-radius-sm: 5px;
-  --zoopia-radius-md: 12px;
-  --zoopia-radius-lg: 20px;
-  --zoopia-radius-pill: 999px;
+  --Urpia-bg: #F7F7F8;
+  --Urpia-surface: rgba(255, 255, 255, 0.92);
+  --Urpia-card: #FFFFFF;
+  --Urpia-text: #1D1D1F;
+  --Urpia-muted: #8E8E93;
+  --Urpia-secondary: #6C6C6C;
+  --Urpia-accent: #1D1D1F;
+  --Urpia-highlight: #FF6B35;
+  --Urpia-positive: #34C759;
+  --Urpia-divider: #E5E5EA;
+  --Urpia-input-bg: #F2F2F7;
+  --Urpia-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --Urpia-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --Urpia-radius-sm: 5px;
+  --Urpia-radius-md: 12px;
+  --Urpia-radius-lg: 20px;
+  --Urpia-radius-pill: 999px;
   /* v4 情绪色系（低饱和度） */
   --mood-healing: #6BBFA3;
   --mood-energy: #E8A44A;
@@ -26,8 +26,8 @@
   --mood-creative: #9B8EC4;
   --mood-social: #D49A5A;
   --mood-cozy: #B89A80;
-  color: var(--zoopia-text);
-  background: var(--zoopia-bg);
+  color: var(--Urpia-text);
+  background: var(--Urpia-bg);
   font-family:
     -apple-system,
     "SF Pro Display",
@@ -46,8 +46,8 @@ body,
 }
 
 html {
-  background: var(--zoopia-bg);
-  color: var(--zoopia-text);
+  background: var(--Urpia-bg);
+  color: var(--Urpia-text);
 }
 
 body {
@@ -78,7 +78,7 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--zoopia-accent);
+  outline: 2px solid var(--Urpia-accent);
   outline-offset: 2px;
 }
 
@@ -109,16 +109,16 @@ button {
 
 /* v4 卡片：极轻阴影 + 20px 圆角 */
 .apple-card {
-  background: var(--zoopia-card);
-  box-shadow: var(--zoopia-shadow);
-  border-radius: var(--zoopia-radius-lg);
+  background: var(--Urpia-card);
+  box-shadow: var(--Urpia-shadow);
+  border-radius: var(--Urpia-radius-lg);
 }
 
 /* v4 按钮 */
 .primary-button {
   border: none;
-  border-radius: var(--zoopia-radius-md);
-  background: var(--zoopia-accent);
+  border-radius: var(--Urpia-radius-md);
+  background: var(--Urpia-accent);
   color: #FFFFFF;
   font-weight: 500;
   transition:
@@ -140,10 +140,10 @@ button {
 }
 
 .secondary-button {
-  border: 1px solid var(--zoopia-divider);
-  border-radius: var(--zoopia-radius-md);
+  border: 1px solid var(--Urpia-divider);
+  border-radius: var(--Urpia-radius-md);
   background: transparent;
-  color: var(--zoopia-secondary);
+  color: var(--Urpia-secondary);
   font-weight: 400;
   transition:
     transform 250ms ease-out,
@@ -151,7 +151,7 @@ button {
 }
 
 .secondary-button:hover {
-  background: var(--zoopia-input-bg);
+  background: var(--Urpia-input-bg);
 }
 
 .secondary-button:active {
@@ -161,17 +161,17 @@ button {
 /* v4 输入框 */
 .input-shell {
   width: 100%;
-  border: 1px solid var(--zoopia-divider);
-  border-radius: var(--zoopia-radius-md);
-  background: var(--zoopia-input-bg);
-  color: var(--zoopia-text);
+  border: 1px solid var(--Urpia-divider);
+  border-radius: var(--Urpia-radius-md);
+  background: var(--Urpia-input-bg);
+  color: var(--Urpia-text);
   transition:
     border-color 250ms ease-out,
     box-shadow 250ms ease-out;
 }
 
 .input-shell:focus {
-  border-color: var(--zoopia-accent);
+  border-color: var(--Urpia-accent);
   background: #FFFFFF;
   outline: none;
 }
@@ -180,10 +180,10 @@ button {
 .pill-tag {
   display: inline-flex;
   align-items: center;
-  border-radius: var(--zoopia-radius-pill);
+  border-radius: var(--Urpia-radius-pill);
   padding: 6px 14px;
-  background: var(--zoopia-input-bg);
-  color: var(--zoopia-text);
+  background: var(--Urpia-input-bg);
+  color: var(--Urpia-text);
   font-size: 13px;
   font-weight: 400;
 }
@@ -192,7 +192,7 @@ button {
 .mood-tag {
   display: inline-flex;
   align-items: center;
-  border-radius: var(--zoopia-radius-pill);
+  border-radius: var(--Urpia-radius-pill);
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 500;
@@ -213,21 +213,21 @@ button {
 
 .subtle-divider {
   height: 1px;
-  background: var(--zoopia-divider);
+  background: var(--Urpia-divider);
 }
 
 /* v4 进度条 */
 .progress-bar {
   height: 4px;
   border-radius: 2px;
-  background: var(--zoopia-input-bg);
+  background: var(--Urpia-input-bg);
   overflow: hidden;
 }
 
 .progress-bar-fill {
   height: 100%;
   border-radius: 2px;
-  background: var(--zoopia-accent);
+  background: var(--Urpia-accent);
   transition: width 500ms ease-out;
 }
 

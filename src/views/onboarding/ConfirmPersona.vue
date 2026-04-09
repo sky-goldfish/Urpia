@@ -9,11 +9,26 @@ const ProfileAvatar3D = defineAsyncComponent(() => import('../../components/prof
 
 const router = useRouter()
 const ONBOARDING_PREVIEW_INDEX_KEY = 'urpia:onboarding-preview-index'
+const USER_INFO_KEY = 'urpia:user-info'
 const selectedIndex = ref(0)
 const fallbackModel = onboardingModelOptions[0]!
 const isModelPending = ref(true)
+const userNickname = ref('')
 
 const selectedModel = computed(() => onboardingModelOptions[selectedIndex.value] || fallbackModel)
+
+// 读取用户输入的昵称
+const readUserNickname = () => {
+  const savedUserInfo = localStorage.getItem(USER_INFO_KEY)
+  if (savedUserInfo) {
+    try {
+      const userInfo = JSON.parse(savedUserInfo)
+      userNickname.value = userInfo.nickname || ''
+    } catch (e) {
+      console.error('[ConfirmPersona] failed to parse user info', e)
+    }
+  }
+}
 
 const handleLoadingChange = (loading: boolean) => {
   isModelPending.value = loading
@@ -26,9 +41,11 @@ const handleLoadingChange = (loading: boolean) => {
 
 const handleConfirm = () => {
   writeStoredProfileModelUrl(selectedModel.value.modelUrl)
-  writeStoredProfileNickname(selectedModel.value.label)
+  // 优先使用用户输入的昵称，如果没有则使用模型名称
+  const nicknameToSave = userNickname.value || selectedModel.value.label
+  writeStoredProfileNickname(nicknameToSave)
   console.debug('[ConfirmPersona] handleConfirm -> /onboarding/chat', {
-    nickname: selectedModel.value.label,
+    nickname: nicknameToSave,
     modelUrl: selectedModel.value.modelUrl,
   })
   void router.push('/onboarding/chat')
@@ -40,10 +57,14 @@ onMounted(() => {
     selectedIndex.value = storedIndex
   }
 
+  // 读取用户输入的昵称
+  readUserNickname()
+
   console.debug('[ConfirmPersona] mounted', {
     selectedIndex: selectedIndex.value,
     modelUrl: selectedModel.value.modelUrl,
     label: selectedModel.value.label,
+    userNickname: userNickname.value,
   })
 })
 
@@ -58,13 +79,16 @@ watch(selectedModel, (model) => {
 
 <template>
   <main class="device-shell">
-    <div class="flex min-h-[100dvh] flex-col">
+    <div class="page-container">
       <div class="px-6 pt-[calc(env(safe-area-inset-top)+10px)]">
         <OnboardingStepHeader :step="2" :total="3" :title="confirmPersonaContent.title" skip-label="" />
       </div>
 
       <section class="flex flex-1 flex-col px-6 pb-6 pt-2">
         <div class="flex flex-1 flex-col items-center justify-center">
+          <div class="text-center">
+            <p class="text-[24px] font-semibold text-[#1D1D1F]" style="letter-spacing: -0.32px">{{ selectedModel.label }}</p>
+          </div>
           <div class="relative">
             <ProfileAvatar3D
               :key="selectedModel.id"
@@ -77,19 +101,15 @@ watch(selectedModel, (model) => {
               @loading-change="handleLoadingChange"
             />
           </div>
-
-          <div class="mt-5 text-center">
-            <p class="text-[24px] font-semibold text-[#1D1D1F]" style="letter-spacing: -0.32px">{{ selectedModel.label }}</p>
-          </div>
         </div>
 
         <section class="space-y-4 pb-[calc(env(safe-area-inset-bottom)+24px)]">
-          <div class="rounded-[22px] border border-[#E5E5EA] bg-[#F2F2F7]/80 px-5 py-4 text-center">
+          <div class="mt-3 rounded-[22px] border border-[#E5E5EA] bg-[#F2F2F7]/80 px-5 py-4 text-center">
             <p class="text-[12px] font-medium uppercase text-[#8E8E93]" style="letter-spacing: 1px">
               {{ confirmPersonaContent.nicknameLabel }}
             </p>
             <p class="mt-2 text-[18px] font-semibold text-[#1D1D1F]" style="letter-spacing: -0.3px">
-              {{ selectedModel.label }}
+              {{ userNickname || selectedModel.label }}
             </p>
           </div>
 
@@ -111,3 +131,27 @@ watch(selectedModel, (model) => {
     </div>
   </main>
 </template>
+
+<style scoped>
+.device-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100vw;
+  width: 100dvw;
+  background: linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  overflow-x: hidden;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: min(100%, 480px);
+  margin: 0 auto;
+}
+</style>

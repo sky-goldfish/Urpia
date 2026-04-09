@@ -1,15 +1,30 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import OnboardingStepHeader from '../../components/ui/OnboardingStepHeader.vue'
 import { cameraGuideContent, onboardingModelOptions } from './onboarding.config'
 
 const router = useRouter()
+const USER_INFO_KEY = 'urpia:user-info'
 const ONBOARDING_PREVIEW_INDEX_KEY = 'urpia:onboarding-preview-index'
+
+// 检查用户是否已完成登录
+onMounted(() => {
+  const userInfo = localStorage.getItem(USER_INFO_KEY)
+  if (!userInfo) {
+    // 未登录，跳转到登录页
+    void router.replace('/onboarding/login')
+  }
+})
 const pointerStartX = ref(0)
 const baseRotation = ref(0)
 const rotation = ref(0)
 const isDragging = ref(false)
+const autoRotateAnimationId = ref<number | null>(null)
+const isAutoRotating = ref(true)
+const currentIndex = ref(0)
+const isPausing = ref(false)
+const PAUSE_DURATION = 1500 // 1.5秒停顿时间
 
 const stepAngle = 360 / onboardingModelOptions.length
 const selectedIndex = computed(() => {
@@ -46,8 +61,49 @@ const snapToNearest = () => {
   })
 }
 
+const startAutoRotate = () => {
+  if (!isAutoRotating.value) return
+
+  const animate = () => {
+    if (!isDragging.value && isAutoRotating.value && !isPausing.value) {
+      // 向左旋转（负方向）
+      rotation.value -= 0.3
+
+      // 计算当前应该显示哪个索引
+      const normalized = ((-rotation.value % 360) + 360) % 360
+      const newIndex = Math.round(normalized / stepAngle) % onboardingModelOptions.length
+
+      // 检查是否正好对齐到article中央（允许小误差）
+      const targetRotation = -newIndex * stepAngle
+      const diff = Math.abs(rotation.value - targetRotation)
+      const isAligned = diff < 1.5 || diff > 360 - 1.5
+
+      // 如果切换到新的article且正好对齐到中央，停顿1.5秒
+      if (newIndex !== currentIndex.value && isAligned) {
+        currentIndex.value = newIndex
+        isPausing.value = true
+        // 精确对齐到中央位置
+        rotation.value = targetRotation
+        setTimeout(() => {
+          isPausing.value = false
+        }, PAUSE_DURATION)
+      }
+    }
+    autoRotateAnimationId.value = requestAnimationFrame(animate)
+  }
+  autoRotateAnimationId.value = requestAnimationFrame(animate)
+}
+
+const stopAutoRotate = () => {
+  if (autoRotateAnimationId.value) {
+    cancelAnimationFrame(autoRotateAnimationId.value)
+    autoRotateAnimationId.value = null
+  }
+}
+
 const handlePointerDown = (event: PointerEvent) => {
   isDragging.value = true
+  isAutoRotating.value = false
   pointerStartX.value = event.clientX
   baseRotation.value = rotation.value
   ;(event.currentTarget as HTMLDivElement | null)?.setPointerCapture?.(event.pointerId)
@@ -81,11 +137,19 @@ const startSelection = () => {
   })
   void router.push('/onboarding/confirm')
 }
+
+onMounted(() => {
+  startAutoRotate()
+})
+
+onUnmounted(() => {
+  stopAutoRotate()
+})
 </script>
 
 <template>
   <main class="device-shell">
-    <div class="page-padding flex min-h-[100dvh] flex-col">
+    <div class="page-container">
       <OnboardingStepHeader :step="1" :total="3" :title="cameraGuideContent.title" skip-label="" />
 
       <section class="flex flex-1 flex-col items-center justify-center gap-9">
@@ -214,5 +278,27 @@ const startSelection = () => {
   font-size: 18px;
   font-weight: 600;
   letter-spacing: -0.28px;
+}
+
+.device-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100vw;
+  width: 100dvw;
+  background: linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  overflow-x: hidden;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: min(100%, 480px);
+  margin: 0 auto;
 }
 </style>

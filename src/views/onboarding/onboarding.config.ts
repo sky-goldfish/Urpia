@@ -27,16 +27,16 @@ const previewImages = [
 ] as const
 
 export const onboardingModelOptions: OnboardingModelOption[] = [
-  { id: 'girl-01', label: '琥珀漫游者', modelUrl: '/models/profile-avatars/girl-01.glb', fallbackImage: fallbackImages[0], previewImage: previewImages[0] },
-  { id: 'girl-02', label: '晨雾观察员', modelUrl: '/models/profile-avatars/girl-02.glb', fallbackImage: fallbackImages[1], previewImage: previewImages[1] },
-  { id: 'girl-03', label: '云朵合唱者', modelUrl: '/models/profile-avatars/girl-03.glb', fallbackImage: fallbackImages[2], previewImage: previewImages[2] },
-  { id: 'girl-04', label: '玻璃海旅人', modelUrl: '/models/profile-avatars/girl-04.glb', fallbackImage: fallbackImages[3], previewImage: previewImages[3] },
-  { id: 'girl-05', label: '月色拾光者', modelUrl: '/models/profile-avatars/girl-05.glb', fallbackImage: fallbackImages[0], previewImage: previewImages[4] },
-  { id: 'boy-01', label: '夜航信使', modelUrl: '/models/profile-avatars/boy-01.glb', fallbackImage: fallbackImages[1], previewImage: previewImages[5] },
-  { id: 'boy-02', label: '森林停驻者', modelUrl: '/models/profile-avatars/boy-02.glb', fallbackImage: fallbackImages[2], previewImage: previewImages[6] },
-  { id: 'boy-03', label: '潮汐领路人', modelUrl: '/models/profile-avatars/boy-03.glb', fallbackImage: fallbackImages[3], previewImage: previewImages[7] },
-  { id: 'boy-04', label: '晴空搭话师', modelUrl: '/models/profile-avatars/boy-04.glb', fallbackImage: fallbackImages[0], previewImage: previewImages[8] },
-  { id: 'boy-05', label: '柔光记录员', modelUrl: '/models/profile-avatars/boy-05.glb', fallbackImage: fallbackImages[1], previewImage: previewImages[9] },
+  { id: 'Bella', label: 'Bella', modelUrl: '/models/profile-avatars/Bella.glb', fallbackImage: fallbackImages[0], previewImage: previewImages[0] },
+  { id: 'Stella', label: 'Stella', modelUrl: '/models/profile-avatars/Stella.glb', fallbackImage: fallbackImages[1], previewImage: previewImages[1] },
+  { id: 'Zoe', label: 'Zoe', modelUrl: '/models/profile-avatars/Zoe.glb', fallbackImage: fallbackImages[2], previewImage: previewImages[2] },
+  { id: 'Luna', label: 'Luna', modelUrl: '/models/profile-avatars/Luna.glb', fallbackImage: fallbackImages[3], previewImage: previewImages[3] },
+  { id: 'Mia', label: 'Mia', modelUrl: '/models/profile-avatars/Mia.glb', fallbackImage: fallbackImages[0], previewImage: previewImages[4] },
+  { id: 'Finn', label: 'Finn', modelUrl: '/models/profile-avatars/Finn.glb', fallbackImage: fallbackImages[1], previewImage: previewImages[5] },
+  { id: 'Owen', label: 'Owen', modelUrl: '/models/profile-avatars/Owen.glb', fallbackImage: fallbackImages[2], previewImage: previewImages[6] },
+  { id: 'Sam', label: 'Sam', modelUrl: '/models/profile-avatars/Sam.glb', fallbackImage: fallbackImages[3], previewImage: previewImages[7] },
+  { id: 'Noah', label: 'Noah', modelUrl: '/models/profile-avatars/Noah.glb', fallbackImage: fallbackImages[0], previewImage: previewImages[8] },
+  { id: 'Leo', label: 'Leo', modelUrl: '/models/profile-avatars/Leo.glb', fallbackImage: fallbackImages[1], previewImage: previewImages[9] },
 ] as const
 
 export const cameraGuideContent = {

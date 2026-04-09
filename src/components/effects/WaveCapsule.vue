@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useMoodStore } from '../../stores/moodStore'
 
-// 3D胶囊特效组件 - 使用 MoodPill(情绪药丸) 样式
 interface Props {
   color?: string
   size?: 'small' | 'medium' | 'large'
@@ -13,16 +11,9 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'medium'
 })
 
-const moodStore = useMoodStore()
-
-// 使用情绪颜色或传入的颜色
-const capsuleColor = computed(() => {
-  return props.color || moodStore.currentMood.hex
-})
-
 // 计算渐变结束颜色（深色版本）
 const gradientEndColor = computed(() => {
-  const hex = capsuleColor.value
+  const hex = props.color
   const num = parseInt(hex.replace('#', ''), 16)
   const amt = Math.round(2.55 * -40)
   const R = Math.max(0, Math.min(255, (num >> 16) + amt))
@@ -57,7 +48,7 @@ const sizeMap = {
 
 <style scoped>
 .capsule-wrapper {
-  --color-one: v-bind(capsuleColor);
+  --color-one: v-bind(color);
   --color-two: v-bind(gradientEndColor);
   --capsule-scale: 1;
   width: calc(15vmin * var(--capsule-scale));

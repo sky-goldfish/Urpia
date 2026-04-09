@@ -16,8 +16,8 @@ interface LiquidColorConfig {
 
 // 模拟从数据库获取的颜色配置
 const colorConfig = ref<LiquidColorConfig>({
-  baseColor: '#ffbf48',  // 默认橙黄色
-  gradientEnd: '#be4a1d', // 默认红棕色
+  baseColor: '#ff9f43',  // 默认暖橙色
+  gradientEnd: '#ee5a24', // 默认深橙色
   opacity: 1
 })
 
@@ -57,8 +57,8 @@ function adjustColorBrightness(hex: string, percent: number): string {
     <div class="absolute top-0 left-0 right-0 z-20 p-6">
       <div class="flex items-center justify-between max-w-4xl mx-auto">
         <div>
-          <h1 class="text-2xl font-bold text-white">Spirit Bubble</h1>
-          <p class="text-sm text-gray-400 mt-1">流体气泡动画效果</p>
+          <h1 class="text-2xl font-bold text-white">情绪药丸</h1>
+          <p class="text-sm text-gray-400 mt-1">Mood Pill - 流体气泡动画效果</p>
         </div>
         <button
           type="button"
@@ -73,18 +73,18 @@ function adjustColorBrightness(hex: string, percent: number): string {
     <!-- Spirit Bubble 展示区域 -->
     <div class="relative z-10 flex items-center justify-center" :style="{ transform: `scale(${scale})` }">
       <div class="capsule-container" :class="{ 'animation-paused': !isPlaying }" :style="{
-        '--time-animation': `${2 / animationSpeed}s`,
-        '--color-one': gradientColors.colorOne,
-        '--color-two': gradientColors.colorTwo,
-        '--liquid-opacity': gradientColors.opacity
+        '--capsule-time-animation': `${2 / animationSpeed}s`,
+        '--capsule-color-one': gradientColors.colorOne,
+        '--capsule-color-two': gradientColors.colorTwo,
+        '--capsule-shadow-color': gradientColors.colorOne + '4D'
       }">
         <!-- 透明胶囊外壳 -->
         <div class="capsule-shell">
           <!-- 内部液体 -->
-          <div class="loader" :class="{ 'animation-paused': !isPlaying }" :style="{ '--time-animation': `${2 / animationSpeed}s` }">
-            <div class="liquid-container">
-              <div class="liquid-fill"></div>
-              <div class="wave"></div>
+          <div class="capsule-loader" :class="{ 'animation-paused': !isPlaying }" :style="{ '--capsule-time-animation': `${2 / animationSpeed}s` }">
+            <div class="capsule-liquid-container">
+              <div class="capsule-liquid-fill"></div>
+              <div class="capsule-wave"></div>
             </div>
           </div>
         </div>
@@ -140,37 +140,69 @@ function adjustColorBrightness(hex: string, percent: number): string {
     <!-- 说明文字 -->
     <div class="absolute bottom-28 left-1/2 -translate-x-1/2 z-20 text-center">
       <p class="text-gray-400 text-sm">
-        流体变形气泡效果，使用 SVG mask 和 CSS 滤镜实现
+        情绪药丸 - 流体变形气泡效果，使用 CSS 变量和动画实现
       </p>
     </div>
   </main>
 </template>
 
 <style scoped>
-/* 胶囊容器 - 参考 capsule_3d.vue 的尺寸比例 */
+/* ============================================
+   情绪药丸 - MoodPill 流体气泡胶囊组件样式
+   可在其他组件中通过 @import 或复制使用
+   ============================================ */
+
+/* 根变量定义 - 可在父元素中覆盖 */
 .capsule-container {
-  --color-one: #ffbf48;
-  --color-two: #be4a1d;
-  --color-three: #ffbf4780;
-  --color-four: #bf4a1d80;
-  --color-five: #ffbf4740;
-  --time-animation: 2s;
+  /* 颜色变量 - 暖橙色 */
+  --capsule-color-one: #ff9f43;
+  --capsule-color-two: #ee5a24;
+  --capsule-color-three: #ff9f4380;
+  --capsule-color-four: #ee5a2480;
+  --capsule-color-five: #ff9f4340;
+
+  /* 尺寸变量 - 默认大尺寸，可通过 --capsule-scale 缩放 */
+  --capsule-scale: 1;
+  --capsule-width: calc(15vmin * var(--capsule-scale));
+  --capsule-height: calc(40vmin * var(--capsule-scale));
+  --capsule-shell-width: calc(11vmin * var(--capsule-scale));
+  --capsule-shell-height: calc(32vmin * var(--capsule-scale));
+  --capsule-border-radius: calc(6vmin * var(--capsule-scale));
+  --capsule-liquid-radius: 0 0 calc(5vmin * var(--capsule-scale)) calc(5vmin * var(--capsule-scale));
+
+  /* 动画变量 */
+  --capsule-time-animation: 2s;
+  --capsule-shadow-color: rgba(255, 159, 67, 0.3);
+
+  /* 布局 */
   position: relative;
-  width: 15vmin;
-  height: 40vmin;
+  width: var(--capsule-width);
+  height: var(--capsule-height);
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 10px 30px rgba(255, 191, 72, 0.3));
+  filter: drop-shadow(0 calc(10px * var(--capsule-scale)) calc(30px * var(--capsule-scale)) var(--capsule-shadow-color));
+  transform-origin: bottom center;
+  animation: capsule-sway 3s ease-in-out infinite;
+}
+
+/* 胶囊左右摇摆动画 - 顶部晃动15度，底部位置不变 */
+@keyframes capsule-sway {
+  0%, 100% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(35deg);
+  }
 }
 
 /* 透明胶囊外壳 */
 .capsule-shell {
-  width: 11vmin;
-  height: 32vmin;
+  width: var(--capsule-shell-width);
+  height: var(--capsule-shell-height);
   position: relative;
   overflow: hidden;
-  border-radius: 6vmin;
+  border-radius: var(--capsule-border-radius);
   border: 2px solid rgba(255, 255, 255, 0.4);
   background: linear-gradient(135deg,
     rgba(255, 255, 255, 0.15) 0%,
@@ -202,49 +234,46 @@ function adjustColorBrightness(hex: string, percent: number): string {
 }
 
 /* 流体动画容器 */
-.loader {
+.capsule-loader {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  animation: colorize calc(var(--time-animation) * 3) ease-in-out infinite;
+  animation: capsule-colorize calc(var(--capsule-time-animation) * 3) ease-in-out infinite;
 }
 
-.loader.animation-paused,
-.loader.animation-paused .liquid,
-.loader.animation-paused svg #clipping-liquid,
-.loader.animation-paused svg polygon {
+.capsule-loader.animation-paused {
   animation-play-state: paused !important;
 }
 
 /* 液体容器 */
-.liquid-container {
+.capsule-liquid-container {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 80%;
   overflow: hidden;
-  border-radius: 0 0 5vmin 5vmin;
+  border-radius: var(--capsule-liquid-radius);
 }
 
 /* 液体填充 - 纯色填充到75%高度，带漏斗形旋转效果 */
-.liquid-fill {
+.capsule-liquid-fill {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 75%;
   background: linear-gradient(180deg,
-    var(--color-one) 0%,
-    var(--color-two) 100%);
-  animation: funnel-rotate 8s linear infinite;
+    var(--capsule-color-one) 0%,
+    var(--capsule-color-two) 100%);
+  animation: capsule-funnel-rotate 8s linear infinite;
   transform-origin: center center;
 }
 
 /* 漏斗形旋转效果 - 液体内部形成缓慢旋转的漏斗形状 */
-.liquid-fill::before {
+.capsule-liquid-fill::before {
   content: '';
   position: absolute;
   top: 0;
@@ -260,12 +289,12 @@ function adjustColorBrightness(hex: string, percent: number): string {
     rgba(255, 255, 255, 0.15) 60%,
     transparent 70%,
     transparent 100%);
-  animation: funnel-swirl 6s ease-in-out infinite;
+  animation: capsule-funnel-swirl 6s ease-in-out infinite;
   border-radius: 50%;
 }
 
 /* 漏斗中心漩涡 */
-.liquid-fill::after {
+.capsule-liquid-fill::after {
   content: '';
   position: absolute;
   top: 10%;
@@ -281,27 +310,27 @@ function adjustColorBrightness(hex: string, percent: number): string {
     transparent 240deg,
     rgba(255, 255, 255, 0.1) 300deg,
     transparent 360deg);
-  animation: funnel-vortex 10s linear infinite;
+  animation: capsule-funnel-vortex 10s linear infinite;
   border-radius: 50%;
   filter: blur(2px);
 }
 
 /* 波浪效果 - 只在液体表面 */
-.wave {
+.capsule-wave {
   width: 200%;
   height: 100%;
   background: linear-gradient(180deg,
-    var(--color-one) 0%,
-    var(--color-two) 100%);
+    var(--capsule-color-one) 0%,
+    var(--capsule-color-two) 100%);
   position: absolute;
   left: -50%;
   top: 5%;
   border-radius: 40%;
-  animation: wave-surface 4s ease-in-out infinite;
+  animation: capsule-wave-surface 4s ease-in-out infinite;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
-.wave::before {
+.capsule-wave::before {
   content: '';
   width: 100%;
   height: 100%;
@@ -314,7 +343,11 @@ function adjustColorBrightness(hex: string, percent: number): string {
   border-radius: 40%;
 }
 
-@keyframes wave-surface {
+/* ============================================
+   动画关键帧定义
+   ============================================ */
+
+@keyframes capsule-wave-surface {
   0%, 100% {
     transform: translateX(0) translateY(0) rotate(0deg);
     border-radius: 40% 45% 42% 48%;
@@ -333,7 +366,7 @@ function adjustColorBrightness(hex: string, percent: number): string {
   }
 }
 
-@keyframes colorize {
+@keyframes capsule-colorize {
   0% {
     filter: hue-rotate(0deg);
   }
@@ -355,7 +388,7 @@ function adjustColorBrightness(hex: string, percent: number): string {
 }
 
 /* 漏斗旋转动画 - 整体缓慢旋转 */
-@keyframes funnel-rotate {
+@keyframes capsule-funnel-rotate {
   0% {
     transform: rotate(0deg);
   }
@@ -365,7 +398,7 @@ function adjustColorBrightness(hex: string, percent: number): string {
 }
 
 /* 漏斗漩涡动画 - 形成漏斗形状的旋转效果 */
-@keyframes funnel-swirl {
+@keyframes capsule-funnel-swirl {
   0%, 100% {
     transform: translateX(-50%) scaleY(1) rotate(0deg);
     opacity: 0.6;
@@ -385,7 +418,7 @@ function adjustColorBrightness(hex: string, percent: number): string {
 }
 
 /* 漏斗中心漩涡 - 锥形旋转效果 */
-@keyframes funnel-vortex {
+@keyframes capsule-funnel-vortex {
   0% {
     transform: translateX(-50%) rotate(0deg) scale(1);
   }

@@ -3,7 +3,8 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 type MainTabKey = 'explore' | 'status' | 'social'
 
 const routes: RouteRecordRaw[] = [
-  { path: '/', redirect: '/onboarding/camera' },
+  { path: '/', redirect: '/onboarding/login' },
+  { path: '/onboarding/login', name: 'onboarding-login', component: () => import('../views/onboarding/UserLogin.vue') },
   { path: '/onboarding/camera', name: 'onboarding-camera', component: () => import('../views/onboarding/CameraGuide.vue') },
   { path: '/onboarding/chat', name: 'onboarding-chat', component: () => import('../views/onboarding/AiGuideChat.vue') },
   { path: '/onboarding/generating', redirect: '/onboarding/confirm' },
@@ -19,6 +20,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/report', name: 'social-report', component: () => import('../views/social/MatchReport.vue'), meta: { tab: 'social' satisfies MainTabKey } },
   { path: '/profile', name: 'profile-status', component: () => import('../views/profile/PersonaStatus.vue'), meta: { tab: 'status' satisfies MainTabKey } },
   { path: '/history', name: 'profile-history', component: () => import('../views/profile/MatchHistory.vue'), meta: { tab: 'status' satisfies MainTabKey } },
+  { path: '/effects/mood-pill', name: 'mood-pill', component: () => import('../views/effects/MoodPill.vue') },
 ]
 
 const router = createRouter({

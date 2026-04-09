@@ -200,6 +200,10 @@ const initScene = async () => {
     })
     modelRoot = gltf.scene
     fitModelToView(modelRoot)
+    // 调整模型朝向：初始旋转使正面朝向相机（从右侧旋转-90度到正面）
+    modelRoot.rotation.y = -Math.PI / 2
+    currentRotation = -Math.PI / 2
+    targetRotation = -Math.PI / 2
     scene.add(modelRoot)
 
     setCanvasSize()

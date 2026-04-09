@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import ActivityDots from '../../components/ui/ActivityDots.vue'
 import { useOnboardingChat } from './useOnboardingChat'
 import { onboardingChatContent } from './onboarding.config'
 
+const router = useRouter()
 const guideAvatarUrl = '/guide/urpia-guide-avatar.png'
+
+const handleBack = () => {
+  void router.back()
+}
 
 const {
   messages,
@@ -26,12 +32,14 @@ const {
   <main class="chat-stage">
     <div class="iphone-shell">
       <div class="iphone-screen">
+        <!-- iPhone 刘海屏 - 已注释掉
         <div class="iphone-notch" aria-hidden="true">
           <div class="iphone-speaker" />
         </div>
+        -->
 
         <header class="wechat-header">
-          <div class="status-bar">
+         <!-- <div class="status-bar">
             <span class="status-time">9:41</span>
             <div class="status-icons" aria-hidden="true">
               <span class="signal-bars">
@@ -45,10 +53,10 @@ const {
                 <span class="battery-level" />
               </span>
             </div>
-          </div>
+          </div>-->
 
           <div class="nav-bar">
-            <button type="button" class="nav-back" aria-label="返回">
+            <button type="button" class="nav-back" aria-label="返回" @click="handleBack">
               <span class="material-symbols-outlined text-[20px]">chevron_left</span>
             </button>
             <div class="nav-title">
@@ -157,7 +165,9 @@ const {
               </button>
             </template>
           </div>
+          <!-- Home 指示条 - 已注释掉
           <div class="home-indicator" aria-hidden="true" />
+          -->
         </footer>
       </div>
     </div>
@@ -166,18 +176,28 @@ const {
 
 <style scoped>
 .chat-stage {
+  min-height: 100vh;
   min-height: 100dvh;
+  width: 100vw;
+  width: 100dvw;
   display: flex;
   align-items: center;
   justify-content: center;
   background:
     radial-gradient(circle at top, rgba(244, 244, 246, 0.75), rgba(228, 230, 235, 0.95)),
     linear-gradient(180deg, #d9dbe0, #cfd2d8);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
   padding: 24px 16px;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
+/* iPhone 外壳样式 - 已注释掉
 .iphone-shell {
-  width: min(100%, 390px);
+  width: 100%;
+  max-width: min(100%, 480px);
   border-radius: 42px;
   padding: 10px;
   background: linear-gradient(180deg, #1a1a1d, #060607);
@@ -185,13 +205,21 @@ const {
     0 30px 80px rgba(0, 0, 0, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
+*/
+
+/* 简化的屏幕容器 */
+.iphone-shell {
+  width: 100%;
+  max-width: min(100%, 480px);
+  background: transparent;
+}
 
 .iphone-screen {
   position: relative;
-  min-height: calc(100dvh - 68px);
-  max-height: 812px;
+  min-height: calc(100dvh - 48px);
+  max-height: none;
   overflow: hidden;
-  border-radius: 34px;
+  border-radius: 0;
   background: #ededed;
   display: flex;
   flex-direction: column;

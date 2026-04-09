@@ -121,7 +121,7 @@ apply_patch <<"EOF"
 +
 +```json
 +{
-+  "name": "zoopia-server",
++  "name": "Urpia-server",
 +  "version": "0.1.0",
 +  "private": true,
 +  "type": "module",

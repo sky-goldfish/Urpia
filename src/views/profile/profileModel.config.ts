@@ -1,6 +1,6 @@
 const PROFILE_MODEL_STORAGE_KEY = 'urpia:selected-model-url'
 const PROFILE_NICKNAME_STORAGE_KEY = 'urpia:selected-nickname'
-const FALLBACK_MODEL_URL = '/models/profile-avatars/girl-01.glb'
+const FALLBACK_MODEL_URL = '/models/profile-avatars/Bella.glb'
 const FALLBACK_NICKNAME = '月汐观测者'
 
 export const readStoredProfileModelUrl = () => {
