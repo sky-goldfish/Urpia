@@ -73,7 +73,7 @@ export const onboardingChat: ChatMessage[] = [
   {
     id: 1,
     role: 'ai',
-    author: 'Zoopia Guide',
+    author: 'Urpia Guide',
     text: '我已经读取到你的情绪频段。接下来我会带你去附近更适合你当下状态的据点。',
     time: '19:08',
   },
@@ -87,7 +87,7 @@ export const onboardingChat: ChatMessage[] = [
   {
     id: 3,
     role: 'ai',
-    author: 'Zoopia Guide',
+    author: 'Urpia Guide',
     text: '明白。先从低压氛围切入，再慢慢扩展社交密度。你可以随时暂停匹配。',
     time: '19:10',
   },

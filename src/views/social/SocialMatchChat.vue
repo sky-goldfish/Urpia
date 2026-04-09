@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { matchChat } from '../../lib/mockData'
+import ActivityDots from '../../components/ui/ActivityDots.vue'
+import { useSocialMatchChat } from './useSocialMatchChat'
+import { socialParticipants } from './social.config'
 
 defineProps<{
   visible: boolean
@@ -12,24 +13,8 @@ const emit = defineEmits<{
 }>()
 
 const router = useRouter()
-const chatEndRef = ref<HTMLDivElement | null>(null)
-
-const messages = ref(matchChat)
-const isTyping = ref(true)
-const progress = ref(1)
-const currentSpeaker = ref<'match' | 'user'>('match')
-
-const totalRounds = 3
-
-const scrollToBottom = async () => {
-  await nextTick()
-  chatEndRef.value?.scrollIntoView({ behavior: 'smooth' })
-}
-
-// 获取当前说话者名字
-const currentSpeakerName = () => {
-  return currentSpeaker.value === 'match' ? '云野' : '月汐观测者'
-}
+const { chatEndRef, messages, isTyping, progress, currentSpeaker, totalRounds, currentSpeakerName } =
+  useSocialMatchChat()
 
 // 关闭浮层
 const closeOverlay = () => {
@@ -42,31 +27,6 @@ const goToReport = () => {
   void router.push('/report')
 }
 
-// 模拟对话进度推进
-onMounted(() => {
-  scrollToBottom()
-
-  // 3 秒后标记 typing 结束，推进进度
-  setTimeout(() => {
-    isTyping.value = false
-    currentSpeaker.value = 'user'
-    progress.value = 2
-    void scrollToBottom()
-  }, 3000)
-
-  // 6 秒后推进到第 3 轮
-  setTimeout(() => {
-    progress.value = 3
-    currentSpeaker.value = 'match'
-    isTyping.value = true
-    void scrollToBottom()
-  }, 6000)
-
-  // 9 秒后对话完成
-  setTimeout(() => {
-    isTyping.value = false
-  }, 9000)
-})
 </script>
 
 <template>
@@ -96,17 +56,13 @@ onMounted(() => {
                 v-if="currentSpeaker === 'user'"
                 class="absolute -top-4 left-1/2 -translate-x-1/2"
               >
-                <div class="flex items-center gap-0.5">
-                  <div class="h-1 w-1 rounded-full bg-[#8E8E93]" style="animation: bounce 1.4s ease-in-out infinite" />
-                  <div class="h-1 w-1 rounded-full bg-[#8E8E93]" style="animation: bounce 1.4s ease-in-out 0.2s infinite" />
-                  <div class="h-1 w-1 rounded-full bg-[#8E8E93]" style="animation: bounce 1.4s ease-in-out 0.4s infinite" />
-                </div>
+                <ActivityDots dot-class="h-1 w-1 rounded-full bg-[#8E8E93]" gap-class="gap-0.5" />
               </div>
               <div class="flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-white bg-[#F2F2F7] shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
                 <span class="material-symbols-outlined text-[24px] text-[#6C6C6C]">person</span>
               </div>
             </div>
-            <span class="text-[12px] font-medium text-[#1D1D1F]">月汐观测者</span>
+            <span class="text-[12px] font-medium text-[#1D1D1F]">{{ socialParticipants.user.name }}</span>
           </div>
 
           <!-- 连接线 -->
@@ -119,17 +75,13 @@ onMounted(() => {
                 v-if="currentSpeaker === 'match'"
                 class="absolute -top-4 left-1/2 -translate-x-1/2"
               >
-                <div class="flex items-center gap-0.5">
-                  <div class="h-1 w-1 rounded-full bg-[#8E8E93]" style="animation: bounce 1.4s ease-in-out infinite" />
-                  <div class="h-1 w-1 rounded-full bg-[#8E8E93]" style="animation: bounce 1.4s ease-in-out 0.2s infinite" />
-                  <div class="h-1 w-1 rounded-full bg-[#8E8E93]" style="animation: bounce 1.4s ease-in-out 0.4s infinite" />
-                </div>
+                <ActivityDots dot-class="h-1 w-1 rounded-full bg-[#8E8E93]" gap-class="gap-0.5" />
               </div>
               <div class="flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-white bg-[#F2F2F7] shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-                <span class="material-symbols-outlined text-[24px] text-[#9B8EC4]">person</span>
+                <span class="material-symbols-outlined text-[24px]" :style="{ color: socialParticipants.match.iconColor }">person</span>
               </div>
             </div>
-            <span class="text-[12px] font-medium text-[#1D1D1F]">云野</span>
+            <span class="text-[12px] font-medium text-[#1D1D1F]">{{ socialParticipants.match.name }}</span>
           </div>
         </div>
       </div>
@@ -147,7 +99,7 @@ onMounted(() => {
             <div class="flex h-6 w-6 items-center justify-center rounded-full bg-[#F2F2F7]">
               <span
                 class="material-symbols-outlined text-[12px]"
-                :class="currentSpeaker === 'match' ? 'text-[#9B8EC4]' : 'text-[#6C6C6C]'"
+                :style="{ color: currentSpeaker === 'match' ? socialParticipants.match.iconColor : socialParticipants.user.iconColor }"
               >person</span>
             </div>
             <span class="text-[13px] font-medium text-[#1D1D1F]" style="letter-spacing: -0.224px">
@@ -169,7 +121,7 @@ onMounted(() => {
             <!-- 对方头像 -->
             <div v-if="msg.role === 'match'" class="mr-2 mt-4 flex-shrink-0">
               <div class="flex h-6 w-6 items-center justify-center rounded-full bg-[#F2F2F7]">
-                <span class="material-symbols-outlined text-[12px] text-[#9B8EC4]">person</span>
+                <span class="material-symbols-outlined text-[12px]" :style="{ color: socialParticipants.match.iconColor }">person</span>
               </div>
             </div>
 
@@ -192,15 +144,11 @@ onMounted(() => {
           <div v-if="isTyping" class="flex items-start gap-2">
             <div class="flex-shrink-0 mt-0.5">
               <div class="flex h-6 w-6 items-center justify-center rounded-full bg-[#F2F2F7]">
-                <span class="material-symbols-outlined text-[12px] text-[#9B8EC4]">person</span>
+                <span class="material-symbols-outlined text-[12px]" :style="{ color: socialParticipants.match.iconColor }">person</span>
               </div>
             </div>
             <div class="rounded-[16px] rounded-bl-sm bg-[#F2F2F7] px-4 py-3">
-              <div class="flex items-center gap-1">
-                <div class="h-1.5 w-1.5 rounded-full bg-[#8E8E93]/40" style="animation: bounce 1.4s ease-in-out infinite" />
-                <div class="h-1.5 w-1.5 rounded-full bg-[#8E8E93]/40" style="animation: bounce 1.4s ease-in-out 0.2s infinite" />
-                <div class="h-1.5 w-1.5 rounded-full bg-[#8E8E93]/40" style="animation: bounce 1.4s ease-in-out 0.4s infinite" />
-              </div>
+              <ActivityDots dot-class="h-1.5 w-1.5 rounded-full bg-[#8E8E93]/40" />
             </div>
           </div>
 
@@ -228,11 +176,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-@keyframes bounce {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-3px); }
-}
-
 .overlay-enter-active {
   transition: opacity 300ms ease-out;
 }

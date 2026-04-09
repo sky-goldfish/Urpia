@@ -1,256 +1,139 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import TabBar from '../../components/ui/TabBar.vue'
+import MapContainer from '../../components/map/MapContainer.vue'
+import MoodColorSelector from '../../components/ui/MoodColorSelector.vue'
 import SocialMatchChat from '../social/SocialMatchChat.vue'
-import { poiList } from '../../lib/mockData'
-import { loadAMap, type AMapGlobal, type AMapMapLike, type AMapMarkerLike } from '../../lib/amapLoader'
-import { MAP_CONFIG, assertMapConfig } from '../../config/mapConfig'
+import { useExploreMap } from './useExploreMap'
 
-const router = useRouter()
-const mapContainer = ref<HTMLDivElement | null>(null)
-const amap = ref<AMapGlobal | null>(null)
-const map = ref<AMapMapLike | null>(null)
-const poiMarkers = ref<Map<string, AMapMarkerLike>>(new Map())
-const mapError = ref('')
-const showSearch = ref(false)
-const searchQuery = ref('')
-const activeMood = ref<string | null>(null)
-const showFilter = ref(false)
-const showMatchChat = ref(false)
-
-const MAP_CENTER = MAP_CONFIG.DEFAULT_CENTER
-const MAP_ZOOM = MAP_CONFIG.DEFAULT_ZOOM
-
-const poiCoords: Record<string, [number, number]> = {
-  'harbor-light': [121.4489, 31.2295],
-  glasshouse: [121.4375, 31.1889],
-  'midnight-pool': [121.491, 31.2345],
-}
-
-const moodFilters = [
-  { key: 'healing', label: '治愈', color: '#6BBFA3' },
-  { key: 'energy', label: '活力', color: '#E8A44A' },
-  { key: 'romantic', label: '浪漫', color: '#D4788C' },
-  { key: 'creative', label: '创意', color: '#9B8EC4' },
-  { key: 'social', label: '社交', color: '#D49A5A' },
-  { key: 'cozy', label: '温馨', color: '#B89A80' },
-]
-
-const moodColorMap: Record<string, string> = {
-  healing: '#6BBFA3',
-  energy: '#E8A44A',
-  romantic: '#D4788C',
-  creative: '#9B8EC4',
-  social: '#D49A5A',
-  cozy: '#B89A80',
-}
-
-const poiMoodMap: Record<string, string> = {
-  'harbor-light': 'healing',
-  glasshouse: 'creative',
-  'midnight-pool': 'romantic',
-}
-
-const getPoiColor = (id: string) => moodColorMap[poiMoodMap[id] ?? 'healing'] ?? '#8E8E93'
-
-const openPoi = (id: string) => {
-  void router.push(`/poi/${id}`)
-}
-
-const toggleMood = (key: string) => {
-  activeMood.value = activeMood.value === key ? null : key
-}
-
-const openMatchChat = () => {
-  showSearch.value = false
-  showFilter.value = false
-  showMatchChat.value = true
-}
-
-const closeMatchChat = () => {
-  showMatchChat.value = false
-}
-
-const clearPoiMarkers = () => {
-  poiMarkers.value.forEach((marker) => marker.setMap(null))
-  poiMarkers.value.clear()
-}
-
-const createPoiMarker = (poi: typeof poiList[number]) => {
-  if (!map.value || !amap.value) return
-
-  const coords = poiCoords[poi.id] ?? MAP_CENTER
-  const color = getPoiColor(poi.id)
-
-  const el = document.createElement('div')
-  el.className = 'poi-marker'
-  el.style.cssText = `
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: ${color};
-    border: 3px solid white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    cursor: pointer;
-    transition: transform 0.2s;
-  `
-  el.addEventListener('mouseenter', () => { el.style.transform = 'scale(1.3)' })
-  el.addEventListener('mouseleave', () => { el.style.transform = 'scale(1)' })
-  el.addEventListener('click', () => openPoi(poi.id))
-
-  const marker = new amap.value.Marker({
-    position: coords,
-    content: el,
-    anchor: 'bottom-center',
-    title: poi.name,
-  })
-
-  marker.setMap(map.value)
-  poiMarkers.value.set(poi.id, marker)
-}
-
-const renderFilteredPois = () => {
-  clearPoiMarkers()
-  const filtered = activeMood.value
-    ? poiList.filter((poi) => poiMoodMap[poi.id] === activeMood.value)
-    : poiList
-
-  filtered.forEach(createPoiMarker)
-}
-
-watch(activeMood, () => {
-  renderFilteredPois()
-})
-
-onMounted(async () => {
-  if (!mapContainer.value) return
-
-  try {
-    assertMapConfig()
-    amap.value = await loadAMap()
-
-    const instance = new amap.value.Map(mapContainer.value, {
-      center: MAP_CENTER,
-      zoom: MAP_ZOOM,
-      viewMode: MAP_CONFIG.DEFAULT_VIEW_MODE,
-      zooms: [3, 20],
-    })
-
-    map.value = instance
-
-    if (instance.plugin && amap.value.ToolBar && (instance as any).addControl) {
-      instance.plugin(['AMap.ToolBar'], () => {
-        if (!map.value || !amap.value?.ToolBar) return
-        ;(map.value as any).addControl(new amap.value.ToolBar({ position: 'RB' }))
-      })
-    }
-
-    mapError.value = ''
-    renderFilteredPois()
-  } catch (error) {
-    mapError.value = error instanceof Error ? error.message : '地图加载失败，请检查高德配置。'
-  }
-})
-
-onUnmounted(() => {
-  clearPoiMarkers()
-  if (map.value) {
-    map.value.destroy()
-    map.value = null
-  }
-})
-
-const locateUser = () => {
-  if (!map.value) return
-  if (map.value.setZoomAndCenter) {
-    map.value.setZoomAndCenter(15, MAP_CENTER)
-    return
-  }
-  map.value.setCenter(MAP_CENTER)
-  map.value.setZoom(15)
-}
+const {
+  mapRef,
+  searchQuery,
+  selectedPoi,
+  filteredPois,
+  markers,
+  showSearch,
+  showMatchChat,
+  activeMood,
+  moodOptions,
+  setActiveMood,
+  toggleSearch,
+  handleMarkerClick,
+  locateUser,
+  selectPoi,
+  goToPoi,
+  openMatchChat,
+  closeMatchChat,
+} = useExploreMap()
 </script>
 
 <template>
-  <main class="device-shell" style="overflow: visible;">
+  <main class="device-shell overflow-visible">
     <div class="relative h-[100dvh] w-full overflow-hidden">
-      <!-- AMap 地图容器 -->
-      <div ref="mapContainer" class="absolute inset-0 z-0" />
-      <div
-        v-if="mapError"
-        class="absolute inset-x-4 top-[calc(env(safe-area-inset-top)+64px)] z-20 rounded-2xl bg-white/95 px-4 py-3 text-[13px] text-[#B42318] shadow-[0_2px_10px_rgba(0,0,0,0.08)]"
-      >
-        {{ mapError }}
+      <MapContainer
+        ref="mapRef"
+        class="absolute inset-0 z-0"
+        :markers="markers"
+        :zoom="14"
+        @marker-click="handleMarkerClick"
+      />
+
+      <div class="pointer-events-none absolute inset-x-0 top-0 z-20 bg-gradient-to-b from-white/90 via-white/45 to-transparent px-4 pb-10 pt-[calc(env(safe-area-inset-top)+16px)]">
+        <div class="pointer-events-auto flex items-start justify-between gap-3">
+          <div class="max-w-[220px]">
+            <p class="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#8E8E93]">Explore</p>
+            <h1 class="mt-1 text-[24px] font-semibold text-[#1D1D1F]" style="letter-spacing: -0.5px;">城市情绪地图</h1>
+            <p class="mt-1 text-[13px] leading-5 text-[#6C6C6C]">把地图、情绪筛选和据点卡片收在一页里，减少跳转和重复状态。</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <button
+              type="button"
+              class="flex h-11 w-11 items-center justify-center rounded-full bg-white/92 shadow-[0_6px_18px_rgba(0,0,0,0.08)]"
+              @click="locateUser"
+            >
+              <span class="material-symbols-outlined text-[20px] text-[#6C6C6C]">my_location</span>
+            </button>
+            <MoodColorSelector />
+          </div>
+        </div>
       </div>
 
-      <div class="absolute right-4 top-[calc(env(safe-area-inset-top)+16px)] z-20 flex flex-col gap-3">
+      <div class="absolute right-4 top-[calc(env(safe-area-inset-top)+92px)] z-20 flex flex-col gap-3">
         <div class="relative">
           <input
             v-if="showSearch"
             v-model="searchQuery"
             type="text"
-            class="absolute right-12 top-1/2 z-30 h-9 w-56 -translate-y-1/2 rounded-[18px] bg-white px-3 text-[14px] text-[#1D1D1f] shadow-[0_1px_3px_rgba(0,0,0,0.06)] outline-none"
+            class="absolute right-14 top-1/2 z-30 h-11 w-60 -translate-y-1/2 rounded-[20px] border border-[#E5E5EA] bg-white px-4 text-[14px] text-[#1D1D1F] shadow-[0_6px_18px_rgba(0,0,0,0.08)] outline-none"
             style="letter-spacing: -0.224px"
-            placeholder="搜索..."
+            placeholder="搜索地点、氛围或区域"
           />
           <button
             type="button"
-            class="relative z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
-            @click="showSearch = !showSearch; showFilter = false"
+            class="relative z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_6px_18px_rgba(0,0,0,0.08)]"
+            @click="toggleSearch"
           >
             <span class="material-symbols-outlined text-[18px] text-[#6C6C6C]">
               {{ showSearch ? 'close' : 'search' }}
             </span>
           </button>
         </div>
+      </div>
 
-        <div class="relative">
+      <div class="absolute inset-x-4 bottom-[calc(72px+env(safe-area-inset-bottom)+16px)] z-20 space-y-3">
+        <div class="flex gap-2 overflow-x-auto pb-1">
           <button
+            v-for="mood in moodOptions"
+            :key="mood.key"
             type="button"
-            class="relative z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
-            @click.stop="showFilter = !showFilter; showSearch = false"
+            class="shrink-0 rounded-full border px-3 py-2 text-[12px] font-medium transition-colors"
+            :class="activeMood === mood.key ? 'border-transparent text-white' : 'border-[#E5E5EA] bg-white/92 text-[#6C6C6C]'"
+            :style="activeMood === mood.key ? { backgroundColor: mood.color } : undefined"
+            @click="setActiveMood(mood.key)"
           >
-            <span class="material-symbols-outlined text-[18px] text-[#6C6C6C]">palette</span>
+            {{ mood.label }}
           </button>
+        </div>
 
-          <div
-            v-if="showFilter"
-            class="absolute right-12 top-1/2 z-30 flex -translate-y-1/2 gap-2 rounded-[12px] bg-white px-3 py-2.5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
-            @click.stop
-          >
+        <div class="rounded-[24px] border border-[#E5E5EA] bg-white/95 p-4 shadow-[0_16px_40px_rgba(0,0,0,0.12)] backdrop-blur-md">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#8E8E93]">Nearby Spot</p>
+              <h2 class="mt-1 truncate text-[18px] font-semibold text-[#1D1D1F]">{{ selectedPoi?.name ?? '暂无匹配据点' }}</h2>
+              <p class="mt-1 text-[13px] text-[#6C6C6C]">
+                {{ selectedPoi?.district }} · {{ selectedPoi?.distance }} · {{ selectedPoi?.occupancy }}
+              </p>
+            </div>
             <button
-              v-for="mood in moodFilters"
-              :key="mood.key"
               type="button"
-              class="h-5 w-5 rounded-full transition-all duration-200"
-              :class="activeMood === mood.key ? 'ring-2 ring-[#1D1D1F] ring-offset-1' : 'opacity-60 hover:opacity-100'"
-              :style="{ backgroundColor: mood.color }"
-              :aria-label="mood.label"
-              :title="mood.label"
-              @click.stop="toggleMood(mood.key)"
-            />
+              class="rounded-full border border-[#E5E5EA] px-3 py-1.5 text-[12px] font-medium text-[#1D1D1F]"
+              @click="goToPoi"
+            >
+              查看
+            </button>
+          </div>
+
+          <p class="mt-3 text-[14px] leading-6 text-[#4A4A4A]">
+            {{ selectedPoi?.note ?? '先从筛选或搜索开始，选一个适合当前状态的地点。' }}
+          </p>
+
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button
+              v-for="poi in filteredPois"
+              :key="poi.id"
+              type="button"
+              class="rounded-full px-3 py-2 text-[12px] transition-colors"
+              :class="selectedPoi?.id === poi.id ? 'bg-[#1D1D1F] text-white' : 'bg-[#F2F2F7] text-[#6C6C6C]'"
+              @click="selectPoi(poi.id)"
+            >
+              {{ poi.name }}
+            </button>
           </div>
         </div>
       </div>
 
-      <div
-        v-if="showSearch || showFilter"
-        class="absolute inset-0 z-[15]"
-        @click="showSearch = false; showFilter = false"
-      />
-
       <button
         type="button"
-        class="absolute left-4 top-[calc(env(safe-area-inset-top)+16px)] z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
-        @click="locateUser"
-      >
-        <span class="material-symbols-outlined text-[18px] text-[#6C6C6C]">my_location</span>
-      </button>
-
-      <button
-        type="button"
-        class="absolute right-4 bottom-[calc(72px+env(safe-area-inset-bottom)+12px)] z-20 flex h-11 items-center gap-2 rounded-full bg-[#1D1D1F] pl-4 pr-5 shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-transform active:scale-95"
+        class="absolute right-4 bottom-[calc(182px+env(safe-area-inset-bottom)+12px)] z-20 flex h-12 items-center gap-2 rounded-full bg-[#1D1D1F] pl-4 pr-5 shadow-[0_10px_24px_rgba(0,0,0,0.16)] transition-transform active:scale-95"
         @click="openMatchChat"
       >
         <span class="material-symbols-outlined text-[18px] text-white">forum</span>

@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id          String       @id @default(cuid())
+  nickname    String
+  avatarUrl   String
+  mbti        String?
+  bio         String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  persona     Persona?
+  discoveries Discovery[]
+  matches     Match[]
+}
+
+model Persona {
+  id            String @id @default(cuid())
+  userId        String @unique
+  tone          String
+  socialStyle   String
+  moodTags      String
+  interestTags  String
+  openingScript String
+  summary       String
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OnboardingSession {
+  id                   String   @id @default(cuid())
+  userTempId           String
+  messagesJson         String
+  extractedProfileJson String
+  status               String
+  createdAt            DateTime @default(now())
+}
+
+model Poi {
+  id          String      @id @default(cuid())
+  name        String
+  category    String
+  description String
+  lng         Float
+  lat         Float
+  moodTags    String
+  status      String
+  discoveries Discovery[]
+}
+
+model Discovery {
+  id                String   @id @default(cuid())
+  userId            String
+  poiId             String
+  revealType        String
+  revealTitle       String
+  revealPayloadJson String
+  createdAt         DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  poi               Poi      @relation(fields: [poiId], references: [id], onDelete: Cascade)
+}
+
+model Match {
+  id                String   @id @default(cuid())
+  userId            String
+  targetProfileName String
+  targetAvatarUrl   String
+  score             Int
+  status            String
+  reasonSummary     String
+  chatRoundsJson    String
+  reportJson        String
+  createdAt         DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

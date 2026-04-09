@@ -1,391 +1,584 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import ActivityDots from '../../components/ui/ActivityDots.vue'
+import { useOnboardingChat } from './useOnboardingChat'
+import { onboardingChatContent } from './onboarding.config'
 
-const router = useRouter()
+const guideAvatarUrl = '/guide/urpia-guide-avatar.png'
 
-interface Message {
-  id: number
-  role: 'ai' | 'user'
-  text: string
-}
-
-type InputMode = 'voice' | 'text'
-
-interface BrowserSpeechRecognitionEvent {
-  results: SpeechRecognitionResultList
-}
-
-interface BrowserSpeechRecognition {
-  lang: string
-  interimResults: boolean
-  continuous: boolean
-  onresult: ((event: BrowserSpeechRecognitionEvent) => void) | null
-  onend: (() => void) | null
-  onerror: (() => void) | null
-  start: () => void
-  stop: () => void
-}
-
-type SpeechRecognitionConstructor = new () => BrowserSpeechRecognition
-
-const messages = ref<Message[]>([])
-const inputText = ref('')
-const inputMode = ref<InputMode>('voice')
-const isAiTyping = ref(false)
-const chatEndRef = ref<HTMLDivElement | null>(null)
-
-// 语音输入
-const isRecording = ref(false)
-const speechSupported = ref(false)
-let recognition: BrowserSpeechRecognition | null = null
-
-let msgId = 0
-let userReplyCount = 0
-let initialized = false
-
-const mockFollowUps = [
-  '你平时更喜欢怎样的社交场景呀？',
-  '嗯嗯，那遇到陌生人的时候，你通常会怎么做呢？',
-  '说得对。你觉得「舒服的社交」最重要的是什么？',
-  '最后一个问题啦——你希望你的分身比你更外放，还是更像你本人？',
-  '[DONE] 了解你了！正在为你生成专属分身...',
-]
-
-/**
- * 调用 LLM 获取回复。
- * TODO: 替换为真实后端 API，如 POST /api/onboarding/chat
- */
-const sendMessageToLLM = async (_userText: string): Promise<string> => {
-  // ---- mock 模式（后端 API 就绪后替换此处） ----
-  const index = Math.min(userReplyCount, mockFollowUps.length - 1)
-  const reply = mockFollowUps[index] ?? mockFollowUps[mockFollowUps.length - 1] ?? '了解你了，我们继续。'
-
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(reply), 600 + Math.random() * 800)
-  })
-
-  // ---- 真实 API 调用（取消上方 mock，启用下方代码） ----
-  // const res = await fetch('/api/onboarding/chat', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({
-  //     messages: [
-  //       { role: 'system', content: SYSTEM_PROMPT },
-  //       ...messages.value.map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.text })),
-  //       { role: 'user', content: _userText },
-  //     ],
-  //   }),
-  // })
-  // const data = await res.json()
-  // return data.reply
-}
-
-// ---- 对话流程 ----
-const scrollToBottom = async () => {
-  await nextTick()
-  chatEndRef.value?.scrollIntoView({ behavior: 'smooth' })
-}
-
-const addAiMessage = (text: string): boolean => {
-  // 检测 [DONE] 指令
-  if (text.startsWith('[DONE]')) {
-    const cleanText = text.replace(/^\[DONE\]\s*/, '')
-    messages.value.push({ id: ++msgId, role: 'ai', text: cleanText })
-    scrollToBottom()
-    setTimeout(() => {
-      void router.push('/onboarding/generating')
-    }, 1200)
-    return true // 对话结束
-  }
-
-  messages.value.push({ id: ++msgId, role: 'ai', text })
-  scrollToBottom()
-  return false
-}
-
-const addUserMessage = (text: string) => {
-  messages.value.push({ id: ++msgId, role: 'user', text })
-  scrollToBottom()
-}
-
-const handleSend = async () => {
-  const text = inputText.value.trim()
-  if (!text || isAiTyping.value) return
-
-  addUserMessage(text)
-  inputText.value = ''
-  userReplyCount++
-  isAiTyping.value = true
-  scrollToBottom()
-
-  try {
-    const reply = await sendMessageToLLM(text)
-    isAiTyping.value = false
-    addAiMessage(reply)
-  } catch {
-    isAiTyping.value = false
-    addAiMessage('网络好像走神了，能再说一次吗？')
-  }
-}
-
-const canSend = () => {
-  return inputText.value.trim().length > 0 && !isAiTyping.value
-}
-
-const switchToTextMode = () => {
-  if (isRecording.value && recognition) {
-    recognition.stop()
-    isRecording.value = false
-  }
-
-  inputMode.value = 'text'
-}
-
-const switchToVoiceMode = () => {
-  if (!speechSupported.value) return
-  inputMode.value = 'voice'
-}
-
-// ---- 语音输入 ----
-const initSpeechRecognition = () => {
-  const SpeechRecognitionAPI = ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition) as SpeechRecognitionConstructor | undefined
-  if (!SpeechRecognitionAPI) {
-    speechSupported.value = false
-    inputMode.value = 'text'
-    return
-  }
-
-  speechSupported.value = true
-  inputMode.value = 'voice'
-  recognition = new SpeechRecognitionAPI()
-  recognition.lang = 'zh-CN'
-  recognition.interimResults = true
-  recognition.continuous = false
-
-  recognition.onresult = (event: BrowserSpeechRecognitionEvent) => {
-    let transcript = ''
-    for (let i = 0; i < event.results.length; i++) {
-      const result = event.results[i]
-      const alternative = result?.[0]
-      if (alternative) {
-        transcript += alternative.transcript
-      }
-    }
-    inputText.value = transcript
-  }
-
-  recognition.onend = () => {
-    isRecording.value = false
-    if (inputMode.value === 'voice' && inputText.value.trim()) {
-      handleSend()
-    }
-  }
-
-  recognition.onerror = () => {
-    isRecording.value = false
-  }
-}
-
-// 长按开始录音
-const startRecording = () => {
-  if (!recognition || isAiTyping.value) return
-  inputText.value = ''
-  try {
-    recognition.start()
-    isRecording.value = true
-  } catch {
-    // 忽略重复启动错误
-  }
-}
-
-// 松开停止录音（自动发送）
-const stopRecording = () => {
-  if (!recognition || !isRecording.value) return
-  recognition.stop()
-  isRecording.value = false
-}
-
-onBeforeUnmount(() => {
-  if (recognition) {
-    recognition.onend = null
-    recognition.onerror = null
-    try { recognition.stop() } catch { /* noop */ }
-  }
-})
-
-onMounted(async () => {
-  if (initialized) return
-  initialized = true
-
-  initSpeechRecognition()
-  isAiTyping.value = true
-  scrollToBottom()
-  try {
-    const reply = await sendMessageToLLM('')
-    isAiTyping.value = false
-    addAiMessage(reply)
-  } catch {
-    isAiTyping.value = false
-    addAiMessage('嗨，想先聊聊你平时的社交习惯吗？')
-  }
-})
+const {
+  messages,
+  inputText,
+  inputMode,
+  isAiTyping,
+  chatEndRef,
+  isRecording,
+  speechSupported,
+  canSend,
+  handleSend,
+  switchToTextMode,
+  switchToVoiceMode,
+  startRecording,
+  stopRecording,
+} = useOnboardingChat()
 </script>
 
 <template>
-  <main class="device-shell">
-    <div class="flex h-[100dvh] flex-col">
-      <!-- 顶栏 -->
-      <header class="flex items-center gap-3 px-5 py-4">
-        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#9B8EC4]/10">
-          <span class="material-symbols-outlined text-[18px] text-[#9B8EC4]">auto_awesome</span>
+  <main class="chat-stage">
+    <div class="iphone-shell">
+      <div class="iphone-screen">
+        <div class="iphone-notch" aria-hidden="true">
+          <div class="iphone-speaker" />
         </div>
-        <div class="flex-1">
-          <p class="text-[15px] font-medium text-[#1D1D1F]" style="letter-spacing: -0.224px">Zoopia Guide</p>
-          <p class="text-[11px] text-[#8E8E93]" style="letter-spacing: -0.08px">正在了解你的社交偏好</p>
-        </div>
-        <div class="flex items-center gap-1.5 rounded-full bg-[#30d158]/10 px-2.5 py-1">
-          <div class="h-1.5 w-1.5 rounded-full bg-[#30d158]" />
-          <span class="text-[11px] text-[#30d158]" style="letter-spacing: -0.08px">在线</span>
-        </div>
-      </header>
 
-      <!-- 对话区域 -->
-      <section class="flex flex-1 flex-col gap-3 overflow-y-auto px-5 pb-4">
-        <article
-          v-for="msg in messages"
-          :key="msg.id"
-          class="flex"
-          :class="msg.role === 'user' ? 'justify-end' : 'justify-start'"
-        >
-          <!-- AI 头像 -->
-          <div v-if="msg.role === 'ai'" class="mr-2 flex-shrink-0 mt-5">
-            <div class="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#9B8EC4] to-[#6BBFA3]">
-              <span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 14">auto_awesome</span>
+        <header class="wechat-header">
+          <div class="status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-icons" aria-hidden="true">
+              <span class="signal-bars">
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
+              <span class="wifi-icon"><span /></span>
+              <span class="battery-icon">
+                <span class="battery-level" />
+              </span>
             </div>
           </div>
 
-          <div class="max-w-[78%]">
-            <div
-              class="rounded-2xl px-4 py-3 text-[15px] leading-relaxed"
-              :class="
-                msg.role === 'user'
-                  ? 'bg-[#1D1D1F] text-white rounded-br-md'
-                  : 'bg-[#F2F2F7] text-[#1D1D1F] rounded-bl-md'
-              "
-              style="letter-spacing: -0.224px"
-            >
+          <div class="nav-bar">
+            <button type="button" class="nav-back" aria-label="返回">
+              <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+            </button>
+            <div class="nav-title">
+              <p class="nav-name">{{ onboardingChatContent.title }}</p>
+              <p class="nav-subtitle">{{ onboardingChatContent.subtitle }}</p>
+            </div>
+            <div class="nav-spacer" />
+          </div>
+        </header>
+
+        <section class="wechat-chat">
+          <article
+            v-for="msg in messages"
+            :key="msg.id"
+            class="message-row"
+            :class="msg.role === 'user' ? 'message-row-user' : 'message-row-ai'"
+          >
+            <img
+              v-if="msg.role === 'ai'"
+              :src="guideAvatarUrl"
+              :alt="onboardingChatContent.title"
+              class="message-avatar"
+            />
+
+            <div class="message-bubble" :class="msg.role === 'user' ? 'message-bubble-user' : 'message-bubble-ai'">
               {{ msg.text }}
             </div>
-          </div>
-        </article>
+          </article>
 
-        <!-- AI 正在输入 -->
-        <div v-if="isAiTyping" class="flex items-start gap-2">
-          <div class="flex-shrink-0 mt-0.5">
-            <div class="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#9B8EC4] to-[#6BBFA3]">
-              <span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 14">auto_awesome</span>
+          <div v-if="isAiTyping" class="message-row message-row-ai">
+            <img
+              :src="guideAvatarUrl"
+              :alt="onboardingChatContent.title"
+              class="message-avatar"
+            />
+            <div class="message-bubble message-bubble-ai">
+              <ActivityDots dot-class="h-2 w-2 rounded-full bg-[#a9adb7]" />
             </div>
           </div>
-          <div class="rounded-2xl rounded-bl-md bg-[#F2F2F7] px-4 py-3">
-            <div class="flex items-center gap-1">
-              <div class="h-2 w-2 rounded-full bg-[#8E8E93]/40 animate-[bounce_1.4s_ease-in-out_infinite]" />
-              <div class="h-2 w-2 rounded-full bg-[#8E8E93]/40 animate-[bounce_1.4s_ease-in-out_0.2s_infinite]" />
-              <div class="h-2 w-2 rounded-full bg-[#8E8E93]/40 animate-[bounce_1.4s_ease-in-out_0.4s_infinite]" />
-            </div>
-          </div>
-        </div>
 
-        <div ref="chatEndRef" />
-      </section>
+          <div ref="chatEndRef" />
+        </section>
 
-      <!-- 底部输入区 -->
-      <section class="border-t border-[#E5E5EA]/60 bg-white px-5 pb-[calc(env(safe-area-inset-bottom)+12px)] pt-3">
-        <div v-if="inputMode === 'voice'" class="flex items-center gap-2.5">
-          <button
-            type="button"
-            class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#F2F2F7] text-[#8E8E93] transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100"
-            :disabled="isAiTyping"
-            aria-label="切换到打字输入"
-            @click="switchToTextMode"
-          >
-            <span class="material-symbols-outlined text-[18px]">keyboard</span>
-          </button>
+        <footer class="wechat-input">
+          <div class="input-bar">
+            <button
+              v-if="inputMode === 'voice'"
+              type="button"
+              class="mode-toggle"
+              :disabled="isAiTyping"
+              aria-label="切换到文字输入"
+              @click="switchToTextMode"
+            >
+              <span class="material-symbols-outlined text-[18px]">keyboard</span>
+            </button>
 
-          <button
-            type="button"
-            class="flex flex-1 items-center justify-center gap-2 rounded-full py-3.5 text-[15px] font-medium transition-all select-none"
-            :class="isRecording
-              ? 'bg-[#1D1D1F] text-white'
-              : 'bg-[#F2F2F7] text-[#8E8E93] active:bg-[#E5E5EA]'"
-            :disabled="isAiTyping || !speechSupported"
-            style="letter-spacing: -0.224px"
-            @mousedown="startRecording"
-            @mouseup="stopRecording"
-            @mouseleave="stopRecording"
-            @touchstart.prevent="startRecording"
-            @touchend.prevent="stopRecording"
-          >
-            <template v-if="isRecording">
-              <div class="flex items-center gap-0.5">
-                <div class="h-3 w-[3px] rounded-full bg-white/80 animate-[voice-bar_0.8s_ease-in-out_infinite]" />
-                <div class="h-4 w-[3px] rounded-full bg-white/80 animate-[voice-bar_0.8s_ease-in-out_0.15s_infinite]" />
-                <div class="h-2 w-[3px] rounded-full bg-white/80 animate-[voice-bar_0.8s_ease-in-out_0.3s_infinite]" />
-                <div class="h-5 w-[3px] rounded-full bg-white/80 animate-[voice-bar_0.8s_ease-in-out_0.45s_infinite]" />
-                <div class="h-3 w-[3px] rounded-full bg-white/80 animate-[voice-bar_0.8s_ease-in-out_0.6s_infinite]" />
-              </div>
-              <span>松开发送</span>
-            </template>
+            <button
+              v-else
+              type="button"
+              class="mode-toggle"
+              :disabled="isAiTyping || !speechSupported"
+              aria-label="切换到语音输入"
+              @click="switchToVoiceMode"
+            >
+              <span class="material-symbols-outlined text-[18px]">mic</span>
+            </button>
+
+            <button
+              v-if="inputMode === 'voice'"
+              type="button"
+              class="voice-box"
+              :class="{ 'is-recording': isRecording }"
+              :disabled="isAiTyping || !speechSupported"
+              @mousedown="startRecording"
+              @mouseup="stopRecording"
+              @mouseleave="stopRecording"
+              @touchstart.prevent="startRecording"
+              @touchend.prevent="stopRecording"
+            >
+              <span v-if="isRecording" class="recording-bars" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
+              <span>{{ isRecording ? onboardingChatContent.releaseToSendLabel : onboardingChatContent.pressToTalkLabel }}</span>
+            </button>
+
             <template v-else>
-              <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 18">mic</span>
-              <span>{{ isAiTyping ? '等待回复...' : '按住说话' }}</span>
+              <input
+                v-model="inputText"
+                type="text"
+                class="wechat-text-input"
+                :placeholder="onboardingChatContent.textPlaceholder"
+                :disabled="isAiTyping"
+                @keyup.enter="handleSend"
+              />
+              <button
+                type="button"
+                class="wechat-send"
+                :class="{ 'is-active': canSend() }"
+                :disabled="!canSend()"
+                @click="handleSend"
+              >
+                发送
+              </button>
             </template>
-          </button>
-        </div>
-
-        <div v-else class="flex items-center gap-2.5">
-          <button
-            type="button"
-            class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#F2F2F7] text-[#8E8E93] transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100"
-            :disabled="isAiTyping || !speechSupported"
-            aria-label="切换到语音输入"
-            @click="switchToVoiceMode"
-          >
-            <span class="material-symbols-outlined text-[18px]">mic</span>
-          </button>
-
-          <input
-            v-model="inputText"
-            type="text"
-            class="flex-1 rounded-full bg-[#F2F2F7] px-4 py-2.5 text-[15px] text-[#1D1D1F] outline-none placeholder:text-[#8E8E93]/60"
-            style="letter-spacing: -0.224px"
-            placeholder="说说你的想法..."
-            :disabled="isAiTyping"
-            @keyup.enter="handleSend"
-          />
-          <button
-            type="button"
-            class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all"
-            :class="canSend() ? 'bg-[#1D1D1F] text-white active:scale-90' : 'bg-[#E5E5EA] text-[#8E8E93]/40'"
-            :disabled="!canSend()"
-            @click="handleSend"
-          >
-            <span class="material-symbols-outlined text-[20px]">arrow_upward</span>
-          </button>
-        </div>
-      </section>
+          </div>
+          <div class="home-indicator" aria-hidden="true" />
+        </footer>
+      </div>
     </div>
   </main>
 </template>
 
 <style scoped>
-@keyframes bounce {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-4px); }
+.chat-stage {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top, rgba(244, 244, 246, 0.75), rgba(228, 230, 235, 0.95)),
+    linear-gradient(180deg, #d9dbe0, #cfd2d8);
+  padding: 24px 16px;
+}
+
+.iphone-shell {
+  width: min(100%, 390px);
+  border-radius: 42px;
+  padding: 10px;
+  background: linear-gradient(180deg, #1a1a1d, #060607);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.iphone-screen {
+  position: relative;
+  min-height: calc(100dvh - 68px);
+  max-height: 812px;
+  overflow: hidden;
+  border-radius: 34px;
+  background: #ededed;
+  display: flex;
+  flex-direction: column;
+}
+
+.iphone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 210px;
+  height: 31px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background: #090909;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.iphone-speaker {
+  width: 72px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.wechat-header {
+  position: relative;
+  z-index: 10;
+  background: rgba(247, 247, 247, 0.94);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-top: 10px;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 18px 6px;
+  margin-top: 22px;
+  color: #111111;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.signal-bars {
+  display: flex;
+  align-items: end;
+  gap: 2px;
+}
+
+.signal-bars i {
+  display: block;
+  width: 3px;
+  background: #111111;
+  border-radius: 999px;
+}
+
+.signal-bars i:nth-child(1) { height: 5px; opacity: 0.55; }
+.signal-bars i:nth-child(2) { height: 7px; opacity: 0.7; }
+.signal-bars i:nth-child(3) { height: 9px; opacity: 0.82; }
+.signal-bars i:nth-child(4) { height: 11px; }
+
+.wifi-icon {
+  position: relative;
+  width: 15px;
+  height: 11px;
+}
+
+.wifi-icon::before,
+.wifi-icon::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1.8px solid transparent;
+  border-top-color: #111111;
+  border-radius: 50%;
+}
+
+.wifi-icon::before {
+  top: 0;
+  width: 14px;
+  height: 14px;
+}
+
+.wifi-icon::after {
+  top: 3px;
+  width: 8px;
+  height: 8px;
+}
+
+.wifi-icon span {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: #111111;
+}
+
+.battery-icon {
+  width: 22px;
+  height: 11px;
+  border: 1.8px solid #111111;
+  border-radius: 3px;
+  padding: 1px;
+  position: relative;
+}
+
+.battery-icon::after {
+  content: '';
+  position: absolute;
+  right: -3.5px;
+  top: 2.4px;
+  width: 2px;
+  height: 5px;
+  border-radius: 0 2px 2px 0;
+  background: #111111;
+}
+
+.battery-level {
+  display: block;
+  width: 72%;
+  height: 100%;
+  border-radius: 2px;
+  background: #111111;
+}
+
+.nav-bar {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px 12px;
+}
+
+.nav-back {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  color: #1b1b1d;
+  display: grid;
+  place-items: center;
+}
+
+.nav-title {
+  flex: 1;
+  text-align: center;
+}
+
+.nav-name {
+  color: #111111;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.nav-subtitle {
+  margin-top: 2px;
+  color: #8b8d94;
+  font-size: 11px;
+  letter-spacing: -0.08px;
+}
+
+.nav-spacer {
+  min-width: 36px;
+}
+
+.wechat-chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)),
+    #ededed;
+}
+
+.message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.message-row-ai {
+  justify-content: flex-start;
+}
+
+.message-row-user {
+  justify-content: flex-end;
+}
+
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  background: #fff;
+}
+
+.message-bubble {
+  max-width: 76%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1.58;
+  letter-spacing: -0.18px;
+  position: relative;
+  word-break: break-word;
+}
+
+.message-bubble-ai {
+  background: #ffffff;
+  color: #111111;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.message-bubble-ai::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 12px;
+  border-width: 7px 7px 7px 0;
+  border-style: solid;
+  border-color: transparent #ffffff transparent transparent;
+}
+
+.message-bubble-user {
+  background: #95ec69;
+  color: #111111;
+}
+
+.message-bubble-user::after {
+  content: '';
+  position: absolute;
+  right: -7px;
+  top: 12px;
+  border-width: 7px 0 7px 7px;
+  border-style: solid;
+  border-color: transparent transparent transparent #95ec69;
+}
+
+.wechat-input {
+  background: #f7f7f7;
+  border-top: 1px solid rgba(60, 60, 67, 0.12);
+  padding: 10px 12px 8px;
+}
+
+.input-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mode-toggle {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(60, 60, 67, 0.14);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #7a7d85;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.voice-box {
+  flex: 1;
+  height: 40px;
+  border: 0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #4a4d55;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: inset 0 0 0 1px rgba(60, 60, 67, 0.08);
+  font-size: 15px;
+}
+
+.voice-box.is-recording {
+  background: #f2f3f6;
+}
+
+.recording-bars {
+  display: inline-flex;
+  align-items: end;
+  gap: 3px;
+}
+
+.recording-bars i {
+  width: 3px;
+  border-radius: 999px;
+  background: #07c160;
+  animation: voice-bar 0.85s ease-in-out infinite;
+}
+
+.recording-bars i:nth-child(1) { height: 10px; animation-delay: 0s; }
+.recording-bars i:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+.recording-bars i:nth-child(3) { height: 12px; animation-delay: 0.2s; }
+.recording-bars i:nth-child(4) { height: 18px; animation-delay: 0.3s; }
+
+.wechat-text-input {
+  flex: 1;
+  height: 40px;
+  border: 0;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 0 14px;
+  color: #111111;
+  font-size: 16px;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(60, 60, 67, 0.08);
+}
+
+.wechat-text-input::placeholder {
+  color: #b1b4bc;
+}
+
+.wechat-send {
+  min-width: 56px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: #d7d9de;
+  color: rgba(17, 17, 17, 0.48);
+  font-size: 15px;
+  font-weight: 600;
+  transition: transform 120ms ease, background 120ms ease, color 120ms ease;
+}
+
+.wechat-send.is-active {
+  background: #ffffff;
+  color: #111111;
+  box-shadow: inset 0 0 0 1px rgba(60, 60, 67, 0.1);
+}
+
+.wechat-send:not(:disabled):active {
+  transform: scale(0.96);
+}
+
+.home-indicator {
+  width: 134px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.88);
+  margin: 10px auto 0;
 }
 
 @keyframes voice-bar {
-  0%, 100% { transform: scaleY(0.4); }
-  50% { transform: scaleY(1); }
+  0%, 100% { transform: scaleY(0.45); opacity: 0.58; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+@media (max-width: 430px) {
+  .chat-stage {
+    padding: 0;
+    background: #2e3138;
+  }
+
+  .iphone-shell {
+    width: 100%;
+    border-radius: 0;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .iphone-screen {
+    min-height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+  }
 }
 </style>
