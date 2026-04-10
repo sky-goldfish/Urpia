@@ -45,9 +45,6 @@ interface Emits {
   (e: 'storeLocatorClick', store: StoreCatalogItem): void
 }
 
-type CharacterRole = 'player' | 'npc'
-type CharacterAnimationState = 'idle' | 'walk' | 'run'
-
 interface NpcActor {
   id: string
   modelUrl: string
@@ -60,26 +57,11 @@ interface NpcActor {
   direction: 1 | -1
 }
 
-interface OverlayCharacter {
+interface NpcAvatarEntity {
   id: string
-  role: CharacterRole
-  modelUrl: string
-  markerImageUrl: string
-  markerSize: number
-  position: [number, number]
-  group: THREE.Group
-  markerElement: HTMLDivElement
-  modelRoot: THREE.Object3D | null
-  mixer: THREE.AnimationMixer | null
-  activeAction: THREE.AnimationAction | null
-  idleAction: THREE.AnimationAction | null
-  walkAction: THREE.AnimationAction | null
-  runAction: THREE.AnimationAction | null
-  targetYaw: number
-  currentYaw: number
-  isMoving: boolean
-  state: CharacterAnimationState
-  loading: boolean
+  actor: NpcActor
+  layer: PlayerAvatarLayer
+  marker: MapboxMarkerLike
 }
 
 interface StoreRenderRecord {
@@ -100,11 +82,20 @@ interface StoreLayer extends mapboxgl.CustomLayerInterface {
   disposeStores: () => void
 }
 
+interface PlayerAvatarLayer extends mapboxgl.CustomLayerInterface {
+  updatePosition: (lngLat: [number, number]) => void
+  playAnimation: (name: string, duration?: number) => void
+  setTimeScale: (scale: number) => void
+  setTargetYaw: (yaw: number) => void
+}
+
 const STORE_LAYER_ID = 'urpia-store-layer'
-const PLAYER_CHARACTER_ID = 'player-avatar'
+const PLAYER_LAYER_ID = 'urpia-player-layer'
 const METERS_PER_DEG_LAT = 111320
 const STORE_ALTITUDE = 0
+const PLAYER_ALTITUDE = 0
 const STORE_SCALE_ADJUST = 44
+const PLAYER_SCALE_ADJUST = 20
 const AVATAR_MOVE_SPEED = 52.5
 const NPC_MOVE_SPEED = 12
 const AVATAR_TURN_SPEED = 0.18
@@ -112,7 +103,6 @@ const STORE_MARKER_MIN_ZOOM = 14
 const STORE_MARKER_MAX_VISIBLE = 6
 const STORE_MARKER_PADDING_RATIO = 0.35
 const STORE_SYNC_DEBOUNCE_MS = 90
-const OVERLAY_BASE_SCALE = 60
 const MAP_DEBUG_NAMESPACE = '[MapContainer]'
 const DEFAULT_AVATAR_INPUT: AvatarInput = { x: 0, y: 0 }
 
@@ -130,7 +120,6 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>()
 
 const mapCanvasHost = ref<HTMLDivElement | null>(null)
-const avatarOverlayHost = ref<HTMLDivElement | null>(null)
 const map = shallowRef<MapboxMapLike | null>(null)
 const mapMarkers = ref<MapboxMarkerLike[]>([])
 const storeLocatorMarkers = ref<Map<string, MapboxMarkerLike>>(new Map())
@@ -138,6 +127,8 @@ const isReady = ref(false)
 const errorMessage = ref('')
 
 let storeLayer: StoreLayer | null = null
+let playerAvatarLayer: PlayerAvatarLayer | null = null
+let playerAvatarMarker: MapboxMarkerLike | null = null
 let avatarPosition: [number, number] = [...props.avatarInitialPosition]
 let avatarInput: AvatarInput = { ...DEFAULT_AVATAR_INPUT }
 let avatarRafId = 0
@@ -145,13 +136,8 @@ let lastFrameTime = 0
 let nearestPremiumStoreId = ''
 let storeSyncTimer = 0
 let npcActors: NpcActor[] = []
-
-let overlayRenderer: THREE.WebGLRenderer | null = null
-let overlayScene: THREE.Scene | null = null
-let overlayCamera: THREE.OrthographicCamera | null = null
-let overlayLoader: GLTFLoader | null = null
-let overlayDracoLoader: DRACOLoader | null = null
-const overlayCharacters = new Map<string, OverlayCharacter>()
+let playerAvatarMoving = false
+const npcAvatarEntities = new Map<string, NpcAvatarEntity>()
 
 const debugEnabled = () => import.meta.env.DEV
 
@@ -415,6 +401,229 @@ const fitStoreModel = (root: THREE.Object3D, store: StoreCatalogItem) => {
   root.rotation.y = store.mapRotationY ?? - Math.PI / 2
 }
 
+const createPlayerAvatarMarkerElement = (imageUrl: string, size: number, alt: string) => {
+  const el = document.createElement('div')
+  el.className = 'player-avatar-marker'
+  el.style.cssText = `
+    width: ${size}px;
+    height: ${size}px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.98);
+    border: 2px solid rgba(255,255,255,0.95);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.2);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  `
+
+  const img = document.createElement('img')
+  img.alt = alt
+  img.src = imageUrl
+  img.style.cssText = `
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  `
+  el.appendChild(img)
+  return el
+}
+
+const createPlayerAvatarLayer = (
+  mapInstance: MapboxMapLike,
+  layerId: string,
+  initialPosition: [number, number],
+  modelUrl: string,
+): PlayerAvatarLayer => {
+  let mercator = mapboxgl.MercatorCoordinate.fromLngLat(initialPosition, PLAYER_ALTITUDE)
+  let tx = mercator.x
+  let ty = mercator.y
+  let tz = mercator.z
+  let mercatorScale = mercator.meterInMercatorCoordinateUnits() * PLAYER_SCALE_ADJUST
+
+  let camera: THREE.Camera
+  let scene: THREE.Scene
+  let renderer: THREE.WebGLRenderer
+  let mixer: THREE.AnimationMixer | null = null
+  let activeAction: THREE.AnimationAction | null = null
+  const actions: Record<string, THREE.AnimationAction> = {}
+  const clock = new THREE.Clock()
+
+  let currentYaw = 0
+  let targetYaw = 0
+  let rootBone: THREE.Object3D | null = null
+  let rootBoneInitialPosition = new THREE.Vector3()
+
+  const layer: PlayerAvatarLayer = {
+    id: layerId,
+    type: 'custom',
+    renderingMode: '3d',
+
+    updatePosition(lngLat) {
+      mercator = mapboxgl.MercatorCoordinate.fromLngLat(lngLat, PLAYER_ALTITUDE)
+      tx = mercator.x
+      ty = mercator.y
+      tz = mercator.z
+      mercatorScale = mercator.meterInMercatorCoordinateUnits() * PLAYER_SCALE_ADJUST
+      mapInstance.triggerRepaint()
+    },
+
+    playAnimation(name, duration = 0.2) {
+      const next = actions[name] ?? Object.values(actions)[0]
+      if (!next || next === activeAction) return
+      activeAction?.fadeOut(duration)
+      next.reset().fadeIn(duration).play()
+      activeAction = next
+      mapInstance.triggerRepaint()
+    },
+
+    setTimeScale(scale) {
+      if (mixer) {
+        mixer.timeScale = scale
+      }
+    },
+
+    setTargetYaw(yaw) {
+      targetYaw = yaw
+    },
+
+    onAdd(_map, gl) {
+      camera = new THREE.Camera()
+      scene = new THREE.Scene()
+      scene.add(new THREE.AmbientLight(0xffffff, 2.2))
+      const directional = new THREE.DirectionalLight(0xffffff, 1.8)
+      directional.position.set(0, -70, 100).normalize()
+      scene.add(directional)
+
+      const dracoLoader = new DRACOLoader()
+      dracoLoader.setDecoderPath('/draco/')
+      dracoLoader.setDecoderConfig({ type: 'wasm' })
+
+      const loader = new GLTFLoader()
+      loader.setDRACOLoader(dracoLoader)
+
+      loader.load(
+        modelUrl,
+        (gltf: GLTF) => {
+          const avatarRoot = new THREE.Group()
+          const modelScene = gltf.scene
+          modelScene.traverse((child: THREE.Object3D) => {
+            if (child instanceof THREE.SkinnedMesh) {
+              child.frustumCulled = false
+              child.normalizeSkinWeights()
+            }
+            if (child.name === 'Root') {
+              rootBone = child
+              rootBoneInitialPosition.copy(child.position)
+            }
+          })
+
+          fitAvatarModel(modelScene)
+          avatarRoot.add(modelScene)
+          scene.add(avatarRoot)
+
+          if (gltf.animations.length > 0) {
+            mixer = new THREE.AnimationMixer(modelScene)
+            const sanitizedAnimations = gltf.animations.map((clip) =>
+              new THREE.AnimationClip(
+                clip.name,
+                clip.duration,
+                clip.tracks.filter((track) => track.name !== 'Root.position' && track.name !== 'Root.quaternion'),
+              ),
+            )
+
+            sanitizedAnimations.forEach((clip) => {
+              actions[clip.name] = mixer!.clipAction(clip)
+            })
+
+            const idle =
+              actions.Idle ??
+              actions['NlaTrack.001'] ??
+              actions[sanitizedAnimations[0]?.name ?? ''] ??
+              Object.values(actions)[0]
+
+            const walk =
+              actions.Walk ??
+              actions.NlaTrack ??
+              actions[sanitizedAnimations[1]?.name ?? ''] ??
+              idle
+
+            const run =
+              actions.Run ??
+              actions['NlaTrack.002'] ??
+              actions[sanitizedAnimations[2]?.name ?? ''] ??
+              walk
+
+            if (idle) actions.Idle = idle
+            if (walk) actions.Walk = walk
+            if (run) actions.Run = run
+
+            if (idle) {
+              activeAction = idle
+              idle.play()
+              mixer.timeScale = 1
+            }
+          }
+
+          mapInstance.triggerRepaint()
+        },
+        undefined,
+        (error) => {
+          console.error('[MapContainer] Failed to load player avatar layer model.', {
+            modelUrl,
+            error,
+          })
+        },
+      )
+
+      renderer = new THREE.WebGLRenderer({
+        canvas: mapInstance.getCanvas(),
+        context: gl,
+        antialias: true,
+      })
+      renderer.autoClear = false
+      renderer.outputColorSpace = THREE.SRGBColorSpace
+    },
+
+    onRemove() {
+      renderer?.dispose()
+    },
+
+    render(_gl, matrix) {
+      if (mixer) {
+        mixer.update(clock.getDelta())
+        if (rootBone) {
+          rootBone.position.copy(rootBoneInitialPosition)
+        }
+      }
+
+      let diff = targetYaw - currentYaw
+      while (diff > Math.PI) diff -= Math.PI * 2
+      while (diff < -Math.PI) diff += Math.PI * 2
+      currentYaw += diff * AVATAR_TURN_SPEED
+
+      const translation = new THREE.Matrix4().makeTranslation(tx, ty, tz)
+      const scaling = new THREE.Matrix4().makeScale(mercatorScale, -mercatorScale, mercatorScale)
+      const baseRotation = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(Math.PI / 2, 0, 0, 'XYZ'))
+      const yawRotation = new THREE.Matrix4().makeRotationY(currentYaw)
+
+      camera.projectionMatrix = new THREE.Matrix4()
+        .fromArray(matrix)
+        .multiply(translation)
+        .multiply(scaling)
+        .multiply(baseRotation)
+        .multiply(yawRotation)
+
+      renderer.resetState()
+      renderer.render(scene, camera)
+      mapInstance.triggerRepaint()
+    },
+  }
+
+  return layer
+}
+
 const createStoreLayer = (mapInstance: MapboxMapLike): StoreLayer => {
   let camera: THREE.Camera
   let scene: THREE.Scene
@@ -459,26 +668,22 @@ const createStoreLayer = (mapInstance: MapboxMapLike): StoreLayer => {
       const gltf = await gltfLoader.loadAsync(record.modelUrl)
       record.model = gltf.scene
       
-      // 优化模型材质以减少锯齿和方块化
       record.model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
-          // 启用阴影
           child.castShadow = true
           child.receiveShadow = true
-          
-          // 优化材质
+
           if (child.material) {
-            // 如果材质是数组，遍历所有材质
             const materials = Array.isArray(child.material) ? child.material : [child.material]
             materials.forEach((mat) => {
-              // 启用各向异性过滤以提高纹理质量
               if (mat.map) {
                 mat.map.anisotropy = renderer.capabilities.getMaxAnisotropy()
                 mat.map.minFilter = THREE.LinearMipmapLinearFilter
                 mat.map.magFilter = THREE.LinearFilter
+                mat.map.needsUpdate = true
               }
-              // 启用平滑着色
               mat.flatShading = false
+              mat.needsUpdate = true
             })
           }
         }
@@ -578,12 +783,6 @@ const createStoreLayer = (mapInstance: MapboxMapLike): StoreLayer => {
       })
       renderer.autoClear = false
       renderer.outputColorSpace = THREE.SRGBColorSpace
-      
-      // 启用阴影和更好的渲染质量
-      renderer.shadowMap.enabled = true
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap
-      renderer.toneMapping = THREE.ACESFilmicToneMapping
-      renderer.toneMappingExposure = 1.0
     },
 
     onRemove() {
@@ -596,18 +795,11 @@ const createStoreLayer = (mapInstance: MapboxMapLike): StoreLayer => {
     render(_gl, matrix) {
       camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix)
 
-      // 获取当前地图缩放级别，用于动态调整建筑物大小
-      const currentZoom = mapInstance.getZoom?.() ?? 14
-      // 调整缩放比例关系 - 与人物模型保持一致
-      const zoomScale = Math.pow(1.5, currentZoom - 14)
-
       storeRecords.forEach((record) => {
         if (!record.root) return
 
         const translation = new THREE.Matrix4().makeTranslation(record.x, record.y, record.z)
-        // 应用基于地图缩放的动态缩放
-        const dynamicScale = record.mercatorScale * zoomScale
-        const scaling = new THREE.Matrix4().makeScale(dynamicScale, -dynamicScale, dynamicScale)
+        const scaling = new THREE.Matrix4().makeScale(record.mercatorScale, -record.mercatorScale, record.mercatorScale)
         const baseRotation = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(Math.PI / 2, 0, 0, 'XYZ'))
 
         record.root.matrix.copy(translation).multiply(scaling).multiply(baseRotation)
@@ -644,58 +836,42 @@ const syncVisibleStores = () => {
   storeLayer.syncStores(visibleCandidates.slice(0, STORE_MARKER_MAX_VISIBLE))
 }
 
-const createOverlayMarkerElement = (imageUrl: string, size: number, alt: string) => {
-  const el = document.createElement('div')
-  el.className = 'overlay-avatar-marker'
-  el.style.cssText = `
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: ${size}px;
-    height: ${size}px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.98);
-    border: 2px solid rgba(255,255,255,0.95);
-    box-shadow: 0 10px 22px rgba(0,0,0,0.2);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: 2;
-  `
-
-  const img = document.createElement('img')
-  img.alt = alt
-  img.src = imageUrl
-  img.style.cssText = `
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  `
-  el.appendChild(img)
-  avatarOverlayHost.value?.appendChild(el)
-  return el
+const syncPlayerAvatarMarker = () => {
+  playerAvatarMarker?.setLngLat?.(avatarPosition)
 }
 
 const removeAvatarMarker = () => {
-  const player = overlayCharacters.get(PLAYER_CHARACTER_ID)
-  player?.markerElement.remove()
+  playerAvatarMarker?.remove?.()
+  playerAvatarMarker = null
 }
 
-const setOverlaySize = () => {
-  if (!avatarOverlayHost.value || !overlayRenderer || !overlayCamera) {
-    return
+const removePlayerAvatarLayer = () => {
+  if (map.value?.getLayer?.(PLAYER_LAYER_ID)) {
+    map.value.removeLayer(PLAYER_LAYER_ID)
   }
+  playerAvatarLayer = null
+}
 
-  const width = avatarOverlayHost.value.clientWidth
-  const height = avatarOverlayHost.value.clientHeight
-  overlayRenderer.setSize(width, height, false)
-  overlayCamera.left = -width / 2
-  overlayCamera.right = width / 2
-  overlayCamera.top = height / 2
-  overlayCamera.bottom = -height / 2
-  overlayCamera.updateProjectionMatrix()
+const ensurePlayerAvatar = () => {
+  if (!map.value || !props.enableAvatar || !props.avatarModelUrl) return
+
+  removePlayerAvatarLayer()
+  playerAvatarLayer = createPlayerAvatarLayer(map.value, PLAYER_LAYER_ID, avatarPosition, props.avatarModelUrl)
+  map.value.addLayer(playerAvatarLayer)
+
+  const markerElement = createPlayerAvatarMarkerElement(
+    props.avatarImageUrl || '/avatars/girl-01.jpg',
+    42,
+    'player avatar marker',
+  )
+  removeAvatarMarker()
+  playerAvatarMarker = new mapboxgl.Marker({
+    element: markerElement,
+    anchor: 'bottom',
+    offset: [0, -14],
+  })
+    .setLngLat(avatarPosition)
+    .addTo(map.value)
 }
 
 const fitAvatarModel = (root: THREE.Object3D) => {
@@ -703,8 +879,8 @@ const fitAvatarModel = (root: THREE.Object3D) => {
   const center = box.getCenter(new THREE.Vector3())
   const size = box.getSize(new THREE.Vector3())
   const maxAxis = Math.max(size.x, size.y, size.z)
-  // 调整模型尺寸 - 增加到原来的3倍
-  const fitScale = maxAxis > 0 ? 1.4 / maxAxis : 0.3
+  // 与参考项目的角色体感对齐，取消这里额外的 3x 放大
+  const fitScale = maxAxis > 0 ? 0.46 / maxAxis : 0.1
 
   root.position.sub(center)
   root.scale.setScalar(fitScale)
@@ -714,323 +890,50 @@ const fitAvatarModel = (root: THREE.Object3D) => {
   root.rotation.y = -Math.PI / 2
 }
 
-const initOverlayScene = () => {
-  if (!avatarOverlayHost.value) return
-
-  overlayScene = new THREE.Scene()
-  overlayCamera = new THREE.OrthographicCamera(-100, 100, 100, -100, 0.1, 2000)
-  overlayCamera.position.set(0, 0, 1000)
-
-  overlayRenderer = new THREE.WebGLRenderer({
-    alpha: true,
-    antialias: true,
-    powerPreference: 'high-performance',
-  })
-  overlayRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-  overlayRenderer.outputColorSpace = THREE.SRGBColorSpace
-  overlayRenderer.domElement.style.position = 'absolute'
-  overlayRenderer.domElement.style.inset = '0'
-  overlayRenderer.domElement.style.pointerEvents = 'none'
-  avatarOverlayHost.value.appendChild(overlayRenderer.domElement)
-
-  const hemisphere = new THREE.HemisphereLight('#fff8ef', '#dfe5ff', 2.4)
-  const key = new THREE.DirectionalLight('#fffdf7', 2.6)
-  key.position.set(120, 180, 220)
-  const fill = new THREE.DirectionalLight('#dbe6ff', 1.2)
-  fill.position.set(-140, 40, 120)
-  const front = new THREE.DirectionalLight('#ffffff', 0.8)
-  front.position.set(0, 0, 240)
-  overlayScene.add(hemisphere, key, fill, front)
-
-  overlayDracoLoader = new DRACOLoader()
-  overlayDracoLoader.setDecoderPath('/draco/')
-  overlayDracoLoader.setDecoderConfig({ type: 'wasm' })
-
-  overlayLoader = new GLTFLoader()
-  overlayLoader.setDRACOLoader(overlayDracoLoader)
-  setOverlaySize()
+const removeNpcAvatarEntity = (id: string) => {
+  const entity = npcAvatarEntities.get(id)
+  if (!entity) return
+  entity.marker?.remove?.()
+  if (map.value?.getLayer?.(entity.layer.id)) {
+    map.value.removeLayer(entity.layer.id)
+  }
+  npcAvatarEntities.delete(id)
 }
 
-const disposeOverlayCharacter = (character: OverlayCharacter) => {
-  character.mixer?.stopAllAction()
+const ensureNpcAvatarEntity = (actor: NpcActor) => {
+  if (!map.value) return
 
-  character.modelRoot?.traverse((child: THREE.Object3D) => {
-    if (child instanceof THREE.Mesh) {
-      child.geometry.dispose()
-      if (Array.isArray(child.material)) {
-        child.material.forEach((material: THREE.Material) => material.dispose())
-      } else {
-        child.material.dispose()
-      }
-    }
-  })
-
-  overlayScene?.remove(character.group)
-  character.markerElement.remove()
-  character.modelRoot = null
-  character.mixer = null
-  character.activeAction = null
-  character.idleAction = null
-  character.walkAction = null
-  character.runAction = null
-  character.loading = false
-}
-
-const disposeOverlayScene = () => {
-  overlayCharacters.forEach((character) => disposeOverlayCharacter(character))
-  overlayCharacters.clear()
-
-  if (overlayRenderer?.domElement.parentElement === avatarOverlayHost.value) {
-    overlayRenderer.domElement.remove()
-  }
-
-  overlayRenderer?.dispose()
-  overlayDracoLoader?.dispose()
-  overlayRenderer = null
-  overlayScene = null
-  overlayCamera = null
-  overlayLoader = null
-  overlayDracoLoader = null
-}
-
-const fadeToAction = (character: OverlayCharacter, nextAction: THREE.AnimationAction | null) => {
-  if (!nextAction || character.activeAction === nextAction) {
-    return
-  }
-
-  nextAction.reset()
-  nextAction.enabled = true
-  nextAction.setEffectiveTimeScale(1)
-  nextAction.setEffectiveWeight(1)
-  nextAction.fadeIn(0.2)
-  nextAction.play()
-
-  if (character.activeAction) {
-    character.activeAction.fadeOut(0.2)
-  }
-
-  character.activeAction = nextAction
-}
-
-const syncOverlayAnimation = (character: OverlayCharacter) => {
-  if (character.role === 'player') {
-    fadeToAction(character, character.isMoving ? character.runAction : character.idleAction)
-    return
-  }
-
-  if (character.state === 'walk') {
-    fadeToAction(character, character.walkAction ?? character.idleAction ?? character.runAction)
-    return
-  }
-
-  if (character.state === 'run') {
-    fadeToAction(character, character.runAction ?? character.walkAction ?? character.idleAction)
-    return
-  }
-
-  fadeToAction(character, character.idleAction ?? character.walkAction ?? character.runAction)
-}
-
-const ensureOverlayCharacter = (config: {
-  id: string
-  role: CharacterRole
-  modelUrl: string
-  markerImageUrl: string
-  markerSize: number
-  position: [number, number]
-  state?: CharacterAnimationState
-}) => {
-  if (!overlayScene || !overlayLoader) return
-
-  const existing = overlayCharacters.get(config.id)
+  const existing = npcAvatarEntities.get(actor.id)
   if (existing) {
-    existing.position = config.position
-    existing.role = config.role
-    existing.markerImageUrl = config.markerImageUrl
-    existing.markerSize = config.markerSize
-    existing.state = config.state ?? existing.state
-    const existingImg = existing.markerElement.querySelector('img')
-    if (existingImg) {
-      existingImg.setAttribute('src', config.markerImageUrl)
-    }
-
-    if (existing.modelUrl !== config.modelUrl) {
-      existing.modelUrl = config.modelUrl
-      disposeOverlayCharacter(existing)
-      overlayScene.add(existing.group)
-      existing.loading = false
-    } else {
-      syncOverlayAnimation(existing)
-      return
-    }
-  }
-
-  const character = existing ?? {
-    id: config.id,
-    role: config.role,
-    modelUrl: config.modelUrl,
-    markerImageUrl: config.markerImageUrl,
-    markerSize: config.markerSize,
-    position: config.position,
-    group: new THREE.Group(),
-    markerElement: createOverlayMarkerElement(
-      config.markerImageUrl,
-      config.markerSize,
-      `${config.id} marker`,
-    ),
-    modelRoot: null,
-    mixer: null,
-    activeAction: null,
-    idleAction: null,
-    walkAction: null,
-    runAction: null,
-    targetYaw: 0,
-    currentYaw: 0,
-    isMoving: false,
-    state: config.state ?? (config.role === 'npc' ? 'walk' : 'idle'),
-    loading: false,
-  }
-
-  character.group.matrixAutoUpdate = true
-  overlayCharacters.set(character.id, character)
-  overlayScene.add(character.group)
-
-  if (character.loading) return
-  character.loading = true
-
-  overlayLoader.load(
-    character.modelUrl,
-    (gltf: GLTF) => {
-      const target = overlayCharacters.get(character.id)
-      if (!target) {
-        return
-      }
-
-      target.modelRoot = gltf.scene
-      target.modelRoot.traverse((child: THREE.Object3D) => {
-        if (child instanceof THREE.SkinnedMesh) {
-          child.frustumCulled = false
-          child.normalizeSkinWeights()
-        }
-      })
-      fitAvatarModel(target.modelRoot)
-      target.group.clear()
-      target.group.add(target.modelRoot)
-
-      if (gltf.animations.length > 0) {
-        target.mixer = new THREE.AnimationMixer(target.modelRoot)
-        target.idleAction = gltf.animations[0] ? target.mixer.clipAction(gltf.animations[0]) : null
-        target.walkAction = gltf.animations[1] ? target.mixer.clipAction(gltf.animations[1]) : null
-        target.runAction = gltf.animations[2] ? target.mixer.clipAction(gltf.animations[2]) : null
-        syncOverlayAnimation(target)
-      }
-
-      target.loading = false
-      logDebug('overlay avatar loaded', { id: target.id, modelUrl: target.modelUrl })
-    },
-    undefined,
-    (error) => {
-      character.loading = false
-      console.error('[MapContainer] Failed to load overlay avatar model.', {
-        id: character.id,
-        modelUrl: character.modelUrl,
-        error,
-      })
-    },
-  )
-}
-
-const removeOverlayCharacter = (id: string) => {
-  const character = overlayCharacters.get(id)
-  if (!character) return
-  disposeOverlayCharacter(character)
-  overlayCharacters.delete(id)
-}
-
-const updateOverlayCharacterPosition = (id: string, position: [number, number]) => {
-  const character = overlayCharacters.get(id)
-  if (character) {
-    character.position = position
-  }
-}
-
-const setOverlayCharacterTargetYaw = (id: string, yaw: number) => {
-  const character = overlayCharacters.get(id)
-  if (character) {
-    character.targetYaw = yaw
-  }
-}
-
-const setOverlayCharacterMoving = (id: string, isMoving: boolean) => {
-  const character = overlayCharacters.get(id)
-  if (!character || character.isMoving === isMoving) return
-  character.isMoving = isMoving
-  syncOverlayAnimation(character)
-}
-
-const setOverlayCharacterState = (id: string, state: CharacterAnimationState) => {
-  const character = overlayCharacters.get(id)
-  if (!character || character.state === state) return
-  character.state = state
-  syncOverlayAnimation(character)
-}
-
-const renderOverlayScene = (dt: number) => {
-  if (!map.value || !overlayRenderer || !overlayScene || !overlayCamera || !avatarOverlayHost.value) {
+    existing.actor = actor
+    existing.marker.setLngLat?.(actor.position)
+    existing.layer.updatePosition(actor.position)
+    existing.layer.playAnimation('Walk')
     return
   }
 
-  const width = avatarOverlayHost.value.clientWidth
-  const height = avatarOverlayHost.value.clientHeight
-  const zoom = map.value.getZoom?.() ?? props.zoom
-  // 调整缩放比例关系 - 使用更平缓的指数使模型随缩放变化更自然
-  const zoomScale = Math.pow(1.5, zoom - 14)
+  const layerId = `urpia-npc-layer-${actor.id}`
+  const layer = createPlayerAvatarLayer(map.value, layerId, actor.position, actor.modelUrl)
+  map.value.addLayer(layer)
 
-  overlayCharacters.forEach((character) => {
-    character.mixer?.update(dt)
-
-    let diff = character.targetYaw - character.currentYaw
-    while (diff > Math.PI) diff -= Math.PI * 2
-    while (diff < -Math.PI) diff += Math.PI * 2
-    character.currentYaw += diff * AVATAR_TURN_SPEED
-
-    const screenPoint = map.value.project(character.position)
-    const scale = OVERLAY_BASE_SCALE * zoomScale
-
-    character.group.visible =
-      screenPoint.x > -220 &&
-      screenPoint.x < width + 220 &&
-      screenPoint.y > -320 &&
-      screenPoint.y < height + 220
-
-    // 统一坐标：GLB模型和头像标记都基于屏幕坐标系
-    // GLB模型位置（Three.js坐标系：原点在屏幕中心，Y轴向上）
-    const modelScreenX = screenPoint.x
-    const modelScreenY = screenPoint.y - character.markerSize / 2 // 模型中心与头像中心对齐
-    
-    // 转换为Three.js坐标
-    character.group.position.set(
-      modelScreenX - width / 2, 
-      height / 2 - modelScreenY, 
-      0
-    )
-    character.group.rotation.set(0, character.currentYaw, 0)
-    character.group.scale.setScalar(scale)
-
-    // 头像标记位置（CSS坐标系：原点在左上角，Y轴向下）
-    character.markerElement.style.display = character.group.visible ? 'flex' : 'none'
-    const markerX = screenPoint.x - character.markerSize / 2
-    const markerY = screenPoint.y - character.markerSize / 2
-    character.markerElement.style.transform = `translate(${markerX}px, ${markerY}px)`
+  const markerElement = createPlayerAvatarMarkerElement(actor.imageUrl, 38, `${actor.id} marker`)
+  const marker = new mapboxgl.Marker({
+    element: markerElement,
+    anchor: 'bottom',
+    offset: [0, -12],
   })
+    .setLngLat(actor.position)
+    .addTo(map.value)
 
-  overlayRenderer.clear()
-  overlayRenderer.render(overlayScene, overlayCamera)
+  npcAvatarEntities.set(actor.id, { id: actor.id, actor, layer, marker })
+  layer.playAnimation('Walk')
+  layer.setTimeScale(1)
 }
 
 const syncAvatarToMap = () => {
   if (!map.value) return
-  updateOverlayCharacterPosition(PLAYER_CHARACTER_ID, avatarPosition)
+  playerAvatarLayer?.updatePosition(avatarPosition)
+  syncPlayerAvatarMarker()
   map.value.easeTo({
     center: avatarPosition,
     duration: 80,
@@ -1065,7 +968,7 @@ const updateNearestPremiumStore = () => {
 
 const removeNpcActors = () => {
   npcActors.forEach((actor) => {
-    removeOverlayCharacter(actor.id)
+    removeNpcAvatarEntity(actor.id)
   })
   npcActors = []
 }
@@ -1075,15 +978,7 @@ const syncNpcActors = () => {
   npcActors = buildNpcActors()
 
   npcActors.forEach((actor) => {
-    ensureOverlayCharacter({
-      id: actor.id,
-      role: 'npc',
-      modelUrl: actor.modelUrl,
-      markerImageUrl: actor.imageUrl,
-      markerSize: 38,
-      position: actor.position,
-      state: 'walk',
-    })
+    ensureNpcAvatarEntity(actor)
   })
 }
 
@@ -1115,11 +1010,11 @@ const updateNpcActors = (dt: number) => {
     const northMeters = (target[1] - lat) * METERS_PER_DEG_LAT
     const distance = Math.hypot(eastMeters, northMeters)
 
-    setOverlayCharacterState(actor.id, 'walk')
-
     if (distance < 0.35) {
       actor.position = [target[0], target[1]]
-      updateOverlayCharacterPosition(actor.id, actor.position)
+      const entityAtTarget = npcAvatarEntities.get(actor.id)
+      entityAtTarget?.layer.updatePosition(actor.position)
+      entityAtTarget?.marker.setLngLat?.(actor.position)
       advanceNpcTarget(actor)
       return
     }
@@ -1133,8 +1028,11 @@ const updateNpcActors = (dt: number) => {
       lat + metersToLat(step * (-dz)),
     ]
 
-    updateOverlayCharacterPosition(actor.id, actor.position)
-    setOverlayCharacterTargetYaw(actor.id, -Math.atan2(dx, -dz) + Math.PI / 2)
+    const entity = npcAvatarEntities.get(actor.id)
+    entity?.layer.updatePosition(actor.position)
+    entity?.layer.setTargetYaw(Math.atan2(dx, -dz) - Math.PI / 2)
+    entity?.marker.setLngLat?.(actor.position)
+    entity?.layer.playAnimation('Walk')
   })
 }
 
@@ -1144,7 +1042,6 @@ const runAvatarLoop = (timestamp: number) => {
 
   if (map.value && props.enableAvatar && props.avatarModelUrl) {
     const inputMagnitude = Math.hypot(avatarInput.x, avatarInput.y)
-    setOverlayCharacterMoving(PLAYER_CHARACTER_ID, inputMagnitude > 0.08)
 
     if (inputMagnitude > 0.08) {
       const bearing = ((map.value.getBearing?.() ?? 0) * Math.PI) / 180
@@ -1156,7 +1053,7 @@ const runAvatarLoop = (timestamp: number) => {
         dx /= vectorLength
         dz /= vectorLength
 
-        setOverlayCharacterTargetYaw(PLAYER_CHARACTER_ID, -Math.atan2(dx, -dz) + Math.PI / 2)
+        playerAvatarLayer?.setTargetYaw(Math.atan2(dx, -dz) - Math.PI / 2)
 
         const step = AVATAR_MOVE_SPEED * dt
         const [lng, lat] = avatarPosition
@@ -1170,10 +1067,19 @@ const runAvatarLoop = (timestamp: number) => {
         scheduleStoreSync()
       }
     }
+
+    if (!playerAvatarMoving && inputMagnitude > 0.08) {
+      playerAvatarMoving = true
+      playerAvatarLayer?.playAnimation('Run')
+      playerAvatarLayer?.setTimeScale(1)
+    } else if (playerAvatarMoving && inputMagnitude <= 0.08) {
+      playerAvatarMoving = false
+      playerAvatarLayer?.playAnimation('Idle')
+      playerAvatarLayer?.setTimeScale(1)
+    }
   }
 
   updateNpcActors(dt)
-  renderOverlayScene(dt)
   avatarRafId = requestAnimationFrame(runAvatarLoop)
 }
 
@@ -1192,7 +1098,7 @@ const stopAvatarLoop = () => {
 
 const resetAvatarPosition = () => {
   avatarPosition = [...props.avatarInitialPosition]
-  updateOverlayCharacterPosition(PLAYER_CHARACTER_ID, avatarPosition)
+  playerAvatarMoving = false
   syncAvatarToMap()
   updateNearestPremiumStore()
   scheduleStoreSync()
@@ -1244,31 +1150,22 @@ const initMap = async () => {
       if (storeLayer && safeMap.getLayer?.(STORE_LAYER_ID)) {
         safeMap.removeLayer(STORE_LAYER_ID)
       }
+      if (safeMap.getLayer?.(PLAYER_LAYER_ID)) {
+        safeMap.removeLayer(PLAYER_LAYER_ID)
+      }
 
       storeLayer = createStoreLayer(safeMap)
       safeMap.addLayer(storeLayer)
       syncVisibleStores()
 
       if (props.enableAvatar && props.avatarModelUrl) {
-        ensureOverlayCharacter({
-          id: PLAYER_CHARACTER_ID,
-          role: 'player',
-          modelUrl: props.avatarModelUrl,
-          markerImageUrl: props.avatarImageUrl || '/avatars/girl-01.jpg',
-          markerSize: 42,
-          position: avatarPosition,
-          state: 'idle',
-        })
+        ensurePlayerAvatar()
       }
 
       syncNpcActors()
       startAvatarLoop()
     })
 
-    safeMap.on('move', () => renderOverlayScene(0))
-    safeMap.on('zoom', () => renderOverlayScene(0))
-    safeMap.on('rotate', () => renderOverlayScene(0))
-    safeMap.on('pitch', () => renderOverlayScene(0))
     safeMap.on('moveend', () => scheduleStoreSync())
     safeMap.on('zoomend', () => scheduleStoreSync())
     safeMap.on('rotateend', () => scheduleStoreSync())
@@ -1328,15 +1225,7 @@ watch(
       return
     }
 
-    ensureOverlayCharacter({
-      id: PLAYER_CHARACTER_ID,
-      role: 'player',
-      modelUrl: nextModelUrl,
-      markerImageUrl: props.avatarImageUrl || '/avatars/girl-01.jpg',
-      markerSize: 42,
-      position: avatarPosition,
-      state: 'idle',
-    })
+    ensurePlayerAvatar()
     startAvatarLoop()
   },
 )
@@ -1347,22 +1236,12 @@ watch(
     if (!props.enableAvatar || !props.avatarModelUrl) {
       return
     }
-    ensureOverlayCharacter({
-      id: PLAYER_CHARACTER_ID,
-      role: 'player',
-      modelUrl: props.avatarModelUrl,
-      markerImageUrl: props.avatarImageUrl || '/avatars/girl-01.jpg',
-      markerSize: 42,
-      position: avatarPosition,
-      state: 'idle',
-    })
+    ensurePlayerAvatar()
   },
 )
 
 onMounted(() => {
   avatarPosition = [...props.avatarInitialPosition]
-  initOverlayScene()
-  window.addEventListener('resize', setOverlaySize)
   void initMap()
 })
 
@@ -1372,11 +1251,10 @@ onUnmounted(() => {
     storeSyncTimer = 0
   }
 
-  window.removeEventListener('resize', setOverlaySize)
   stopAvatarLoop()
   removeAvatarMarker()
+  removePlayerAvatarLayer()
   removeNpcActors()
-  disposeOverlayScene()
   clearMarkers()
   clearStoreLocatorMarkers()
   storeLayer?.disposeStores()

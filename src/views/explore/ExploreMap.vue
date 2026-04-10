@@ -7,6 +7,7 @@ import { useExploreMap } from './useExploreMap'
 import { readStoredProfileAvatarImageUrl, readStoredProfileModelUrl } from '../profile/profileModel.config'
 import { storeCatalog, type StoreCatalogItem } from '../../config/storeCatalog'
 import { exploreMoodOptions, type ExploreMoodKey } from './exploreMap.config'
+import { getMockRoamingRecommendations } from '../../data/roamingRecommendations'
 
 const {
   mapRef,
@@ -28,6 +29,15 @@ const avatarModelUrl = computed(() => readStoredProfileModelUrl())
 const avatarImageUrl = computed(() => readStoredProfileAvatarImageUrl())
 const activeEnterStore = ref<StoreCatalogItem | null>(null)
 const activeStoryStore = ref<StoreCatalogItem | null>(null)
+const hasStartedRoaming = ref(false)
+const showRoamingMatchCard = ref(false)
+const showRoamingStoreCard = ref(false)
+const roamingMemoryNotes = ref(['不辣', '喜欢安静一点', '想慢慢认识新的其他人'])
+const roamingRecommendations = computed(() => getMockRoamingRecommendations(roamingMemoryNotes.value))
+const roamingSoul = computed(() => roamingRecommendations.value.soul)
+const roamingStores = computed(() => roamingRecommendations.value.stores.slice(0, 2))
+let roamingMatchTimer: number | null = null
+let roamingStoreTimer: number | null = null
 
 // 情绪标签切换
 const selectedMood = ref<ExploreMoodKey | null>(null)
@@ -94,7 +104,10 @@ const openAgentDialog = async () => {
   // 模拟加载过程，逐条显示对话
   for (let i = 0; i < mockAgentConversation.length; i++) {
     await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 600))
-    agentMessages.value.push(mockAgentConversation[i])
+    const nextMessage = mockAgentConversation[i]
+    if (nextMessage) {
+      agentMessages.value.push(nextMessage)
+    }
   }
 
   isAgentLoading.value = false
@@ -170,6 +183,12 @@ const startJoystick = (event: PointerEvent) => {
 
 onBeforeUnmount(() => {
   resetJoystick()
+  if (roamingMatchTimer) {
+    window.clearTimeout(roamingMatchTimer)
+  }
+  if (roamingStoreTimer) {
+    window.clearTimeout(roamingStoreTimer)
+  }
 })
 
 const enterNearestStore = () => {
@@ -198,9 +217,10 @@ const currentStoreSceneImage = ref<string | null>(null)
 const isStoreSceneModalOpen = ref(false)
 
 const enterStore = (store: StoreCatalogItem) => {
-  // 随机选择一张店铺场景图片
-  const randomIndex = Math.floor(Math.random() * storeSceneImages.length)
-  currentStoreSceneImage.value = storeSceneImages[randomIndex]
+  // 按门店稳定映射一张场景图，避免同一门店每次都跳变
+  const seed = Array.from(store.id).reduce((sum, char) => sum + char.charCodeAt(0), 0)
+  const randomIndex = seed % storeSceneImages.length
+  currentStoreSceneImage.value = storeSceneImages[randomIndex] ?? storeSceneImages[0] ?? null
   isStoreSceneModalOpen.value = true
 }
 
@@ -215,6 +235,47 @@ const openStoreStory = (store: StoreCatalogItem) => {
 
 const closeStoreStory = () => {
   activeStoryStore.value = null
+}
+
+const startRoaming = () => {
+  hasStartedRoaming.value = true
+  showRoamingMatchCard.value = false
+  showRoamingStoreCard.value = false
+
+  if (roamingMatchTimer) {
+    window.clearTimeout(roamingMatchTimer)
+  }
+  if (roamingStoreTimer) {
+    window.clearTimeout(roamingStoreTimer)
+  }
+
+  roamingMatchTimer = window.setTimeout(() => {
+    showRoamingMatchCard.value = true
+  }, 260)
+
+  roamingStoreTimer = window.setTimeout(() => {
+    showRoamingStoreCard.value = true
+  }, 520)
+}
+
+const closeRoamingMatchCard = () => {
+  showRoamingMatchCard.value = false
+  if (roamingMatchTimer) {
+    window.clearTimeout(roamingMatchTimer)
+    roamingMatchTimer = null
+  }
+}
+
+const closeRoamingStoreCard = () => {
+  showRoamingStoreCard.value = false
+  if (roamingStoreTimer) {
+    window.clearTimeout(roamingStoreTimer)
+    roamingStoreTimer = null
+  }
+}
+
+const openRecommendedStore = (store: StoreCatalogItem) => {
+  activeStoryStore.value = store
 }
 </script>
 
@@ -254,8 +315,8 @@ const closeStoreStory = () => {
               <button
                 type="button"
                 class="flex h-11 items-center gap-1.5 rounded-full bg-white/92 px-3 shadow-[0_6px_18px_rgba(0,0,0,0.08)] transition-all"
-                :class="selectedMood ? 'ring-2' : ''"
-                :style="selectedMood ? { ringColor: exploreMoodOptions.find(m => m.key === selectedMood)?.color } : {}"
+                :class="selectedMood ? 'ring-2 ring-offset-2 ring-offset-white/80' : ''"
+                :style="selectedMood ? { '--tw-ring-color': exploreMoodOptions.find(m => m.key === selectedMood)?.color } : undefined"
                 @click="toggleMoodSelector"
               >
                 <span v-if="selectedMood" class="text-[20px]">{{ exploreMoodOptions.find(m => m.key === selectedMood)?.emoji }}</span>
@@ -397,30 +458,134 @@ const closeStoreStory = () => {
         </div>
       </Transition>
 
-      <!-- Agent LLM 卡片 - 放在 Menu 栏上方 -->
+      <!-- 漫游卡片 - 放在 Menu 栏上方 -->
       <div class="absolute bottom-[calc(74px+env(safe-area-inset-bottom)+8px)] left-4 right-4 z-20">
-        <div
-          class="agent-llm-card cursor-pointer"
-          @click="openAgentDialog"
-        >
-          <div class="flex items-center justify-center gap-3 py-3">
-            <!-- Agent 1 头像 - 男孩子 -->
-            <div class="agent-avatar agent-1">
-              <span class="text-[20px]">👦</span>
-            </div>
-
-            <!-- 脉冲连接线 -->
-            <div class="pulse-line">
-              <div class="pulse-dot"></div>
-              <div class="dashed-line"></div>
-            </div>
-
-            <!-- Agent 2 头像 - 女孩子 -->
-            <div class="agent-avatar agent-2">
-              <span class="text-[20px]">👧</span>
-            </div>
+        <div class="roaming-stack">
+          <div class="roaming-launcher">
+            <button
+              type="button"
+              class="roaming-cta roaming-cta-launcher"
+              @click="startRoaming"
+            >
+              <span class="material-symbols-outlined text-[16px]">explore</span>
+              <span>开始漫游</span>
+            </button>
           </div>
-          <p class="text-center text-[12px] text-[#8E8E93] mt-1 pb-2">您的分身找到新的匹配灵魂了</p>
+
+          <Transition name="roaming-store-card">
+            <div
+              v-if="showRoamingStoreCard && roamingStores.length > 0"
+              class="roaming-store-card"
+            >
+              <button
+                type="button"
+                class="roaming-card-close"
+                aria-label="关闭小店推荐"
+                @click="closeRoamingStoreCard"
+              >
+                <span class="material-symbols-outlined text-[18px]">close</span>
+              </button>
+
+              <div class="flex items-center justify-center gap-3 py-3">
+                <div class="agent-avatar store-avatar">
+                  <span class="text-[18px]">🏪</span>
+                </div>
+
+                <div class="pulse-line">
+                  <div class="pulse-dot"></div>
+                  <div class="dashed-line"></div>
+                </div>
+
+                <div class="agent-avatar store-avatar-secondary">
+                  <span class="text-[18px]">🍲</span>
+                </div>
+              </div>
+
+              <div class="px-4 pb-2 text-center">
+                <p class="text-[12px] text-[#8E8E93]">为你找到了更合拍的小店。</p>
+                <p class="mt-1 text-[16px] font-semibold text-[#1D1D1F]">小店推荐</p>
+                <p class="mt-1 text-[12px] leading-5 text-[#6C6C70]">
+                  因为你备注过“{{ roamingMemoryNotes[0] }}”，系统优先筛出了更适合慢慢认识彼此的店。
+                </p>
+              </div>
+
+              <div class="mt-2 space-y-2.5 px-4 pb-4">
+                <button
+                  v-for="item in roamingStores"
+                  :key="item.id"
+                  type="button"
+                  class="roaming-store-item"
+                  @click="openRecommendedStore(item.store)"
+                >
+                  <div class="flex-1 text-left">
+                    <div class="flex items-center gap-2">
+                      <span class="rounded-full px-2 py-0.5 text-[10px] font-semibold" :style="{ background: `${item.accent}1A`, color: item.accent }">
+                        {{ item.badge }}
+                      </span>
+                      <span class="text-[14px] font-semibold text-[#1D1D1F]">{{ item.store.name }}</span>
+                    </div>
+                    <p class="mt-1 text-[12px] leading-5 text-[#6C6C70]">{{ item.matchReason }}</p>
+                    <p class="mt-1 text-[11px] text-[#8E8E93]">{{ item.memoryHook }}</p>
+                  </div>
+                  <span class="material-symbols-outlined text-[18px] text-[#8E8E93]">chevron_right</span>
+                </button>
+              </div>
+            </div>
+          </Transition>
+
+          <Transition name="roaming-store-card">
+            <div
+              v-if="showRoamingMatchCard"
+              class="agent-llm-card is-roaming"
+            >
+              <button
+                type="button"
+                class="roaming-card-close"
+                aria-label="关闭匹配灵魂卡片"
+                @click="closeRoamingMatchCard"
+              >
+                <span class="material-symbols-outlined text-[18px]">close</span>
+              </button>
+
+              <div class="flex items-center justify-between gap-3 px-4 pt-4">
+                <div class="rounded-full bg-white/65 px-2.5 py-1 text-[11px] font-medium text-[#8E8E93]">
+                  漫游结果
+                </div>
+
+                <button
+                  type="button"
+                  class="agent-link"
+                  @click="openAgentDialog"
+                >
+                  查看分身分析
+                </button>
+              </div>
+
+              <div class="flex items-center justify-center gap-3 py-3">
+                <div class="agent-avatar agent-1">
+                  <span class="text-[20px]">👦</span>
+                </div>
+
+                <div class="pulse-line">
+                  <div class="pulse-dot"></div>
+                  <div class="dashed-line"></div>
+                </div>
+
+                <div
+                  class="agent-avatar agent-roaming"
+                  :style="{ background: `linear-gradient(135deg, ${roamingSoul.accent} 0%, #BEE8DA 100%)` }"
+                >
+                  <span class="text-[20px]">{{ roamingSoul.avatar }}</span>
+                </div>
+              </div>
+
+              <div class="px-4 pb-4 text-center">
+                <p class="text-[12px] text-[#8E8E93]">您的分身已经找到了匹配灵魂。</p>
+                <p class="mt-1 text-[16px] font-semibold text-[#1D1D1F]">{{ roamingSoul.name }} · {{ roamingSoul.matchRate }}</p>
+                <p class="mt-1 text-[12px] leading-5 text-[#6C6C70]">{{ roamingSoul.tagline }}</p>
+              </div>
+            </div>
+          </Transition>
         </div>
       </div>
 
@@ -627,6 +792,73 @@ const closeStoreStory = () => {
   white-space: nowrap;
 }
 
+/* 漫游区域 */
+.roaming-stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.roaming-launcher {
+  display: flex;
+  justify-content: center;
+}
+
+.roaming-launcher-enter-active,
+.roaming-launcher-leave-active {
+  transition: all 0.22s ease;
+}
+
+.roaming-launcher-enter-from,
+.roaming-launcher-leave-to {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.roaming-store-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(155, 142, 196, 0.14) 0%, rgba(107, 191, 163, 0.16) 100%);
+  border: 1px solid rgba(155, 142, 196, 0.24);
+  box-shadow: 0 10px 30px rgba(155, 142, 196, 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.roaming-store-card-enter-active,
+.roaming-store-card-leave-active {
+  transition: all 0.24s ease;
+}
+
+.roaming-store-card-enter-from,
+.roaming-store-card-leave-to {
+  opacity: 0;
+  transform: translateY(16px) scale(0.98);
+}
+
+.roaming-store-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(229, 229, 234, 0.9);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.roaming-store-item:active {
+  transform: scale(0.98);
+}
+
+.roaming-store-item:hover {
+  border-color: rgba(107, 191, 163, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
 /* Agent LLM 卡片样式 */
 .agent-llm-card {
   background: linear-gradient(135deg, rgba(155, 142, 196, 0.12) 0%, rgba(107, 191, 163, 0.12) 100%);
@@ -637,11 +869,75 @@ const closeStoreStory = () => {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
+.agent-llm-card.is-roaming {
+  background: linear-gradient(135deg, rgba(155, 142, 196, 0.16) 0%, rgba(107, 191, 163, 0.18) 100%);
+  border-color: rgba(107, 191, 163, 0.32);
+}
+
 .agent-llm-card:hover {
   background: linear-gradient(135deg, rgba(155, 142, 196, 0.18) 0%, rgba(107, 191, 163, 0.18) 100%);
   border-color: rgba(155, 142, 196, 0.35);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(155, 142, 196, 0.2);
+}
+
+.roaming-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #1d1d1f 0%, #3a3a3c 100%);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.roaming-cta-launcher {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  padding-inline: 18px;
+  padding-block: 12px;
+  font-size: 15px;
+}
+
+.roaming-cta:disabled {
+  opacity: 0.5;
+}
+
+.roaming-cta:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.agent-link {
+  border: none;
+  background: transparent;
+  color: #8e8e93;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.roaming-card-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  color: #8e8e93;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.roaming-card-close:active {
+  transform: scale(0.96);
 }
 
 /* Agent 头像 */
@@ -663,6 +959,20 @@ const closeStoreStory = () => {
 
 .agent-avatar.agent-2 {
   background: linear-gradient(135deg, #6BBFA3 0%, #8DD4BD 100%);
+  color: white;
+}
+
+.agent-avatar.agent-roaming {
+  color: white;
+}
+
+.agent-avatar.store-avatar {
+  background: linear-gradient(135deg, #9b8ec4 0%, #c1b4df 100%);
+  color: white;
+}
+
+.agent-avatar.store-avatar-secondary {
+  background: linear-gradient(135deg, #6bbfa3 0%, #9bd9c5 100%);
   color: white;
 }
 

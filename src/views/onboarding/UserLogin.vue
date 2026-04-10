@@ -43,18 +43,9 @@ const handleSubmit = async () => {
   await router.push('/onboarding/camera')
 }
 
-// 检查是否已有用户信息
 onMounted(() => {
-  const savedUserInfo = localStorage.getItem(USER_INFO_KEY)
-  if (savedUserInfo) {
-    try {
-      const userInfo = JSON.parse(savedUserInfo)
-      nickname.value = userInfo.nickname || ''
-      phone.value = userInfo.phone || ''
-    } catch (e) {
-      console.error('[UserLogin] failed to parse user info', e)
-    }
-  }
+  nickname.value = ''
+  phone.value = ''
 })
 </script>
 

@@ -1,0 +1,189 @@
+
+> Urpia-frontend@0.1.0 dev
+> vite --host 0.0.0.0
+
+[2m10:06:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because vite config has changed
+Port 3000 is in use, trying another one...
+
+  [32m[1mVITE[22m v6.4.2[39m  [2mready in [0m[1m968[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3001[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.40:[1m3001[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.27.128.1:[1m3001[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m10:08:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/UserLogin.vue, /src/assets/styles/main.css[22m
+[2m10:08:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/onboarding/ConfirmPersona.vue, /src/assets/styles/main.css[22m
+[2m10:08:16[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtsconfig.tsbuildinfo[22m
+[2m10:14:45[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m10:14:45[22m [36m[1m[vite][22m[39m server restarted.
+[2m10:14:59[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtsconfig.tsbuildinfo[22m
+[2m10:17:33[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:21:16[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:26:37[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:27:02[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:27:11[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:27:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:28:04[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:28:11[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:28:15[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:29:06[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:48:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Crashpad/metadata[22m
+[2m10:48:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/AutofillAiModelCache/LOCK[22m
+[2m10:48:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/AutofillStrikeDatabase/LOCK[22m
+[2m10:48:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/BudgetDatabase/LOCK[22m
+[2m10:48:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ClientCertificates/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/commerce_subscription_db/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/discounts_db/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/discount_infos_db/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/EdgePushStorageWithConnectTokenAndKey/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Crashpad/metadata[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/BrowsingTopicsSiteData-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ExtensionActivityComp[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ExtensionActivityEdge-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/heavy_ad_intervention_opt_out.db-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/HubApps Icons-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/LOG[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Login Data For Account-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Login Data-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Network Action Predictor-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ServerCertificate-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/SharedStorage-wal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Shortcuts-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Top Sites-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Vpn Tokens-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Web Data-journal[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Asset Store/assets.db/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/AutofillAiModelCache/LOG[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/AutofillAiModelCache/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/AutofillStrikeDatabase/LOG[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/AutofillStrikeDatabase/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/BudgetDatabase/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/BudgetDatabase/LOG[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Feature Engagement Tracker/AvailabilityDB/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Feature Engagement Tracker/EventDB/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ClientCertificates/LOG[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ClientCertificates/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/optimization_guide_hint_cache_store/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/parcel_tracking_db/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/PersistentOriginTrials/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Safe Browsing Network/NetworkDataMigrated[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Segmentation Platform/SegmentInfoDB/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Segmentation Platform/SignalDB/LOCK[22m
+[2m10:48:44[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Segmentation Platform/SignalStorageConfigDB/LOCK[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Storage/ext/ihmafllikibpmigkcoadcmckbfhibefp/def/Network/NetworkDataMigrated[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/FirstLaunchAfterInstallation[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/first_party_sets.db-journal[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Collections/collectionsSQLite-journal[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/map-dom.html[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/commerce_subscription_db/LOG[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/commerce_subscription_db/LOCK[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/discounts_db/LOG[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/discounts_db/LOCK[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/discount_infos_db/LOG[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/discount_infos_db/LOCK[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/EdgeCoupons/coupons_data.db/LOCK[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/EdgeEDrop/EdgeEDropSQLite.db-journal[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/EdgeHubAppUsage/EdgeHubAppUsageSQLite.db-journal[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/EdgePushStorageWithConnectTokenAndKey/LOG[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/EdgePushStorageWithConnectTokenAndKey/LOCK[22m
+[2m10:48:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/EdgePushStorageWithConnectTokenAndKey/LOG.old[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/EntityExtraction/EntityExtractionAssetStore.db/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extension Rules/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extension Scripts/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Extension State/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Crashpad/metadata[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/BrowsingTopicsSiteData-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ExtensionActivityComp[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ExtensionActivityEdge-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/heavy_ad_intervention_opt_out.db-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/HubApps Icons-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Login Data For Account-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Login Data-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Network Action Predictor-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ServerCertificate-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/SharedStorage-wal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Shortcuts-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Top Sites-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Vpn Tokens-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Web Data-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Asset Store/assets.db/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/AutofillAiModelCache/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/AutofillAiModelCache/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/AutofillStrikeDatabase/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/AutofillStrikeDatabase/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/BudgetDatabase/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/BudgetDatabase/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Feature Engagement Tracker/AvailabilityDB/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Feature Engagement Tracker/AvailabilityDB/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Feature Engagement Tracker/EventDB/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Feature Engagement Tracker/EventDB/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ClientCertificates/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/ClientCertificates/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Local Extension Settings/jdiccldimpdaibmpdkjnbmckianbfold/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Local Storage/leveldb/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Network/Cookies-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Network/NetworkDataMigrated[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Network/Reporting and NEL-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Network/Trust Tokens-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Nurturing/campaign_history-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/optimization_guide_hint_cache_store/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/optimization_guide_hint_cache_store/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/parcel_tracking_db/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/parcel_tracking_db/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/PersistentOriginTrials/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/PersistentOriginTrials/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Safe Browsing Network/Safe Browsing Cookies-journal[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Safe Browsing Network/NetworkDataMigrated[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Segmentation Platform/SegmentInfoDB/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Segmentation Platform/SegmentInfoDB/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Segmentation Platform/SignalDB/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Segmentation Platform/SignalDB/LOCK[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Segmentation Platform/SignalStorageConfigDB/LOG[22m
+[2m10:48:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Segmentation Platform/SignalStorageConfigDB/LOCK[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Service Worker/Database/LOCK[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Session Storage/LOCK[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Shared Dictionary/db-journal[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/shared_proto_db/LOCK[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/shared_proto_db/metadata/LOCK[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Site Characteristics Database/LOCK[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Storage/ext/ihmafllikibpmigkcoadcmckbfhibefp/def/Local Storage/leveldb/LOCK[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Storage/ext/ihmafllikibpmigkcoadcmckbfhibefp/def/Network/NetworkDataMigrated[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Storage/ext/ihmafllikibpmigkcoadcmckbfhibefp/def/Network/Trust Tokens-journal[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Storage/ext/ihmafllikibpmigkcoadcmckbfhibefp/def/Shared Dictionary/db-journal[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Sync Data/LevelDB/LOCK[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Sync Extension Settings/knjifalgaonnogbohfflloocfcebopgn/LOCK[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/map-dom.html[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Sync Extension Settings/opgbiafapkbbnbnjcdomjaghbckfkglc/LOCK[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/WebStorage/QuotaManager-journal[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Nurturing/campaign_history-journal[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/FirstLaunchAfterInstallation[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/first_party_sets.db-journal[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Top Sites-journal[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Vpn Tokens-journal[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.codex-logs/edge-debug-profile/Default/Web Data-journal[22m
+[2m10:48:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/api/TeleSpeechASR/参考音频列表获取.txt[22m
+[2m10:54:12[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m10:55:16[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue?vue&type=style&index=0&scoped=fd4eb3df&lang.css[22m
+[2m10:55:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtsconfig.tsbuildinfo[22m
+[2m10:56:05[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m10:56:17[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m10:56:33[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m10:56:45[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m10:56:56[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtsconfig.tsbuildinfo[22m
+[2m10:59:18[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m10:59:37[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:59:48[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m10:59:55[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m11:02:46[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m11:03:03[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m11:03:26[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue?vue&type=style&index=0&scoped=fd4eb3df&lang.css[22m
+[2m11:03:32[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m11:03:41[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtsconfig.tsbuildinfo[22m
+[2m11:04:16[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m11:04:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/D:\CodeWorkSpace\Urpia\src\components\map\MapContainer.vue, /src/assets/styles/main.css[22m
+[2m11:04:36[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m11:05:02[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue, /src/assets/styles/main.css[22m
+[2m11:05:26[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/explore/ExploreMap.vue?vue&type=style&index=0&scoped=fd4eb3df&lang.css[22m

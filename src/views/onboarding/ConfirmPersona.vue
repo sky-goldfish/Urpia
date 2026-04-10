@@ -9,26 +9,12 @@ const ProfileAvatar3D = defineAsyncComponent(() => import('../../components/prof
 
 const router = useRouter()
 const ONBOARDING_PREVIEW_INDEX_KEY = 'urpia:onboarding-preview-index'
-const USER_INFO_KEY = 'urpia:user-info'
 const selectedIndex = ref(0)
 const fallbackModel = onboardingModelOptions[0]!
 const isModelPending = ref(true)
 const userNickname = ref('')
 
 const selectedModel = computed(() => onboardingModelOptions[selectedIndex.value] || fallbackModel)
-
-// 读取用户输入的昵称
-const readUserNickname = () => {
-  const savedUserInfo = localStorage.getItem(USER_INFO_KEY)
-  if (savedUserInfo) {
-    try {
-      const userInfo = JSON.parse(savedUserInfo)
-      userNickname.value = userInfo.nickname || ''
-    } catch (e) {
-      console.error('[ConfirmPersona] failed to parse user info', e)
-    }
-  }
-}
 
 const handleLoadingChange = (loading: boolean) => {
   isModelPending.value = loading
@@ -57,8 +43,7 @@ onMounted(() => {
     selectedIndex.value = storedIndex
   }
 
-  // 读取用户输入的昵称
-  readUserNickname()
+  userNickname.value = ''
 
   console.debug('[ConfirmPersona] mounted', {
     selectedIndex: selectedIndex.value,
