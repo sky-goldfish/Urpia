@@ -3,7 +3,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 type MainTabKey = 'explore' | 'status' | 'social'
 
 const routes: RouteRecordRaw[] = [
-  { path: '/', redirect: '/onboarding/login' },
+  { path: '/', name: 'home', component: () => import('../views/HomePage.vue') },
   { path: '/onboarding/login', name: 'onboarding-login', component: () => import('../views/onboarding/UserLogin.vue') },
   { path: '/onboarding/camera', name: 'onboarding-camera', component: () => import('../views/onboarding/CameraGuide.vue') },
   { path: '/onboarding/chat', name: 'onboarding-chat', component: () => import('../views/onboarding/AiGuideChat.vue') },
