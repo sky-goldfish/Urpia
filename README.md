@@ -55,15 +55,15 @@ Urpia 尝试用情绪标签、分身养成、地图点亮和到店故事，把�
 
 ## Demo
 
-项目首页 `/` 已内嵌 Demo 视频，可直接展示完整流程。README 中也提供视频入口：
+项目首页 `/` 已内嵌 Demo 视频，可直接展示完整流程。README 中也提供 12 秒动图预览，点击可打开完整视频：
 
 <p align="center">
   <a href="public/media/urpia-demo.mp4">
-    <img src="public/media/urpia-frame-map.jpg" alt="Urpia demo preview" width="320" />
+    <img src="public/media/urpia-demo-preview.gif" alt="Urpia demo animated preview" width="320" />
   </a>
 </p>
 
-> 如果当前页面不支持直接播放仓库内视频，请点击上方图片或这里的 [Demo 视频](public/media/urpia-demo.mp4)。
+> 点击动图或这里的 [完整 Demo 视频](public/media/urpia-demo.mp4) 可播放 109 秒全流程版本。
 
 ## 产品链路
 
